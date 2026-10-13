@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Game trinh thám tiếng Việt: đọc tin nhắn, lướt web, ghim manh mối và gọi tên thủ phạm.">
+<meta name="theme-color" content="#141826">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>Thám Tử Hẻm Nhỏ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Patrick+Hand&display=swap&subset=vietnamese">
+<style>
+/* Layout: one-screen fake desktop ("Phố Xanh") — start screen → desktop with menubar, draggable windows, dock. Single deliberate look (night alley + daytime desktop). */
+:root{
+  --night:#141826; --night-2:#232a44; --lamp:#ffb347; --lamp-soft:#ffd9a0;
+  --desk-a:#2d6f73; --desk-b:#7fb7a4; --desk-c:#e9c98f;
+  --win:#fbfbf9; --win-2:#f0f1ee; --line:#dfe1dc; --ink:#1f2328; --ink-2:#5c6370; --ink-3:#8b919b;
+  --accent:#e2683c; --accent-ink:#fff; --chat-me:#d8efe6; --ok:#2f8f5b; --bad:#c84a3a;
+  --paper:#fff8e7; --paper-line:#e8dcbc;
+  --f-ui:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-hand:"Patrick Hand","Comic Sans MS",cursive;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--night);color:var(--ink);font-family:var(--f-ui);overflow:hidden}
+html,:root,:root[data-theme]{color-scheme:light!important}
+button{font:inherit;cursor:pointer;color:inherit}
+input,textarea,select{color:var(--ink);font:inherit}
+input::placeholder,textarea::placeholder{color:var(--ink-3);opacity:1}
+#desk{color:var(--ink)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#app{position:relative;height:100%;overflow:hidden}
+
+/* ---------- START SCREEN ---------- */
+#start{position:absolute;inset:0;display:flex;align-items:center;padding-inline:clamp(16px,6vw,72px);
+  background:radial-gradient(circle at 78% 18%,#3b4470 0,transparent 40%),linear-gradient(180deg,var(--night) 0,var(--night-2) 70%,#3a2c2a 100%);color:#fff}
+#start svg.scene{position:absolute;inset:auto 0 0 0;width:100%;height:62%;pointer-events:none}
+.brand{position:relative;z-index:2;display:flex;flex-direction:column;gap:22px;max-width:420px}
+.brand small{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--lamp-soft);opacity:.8}
+.brand h1{margin:0;font-size:clamp(40px,8vw,68px);line-height:.95;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+.brand h1 span{display:block;color:var(--lamp)}
+.menu{display:flex;flex-direction:column;gap:8px}
+.menu button{display:flex;align-items:center;gap:12px;text-align:left;padding:12px 16px;border-radius:12px;border:1px solid #ffffff22;background:#ffffff12;color:#fff;backdrop-filter:blur(6px);transition:background .15s,transform .15s}
+.menu button:hover{background:#ffffff22;transform:translateX(3px)}
+.menu button.primary{background:var(--accent);border-color:transparent}
+.menu button.primary:hover{background:#ef7a4e}
+.menu b{display:block;font-weight:600}
+.menu em{display:block;font-style:normal;font-size:12px;opacity:.75}
+.menu i{width:20px;height:20px;flex:none;display:grid;place-items:center}
+.foot{position:absolute;bottom:12px;left:clamp(16px,6vw,72px);font-size:11px;opacity:.5;z-index:2}
+
+/* ---------- MODALS ---------- */
+.modal-bg{position:absolute;inset:0;z-index:9500;background:#0b0e18aa;display:grid;place-items:center;padding:16px;backdrop-filter:blur(4px)}
+.modal{width:min(440px,100%);background:var(--win);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px #0008;animation:pop .25s ease}
+.modal .hero{height:150px;position:relative;background:linear-gradient(160deg,#2a3358,#5a3b45)}
+.modal .hero svg{position:absolute;inset:0;width:100%;height:100%}
+.modal .hero .cap{position:absolute;left:16px;bottom:12px;color:#fff}
+.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:#fff;padding:3px 8px;border-radius:6px}
+.modal .hero h2{margin:6px 0 2px;font-size:24px;font-weight:800}
+.modal .hero p{margin:0;font-size:12px;opacity:.8}
+.modal .body{padding:16px;display:flex;flex-direction:column;gap:12px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.modal .body strong{color:var(--ink)}
+.modal .row{display:flex;justify-content:flex-end;gap:8px}
+.btn{padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:600;font-size:13px}
+.btn.go{background:var(--accent);color:#fff;border-color:transparent}
+.chapters{display:flex;flex-direction:column;gap:8px}
+.chapters div{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px}
+.chapters div.lock{opacity:.5}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
+
+/* ---------- DESKTOP ---------- */
+#desk{position:absolute;inset:0;background:
+  radial-gradient(ellipse at 20% 110%,var(--desk-c) 0,transparent 45%),
+  radial-gradient(ellipse at 90% 0%,#9fd0c0 0,transparent 50%),
+  linear-gradient(160deg,var(--desk-a),var(--desk-b));}
+.menubar{position:absolute;top:0;left:0;right:0;height:26px;display:flex;align-items:center;gap:16px;padding-inline:12px;background:#ffffff55;backdrop-filter:blur(14px);font-size:12px;color:#14262a;z-index:8000}
+.menubar b{font-weight:700}
+.mb-home{border:0;background:#ffffff80;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;color:#14262a}
+.mb-home:hover{background:#fff}
+.menubar .sp{flex:1}
+.menubar .tab{font-variant-numeric:tabular-nums}
+.desk-icons{position:absolute;top:44px;right:16px;display:flex;flex-direction:column;gap:14px;z-index:1}
+.desk-icons button{width:76px;background:none;border:0;color:#fff;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px;text-shadow:0 1px 2px #0006}
+.dock{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;padding:6px;border-radius:18px;background:#ffffff66;backdrop-filter:blur(16px);border:1px solid #ffffff88;z-index:8000;max-width:calc(100% - 32px)}
+.dock button{position:relative;width:46px;height:46px;border:0;border-radius:12px;padding:0;background:none;transition:transform .15s}
+.dock button:hover{transform:translateY(-6px) scale(1.08)}
+.dock button.open::after{content:"";position:absolute;bottom:-5px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#14262a}
+.dock button .tip{position:absolute;bottom:56px;left:50%;transform:translateX(-50%);background:#1f2328dd;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s}
+.dock button:hover .tip{opacity:1}
+.dock .badge{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;padding-inline:4px}
+.ico{width:100%;height:100%;border-radius:12px;display:grid;place-items:center;box-shadow:inset 0 -2px 0 #0002}
+.ico svg{width:60%;height:60%}
+
+/* windows */
+.win{position:absolute;background:var(--win);border-radius:12px;box-shadow:0 22px 60px #0b2a2e55,0 0 0 1px #00000014;display:flex;flex-direction:column;overflow:hidden;min-width:0;animation:pop .2s ease}
+.win .bar{height:34px;flex:none;display:flex;align-items:center;gap:8px;padding-inline:12px;background:var(--win-2);border-bottom:1px solid var(--line);cursor:grab;user-select:none;touch-action:none}
+.win .bar:active{cursor:grabbing}
+.dots{display:flex;gap:6px}
+.dots span{width:12px;height:12px;border-radius:50%;background:#d6d8d3}
+.dots button{width:12px;height:12px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;color:transparent;font-size:9px;font-weight:800;line-height:1;position:relative}
+.dots button::before{content:"";position:absolute;inset:-4px}
+.win .bar:hover .dots button,.dots button:focus-visible{color:#0000008c}
+.dots .x{background:#ef6a5e}.dots .m{background:#f4be4f}.dots .f{background:#61c454}
+.win.inactive .bar:not(:hover) .dots button{background:#d6d8d3}
+.win.max{left:0!important;top:26px!important;width:100%!important;height:calc(100% - 26px - 72px)!important;border-radius:0 0 12px 12px}
+.win.max .bar{cursor:default}
+.win .bar .t{font-size:12px;font-weight:600;color:var(--ink-2)}
+.win .content{flex:1;min-height:0;display:flex;overflow:hidden}
+.win.inactive .dots span{background:#d6d8d3}
+
+/* chat */
+.chat-list{width:210px;flex:none;border-right:1px solid var(--line);overflow:auto;background:#fff}
+.chat-list input{margin:10px;width:calc(100% - 20px);box-sizing:border-box;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--win-2);font:inherit;font-size:12px}
+.convo{display:flex;gap:10px;padding:10px;border:0;background:none;width:100%;text-align:left;align-items:center}
+.convo.on{background:#e7f2ee}
+.convo .meta{min-width:0;flex:1}
+.convo b{font-size:13px;display:flex;justify-content:space-between;gap:6px}
+.convo b small{font-weight:400;color:var(--ink-3);font-size:11px}
+.convo p{margin:2px 0 0;font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.convo .unread{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+.av{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px}
+.chat-pane{flex:1;min-width:0;display:flex;flex-direction:column;background:#eef0ec}
+.chat-head{padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+.chat-head b{font-size:14px;display:block}.chat-head small{font-size:11px;color:var(--ok)}
+.msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.day{align-self:center;font-size:11px;background:#d4d8d2;color:var(--ink-2);padding:2px 10px;border-radius:10px}
+.msg{display:flex;gap:8px;align-items:flex-end;max-width:88%}
+.msg .bubble{background:#fff;border-radius:12px;padding:8px 10px;font-size:13px;line-height:1.45;box-shadow:0 1px 0 #0000000d;position:relative}
+.msg .who{font-size:11px;font-weight:600;color:var(--accent);margin-bottom:2px}
+.msg .time{font-size:10px;color:var(--ink-3);margin-top:3px;font-variant-numeric:tabular-nums}
+.typing{font-size:12px;color:var(--ink-3);font-style:italic;padding-left:42px}
+.chat-foot{padding:10px 14px;background:#fff;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+.pin{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:11px;padding:2px 7px;color:var(--ink-2);display:inline-flex;gap:4px;align-items:center;margin-top:6px}
+.pin{opacity:.38;transition:opacity .15s,border-color .15s,color .15s}
+.bubble:hover .pin,.fb-cm:hover .pin,.fb-post header:hover .pin,.item:hover .pin,.doc header:hover .pin,.viewer footer:hover .pin,.pin:focus-visible{opacity:.75}
+.pin:hover{opacity:1;border-color:var(--accent);color:var(--accent)}
+.pin.done{opacity:.7}
+.pin.done{background:#fdeee7;border-color:#f3c3ad;color:var(--accent)}
+
+/* browser */
+.browser{flex:1;display:flex;flex-direction:column;min-width:0}
+.tabs{display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--win-2);border-bottom:1px solid var(--line)}
+.tabs .nav{border:0;background:none;color:var(--ink-2);font-size:16px;padding:2px 6px;border-radius:6px}
+.tabs .nav:hover:not(:disabled){background:#0000000f}
+.tabs .nav:disabled{color:#c3c6cb;cursor:default}
+.tabs form{flex:1;min-width:0}
+.tabs input{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:12px;background:#fff}
+.page{flex:1;overflow:auto;background:#fff}
+.home{padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.home h3{margin:0;font-size:26px;font-weight:800;color:#2d6f73}
+.shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,96px));gap:12px}
+.shortcuts button{border:1px solid var(--line);background:var(--win-2);border-radius:12px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px}
+.shortcuts .lg{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:#fff;font-weight:800}
+.site-head{display:flex;align-items:center;gap:10px;padding:10px 16px;color:#fff;font-weight:800}
+.feed{max-width:520px;margin:0 auto;padding:14px 12px;display:flex;flex-direction:column;gap:12px}
+.post{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.post header{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.post header b{font-size:13px;display:block}.post header small{font-size:11px;color:var(--ink-3)}
+.post p{margin:0;font-size:13px;line-height:1.5}
+.post .ph{margin-top:8px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;max-width:100%}
+.post .ph svg{width:100%;height:100%;display:block}
+.shop-search{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.shop-search input{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:inherit;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;padding:16px}
+.item{border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.item .ph{aspect-ratio:4/3;background:#f3f1ea}
+.item .ph svg{width:100%;height:100%;display:block}
+.item .in{padding:10px;display:flex;flex-direction:column;gap:4px;font-size:12px}
+.item .in b{font-size:13px;line-height:1.35}
+.item .price{color:var(--bad);font-weight:700;font-variant-numeric:tabular-nums}
+.item .sm{color:var(--ink-3);font-size:11px}
+.empty{padding:30px 16px;text-align:center;color:var(--ink-3);font-size:13px}
+.notfound{padding:40px 16px;text-align:center;color:var(--ink-2)}
+.notfound b{font-size:40px;display:block;color:var(--ink-3)}
+
+/* photos */
+.photos{flex:1;overflow:auto;padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;align-content:start}
+.photo{border:0;padding:0;background:none;text-align:left;display:flex;flex-direction:column;gap:6px}
+.photo .ph{aspect-ratio:1;border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.photo .ph svg{width:100%;height:100%;display:block}
+.photo span{font-size:12px;color:var(--ink-2)}
+.viewer{flex:1;display:flex;flex-direction:column;background:#1b1d22;color:#fff}
+.viewer .ph{flex:1;min-height:0;display:grid;place-items:center;padding:12px}
+.viewer .ph svg{max-width:100%;max-height:100%;border-radius:6px}
+.viewer footer{padding:10px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:12px;background:#24272d}
+.viewer footer .pin{margin:0}
+
+/* notebook */
+.nb-side{width:190px;flex:none;background:var(--win-2);border-right:1px solid var(--line);padding:10px;overflow:auto;display:flex;flex-direction:column;gap:2px}
+.nb-side small{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:10px 8px 4px}
+.nb-side button{display:flex;justify-content:space-between;border:0;background:none;padding:6px 8px;border-radius:6px;font-size:13px;color:var(--ink)}
+.nb-side button.on{background:#fdeee7;color:var(--accent);font-weight:600}
+.nb-side button span{color:var(--ink-3);font-variant-numeric:tabular-nums}
+.nb-main{flex:1;min-width:0;overflow:auto;background:var(--paper);background-image:repeating-linear-gradient(var(--paper) 0 27px,var(--paper-line) 27px 28px);padding:14px 18px}
+.nb-main h4{margin:0 0 10px;font-size:15px}
+.clue{font-family:var(--f-hand);font-size:18px;line-height:28px;color:#2b3a67;display:flex;gap:8px;align-items:flex-start}
+.clue em{font-family:var(--f-ui);font-style:normal;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:#fff;border:1px solid #f3c3ad;border-radius:4px;padding:0 5px;margin-top:6px;line-height:16px;flex:none}
+.clue button{margin-left:auto;border:0;background:none;color:var(--ink-3);font-size:14px;flex:none}
+.nb-main textarea{width:100%;box-sizing:border-box;min-height:220px;border:0;background:transparent;resize:vertical;font-family:var(--f-hand);font-size:18px;line-height:28px;color:#2b3a67;padding:0}
+.nb-empty{font-family:var(--f-hand);font-size:18px;color:var(--ink-3);line-height:28px}
+
+/* case file */
+.file{flex:1;overflow:auto;background:#e9e6dc;padding:18px;display:grid;place-items:start center}
+.sheet{width:min(420px,100%);background:#fff;padding:22px;box-shadow:0 6px 18px #0002;display:flex;flex-direction:column;gap:12px;box-sizing:border-box}
+.sheet .org{text-align:center;font-size:11px;font-weight:700;letter-spacing:.06em;color:#2d4a8a;text-transform:uppercase}
+.sheet h3{margin:0;text-align:center;font-size:19px;font-weight:800;letter-spacing:.02em}
+.sheet .sub{text-align:center;font-size:12px;color:var(--ink-3);font-style:italic}
+.sheet label{font-size:13px;font-weight:600}
+.sheet input{border:1px solid #b9bcc2;border-radius:6px;padding:9px 10px;font:inherit;font-size:15px}
+.sheet .act{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tries{display:flex;gap:4px;align-items:center;font-size:12px;color:var(--ink-3)}
+.tries i{width:10px;height:10px;border-radius:50%;background:var(--ok);display:inline-block}
+.tries i.used{background:#d3d5d8}
+.verdict{font-size:13px;padding:10px;border-radius:8px;line-height:1.5}
+.verdict.no{background:#fbe9e6;color:#8c2e22}
+.answer{background:#f6f3ea;border:1px dashed #cdbf98;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.6;color:var(--ink-2)}
+.answer p{margin:4px 0 0}
+.answer-h{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.stamp{align-self:center;border:3px solid var(--bad);color:var(--bad);font-weight:800;letter-spacing:.1em;padding:6px 14px;transform:rotate(-6deg);border-radius:6px;font-size:18px}
+
+/* toast & coach */
+.toast{position:absolute;top:36px;left:50%;transform:translateX(-50%);background:#1f2328ee;color:#fff;padding:8px 14px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:0 8px 20px #0004;animation:pop .2s ease}
+.coach{position:absolute;left:16px;bottom:78px;width:min(280px,calc(100% - 32px));background:var(--paper);border:1px solid var(--paper-line);border-radius:12px;padding:12px 14px;z-index:8500;box-shadow:0 12px 30px #0003;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.coach b{color:var(--ink)}
+.coach>b:first-child{display:block;margin-bottom:4px}
+[hidden]{display:none!important}
+.coach button{margin-top:8px}
+.prog{position:absolute;left:16px;top:38px;z-index:2;background:#ffffffcc;border-radius:10px;padding:8px 12px;font-size:12px;color:var(--ink-2);display:flex;flex-direction:column;gap:6px;min-width:150px}
+.prog .barx{height:6px;border-radius:3px;background:#0000001a;overflow:hidden}
+.prog .barx i{display:block;height:100%;background:var(--accent);transition:width .3s}
+
+@media (max-width:720px){
+  .win{left:8px!important;right:8px!important;width:auto!important;top:34px!important;bottom:72px!important;height:auto!important}
+  .chat-list{width:120px}.convo p,.convo b small{display:none}
+  .nb-side{width:120px}
+  .desk-icons,.prog{display:none}
+  .dock button{width:40px;height:40px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* files app */
+.files-list{width:220px;flex:none;border-right:1px solid var(--line);background:var(--win-2);overflow:auto;padding:8px;display:flex;flex-direction:column;gap:2px}
+.files-list small{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:6px 8px}
+.files-list button{display:flex;gap:8px;align-items:center;border:0;background:none;padding:7px 8px;border-radius:6px;font-size:12px;text-align:left;color:var(--ink)}
+.files-list button.on{background:#dde8f6}
+.files-list button svg{width:18px;height:18px;flex:none}
+.doc{flex:1;min-width:0;overflow:auto;background:#fff;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.doc pre{margin:0;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;line-height:1.7;white-space:pre-wrap;color:#2a2f36}
+.doc header{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.doc header b{font-size:13px}
+.doc header .pin{margin:0}
+
+/* suspect board */
+.sus{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sus-card{background:#fff;border:1px solid var(--paper-line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--ink-2)}
+.sus-card b{font-size:13px;color:var(--ink)}
+.sus-card .tg{display:flex;gap:4px;flex-wrap:wrap}
+.sus-card .tg button{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:11px;padding:2px 6px;color:var(--ink-2)}
+.sus-card .tg button.on.s{background:#fbe9e6;border-color:#eab3a9;color:var(--bad)}
+.sus-card .tg button.on.c{background:#e5f3ea;border-color:#a9d6b9;color:var(--ok)}
+.sus-card .tg button.on.u{background:#eef0f3;color:var(--ink)}
+.sus-card.s{border-color:#eab3a9}.sus-card.c{opacity:.7}
+
+/* case form choices */
+.choices{display:flex;flex-direction:column;gap:6px}
+.choices label{display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;cursor:pointer}
+.choices label:has(input:checked){border-color:var(--accent);background:#fdeee7}
+.choices input{margin-top:2px}
+.item .desc{font-size:11px;color:var(--ink-2);line-height:1.4}
+.chip.new{background:var(--ok)}
+.chapters button.ch{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px;background:#fff;text-align:left;gap:10px}
+.chapters button.ch:hover{border-color:var(--accent)}
+.chapters button.ch small{display:block;color:var(--ink-3);font-size:11px}
+@media (max-width:720px){.files-list{width:120px}.files-list button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+/* Mặt Sách */
+.fb-top{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+.fb-logo{font-weight:800;color:#3c6fd1;font-size:17px;border:0;background:none;padding:0;white-space:nowrap}
+.fb-top form{flex:1;min-width:0;max-width:300px}
+.fb-top input{width:100%;box-sizing:border-box;border:0;border-radius:999px;background:#eef0f4;padding:7px 14px;font:inherit;font-size:13px}
+.fb-body{background:#f0f2f5;min-height:100%;padding-bottom:16px}
+.fb-wrap{max-width:560px;margin:0 auto;padding:12px;display:flex;flex-direction:column;gap:12px}
+.fb-card{background:#fff;border-radius:10px;padding:12px;box-shadow:0 1px 2px #0000001a}
+.fb-card h5{margin:0 0 8px;font-size:15px}
+.fb-cover{height:110px;border-radius:0 0 10px 10px}
+.fb-id{display:flex;align-items:flex-end;gap:12px;margin:-42px 0 0 16px;padding-right:12px;flex-wrap:wrap}
+.fb-id .av{width:84px;height:84px;font-size:30px;border:4px solid #fff}
+.fb-id b{font-size:20px;display:block;line-height:1.2}
+.fb-id small{font-size:12px;color:var(--ink-3)}
+.fb-id .hd{color:#3c6fd1}
+.fb-intro{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-2);line-height:1.45}
+.fb-intro p{margin:0 0 4px;text-align:center;color:var(--ink)}
+.fb-friends{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px}
+.fb-friends button{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:#3c6fd1;text-align:center}
+.fb-friends .av{width:52px;height:52px;font-size:18px}
+.fb-friends button:hover b{text-decoration:underline}
+.fb-friends b{font-weight:600}
+.fb-post header{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.fb-post header b{font-size:13px;display:block}
+.fb-post header small{font-size:11px;color:var(--ink-3)}
+.fb-post header .pin{margin:0 0 0 auto}
+.fb-post>p{margin:0;font-size:13.5px;line-height:1.5}
+.fb-post .ph{margin-top:8px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;max-width:100%}
+.fb-post .ph svg{width:100%;height:100%;display:block}
+.fb-stats{font-size:12px;color:var(--ink-3);padding:8px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+.fb-cm{display:flex;gap:8px;margin-top:8px;align-items:flex-start}
+.fb-cm .av{width:28px;height:28px;font-size:11px}
+.fb-cm .bb{background:#f0f2f5;border-radius:14px;padding:6px 11px;font-size:13px;line-height:1.45;min-width:0}
+.fb-cm .bb b{font-size:12px;display:block}
+.fb-cm .meta{font-size:11px;color:var(--ink-3);margin:3px 0 0 11px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fb-cm .meta .pin{margin:0;padding:0 6px}
+.fb-name{border:0;background:none;padding:0;font:inherit;font-weight:700;color:inherit;cursor:pointer}
+.fb-cm .bb .fb-name,.fb-cm .bb b{display:block;font-size:12px;margin-bottom:1px;text-align:left}
+.fb-name:hover{text-decoration:underline}
+.fb-res{display:flex;gap:12px;align-items:center;width:100%;border:0;background:none;padding:8px;border-radius:8px;text-align:left}
+.fb-res:hover{background:#f0f2f5}
+.fb-res .av{width:52px;height:52px;font-size:18px}
+.fb-res b{font-size:14px;display:block}.fb-res small{font-size:12px;color:var(--ink-3)}
+.fb-hint{font-size:13px;color:var(--ink-2);line-height:1.55;margin:0}
+.lnk{border:0;background:none;padding:0;font:inherit;color:#2f6fd1;text-decoration:underline;cursor:pointer;word-break:break-all}
+.chip.pg{background:#6b6f7a}
+</style>
+
+<div id="app">
+  <!-- START -->
+  <section id="start">
+    <svg class="scene" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <circle cx="930" cy="70" r="26" fill="#f6e7b8"/><circle cx="942" cy="62" r="24" fill="#2b3356"/>
+      <g fill="#0f1220">
+        <rect x="560" y="140" width="120" height="360"/><rect x="690" y="90" width="90" height="410"/>
+        <rect x="790" y="170" width="140" height="330"/><rect x="940" y="120" width="110" height="380"/>
+        <rect x="1060" y="200" width="140" height="300"/><rect x="420" y="220" width="130" height="280"/>
+      </g>
+      <g fill="#ffcf7a" opacity=".85">
+        <rect x="585" y="180" width="18" height="24"/><rect x="630" y="250" width="18" height="24"/>
+        <rect x="712" y="140" width="16" height="22"/><rect x="745" y="300" width="16" height="22"/>
+        <rect x="820" y="210" width="20" height="26"/><rect x="880" y="290" width="20" height="26"/>
+        <rect x="965" y="170" width="18" height="24"/><rect x="1000" y="330" width="18" height="24"/>
+        <rect x="1090" y="250" width="22" height="26"/><rect x="450" y="270" width="18" height="24"/>
+      </g>
+      <path d="M520 160 C 700 200, 900 150, 1200 210" stroke="#0b0d16" stroke-width="2" fill="none"/>
+      <path d="M520 180 C 720 240, 960 190, 1200 250" stroke="#0b0d16" stroke-width="2" fill="none"/>
+      <circle cx="760" cy="210" r="5" fill="var(--lamp)"/><circle cx="760" cy="210" r="40" fill="var(--lamp)" opacity=".12"/>
+      <rect x="0" y="440" width="1200" height="60" fill="#2a2023"/>
+      <g transform="translate(700 380)">
+        <rect x="0" y="0" width="34" height="46" rx="3" fill="#2d6fa8"/><path d="M3 0 l4 -6 l20 0 l4 6" fill="#2d6fa8"/>
+        <path d="M17 0 C 6 -30, 30 -40, 17 -60" stroke="#3f7d4a" stroke-width="3" fill="none"/>
+        <circle cx="22" cy="-52" r="7" fill="#c77dd6"/><circle cx="10" cy="-40" r="6" fill="#d999e3"/>
+      </g>
+    </svg>
+    <div class="brand">
+      <small>Phố Xanh trình chiếu</small>
+      <h1>Thám Tử<span>Hẻm Nhỏ</span></h1>
+      <div class="menu">
+        <button class="primary" id="b-play"><i>▶</i><span><b>Bắt đầu chơi</b><em>Chương 1 · Chậu lan biến mất</em></span></button>
+        <button id="b-chap"><i>☰</i><span><b>Chọn chương</b></span></button>
+        <button id="b-how"><i>?</i><span><b>Cách chơi</b></span></button>
+      </div>
+    </div>
+    <div class="foot">Bản xem trước · vụ án hư cấu, phá bằng chuột và bàn phím</div>
+  </section>
+
+  <!-- DESKTOP -->
+  <section id="desk" hidden>
+    <div class="menubar">
+      <button class="mb-home" id="mb-home" title="Về màn hình chính">⌂ Màn hình chính</button><b id="mb-app">Phố Xanh</b><span>Tệp</span><span>Sửa</span><span>Xem</span><span>Cửa sổ</span>
+      <span class="sp"></span><span class="tab" id="clock"></span>
+    </div>
+    <div class="prog"><span>Đã ghim: <b id="pc">0</b> chi tiết</span></div>
+    <div class="desk-icons">
+      <button data-open="file"><div class="ico" style="width:52px;height:52px;background:#f2a24a"><svg viewBox="0 0 24 24" fill="#fff"><path d="M3 6a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><span id="desk-label">Vụ chậu lan</span></button>
+    </div>
+    <div id="wins"></div>
+    <nav class="dock" id="dock"></nav>
+  </section>
+  <div id="layer"></div>
+</div>
+
+<script>
+/* ================= ART ================= */
+const SVG = {
+  lan:`<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#e9e2d0"/><rect y="150" width="200" height="50" fill="#c9b99a"/>
+    <path d="M100 120 C 80 80, 120 60, 105 30" stroke="#4d7d3f" stroke-width="4" fill="none"/>
+    <g fill="#a35bc2"><circle cx="106" cy="34" r="12"/><circle cx="90" cy="55" r="11"/><circle cx="112" cy="70" r="11"/><circle cx="94" cy="88" r="10"/></g>
+    <g fill="#f3d6f7"><circle cx="106" cy="34" r="4"/><circle cx="90" cy="55" r="4"/><circle cx="112" cy="70" r="4"/><circle cx="94" cy="88" r="3"/></g>
+    <ellipse cx="80" cy="118" rx="22" ry="7" fill="#4d7d3f"/><ellipse cx="122" cy="120" rx="20" ry="6" fill="#5b8f4a"/>
+    <path d="M60 120 h80 l-10 48 h-60 z" fill="#2f6fb0"/><path d="M60 120 h80" stroke="#1d4f86" stroke-width="5"/>
+    <path d="M118 117 l8 0 l-3 8 z" fill="#e9e2d0"/><path d="M66 140 q34 10 68 0" stroke="#9cc4ea" stroke-width="2" fill="none"/></svg>`,
+  beach:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#1d2443"/><circle cx="250" cy="40" r="14" fill="#f4e6b6"/>
+    <rect y="110" width="320" height="70" fill="#1b3f5e"/><path d="M0 112 q40 -6 80 0 t80 0 t80 0 t80 0" stroke="#4d7aa0" stroke-width="2" fill="none"/>
+    <path d="M30 110 l20 -60 l6 0 l-14 60z" fill="#0d1226"/><g fill="#ffcf7a"><circle cx="70" cy="104" r="3"/><circle cx="140" cy="104" r="3"/><circle cx="210" cy="104" r="3"/></g>
+    <text x="12" y="168" font-size="12" fill="#ffffffb0" font-family="sans-serif">Bãi Sau · 23:04</text></svg>`,
+  chalk:`<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#55585e"/>
+    <g stroke="#f6f2e8" stroke-width="3" fill="none" stroke-linecap="round"><circle cx="100" cy="80" r="16"/><circle cx="78" cy="96" r="14"/><circle cx="122" cy="96" r="14"/>
+    <path d="M100 112 v60"/><path d="M100 150 q-20 -10 -30 0"/></g><text x="66" y="190" font-size="14" fill="#f6c6e0" font-family="sans-serif">bé Na vẽ</text></svg>`,
+  listing:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#f6f1e6"/>
+    <path d="M100 100 C 85 70, 115 50, 104 22" stroke="#4d7d3f" stroke-width="3" fill="none"/>
+    <g fill="#a35bc2"><circle cx="104" cy="26" r="9"/><circle cx="92" cy="44" r="8"/><circle cx="110" cy="58" r="8"/></g>
+    <path d="M70 98 h60 l-8 38 h-44 z" fill="#2f6fb0"/><path d="M70 98 h60" stroke="#1d4f86" stroke-width="4"/><path d="M113 96 l7 0 l-3 7 z" fill="#f6f1e6"/></svg>`,
+  cactus:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#eef3ea"/><rect x="88" y="40" width="24" height="60" rx="12" fill="#5c9a5a"/><path d="M78 100 h44 l-6 30 h-32z" fill="#c4774a"/></svg>`,
+  monstera:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#f0efe8"/><path d="M100 100 C 60 80, 60 30, 100 20 C 140 30, 140 80, 100 100z" fill="#3f7d4a"/><path d="M78 100 h44 l-6 30 h-32z" fill="#e8e3d6" stroke="#bbb"/></svg>`,
+  alley:`<svg viewBox="0 0 440 150"><rect width="440" height="150" fill="#232a44"/>
+    <rect x="20" y="30" width="90" height="120" fill="#151a2c"/><rect x="330" y="20" width="110" height="130" fill="#151a2c"/>
+    <rect x="120" y="60" width="70" height="90" fill="#1a2035"/><g fill="#ffcf7a"><rect x="40" y="50" width="12" height="16"/><rect x="360" y="60" width="14" height="18"/><rect x="140" y="80" width="10" height="14"/></g>
+    <circle cx="250" cy="40" r="4" fill="#ffb347"/><circle cx="250" cy="40" r="30" fill="#ffb347" opacity=".15"/>
+    <g transform="translate(250 98)"><rect x="0" y="0" width="24" height="32" rx="2" fill="#2f6fb0"/><path d="M12 0 C 4 -20, 22 -26, 12 -40" stroke="#4d7d3f" stroke-width="2" fill="none"/>
+    <circle cx="15" cy="-34" r="5" fill="#c77dd6"/><circle cx="7" cy="-24" r="4" fill="#d999e3"/></g></svg>`,
+  /* chapter 2 */
+  hall:`<svg viewBox="0 0 440 150"><rect width="440" height="150" fill="#1f2340"/><circle cx="380" cy="34" r="18" fill="#f8e7a8"/>
+    <rect x="90" y="54" width="260" height="96" fill="#2a2f52"/><path d="M80 56 L220 18 L360 56z" fill="#343a63"/>
+    <rect x="200" y="96" width="40" height="54" fill="#141830"/><text x="220" y="80" text-anchor="middle" font-size="11" fill="#ffd9a0" font-family="sans-serif">NHÀ VĂN HÓA KP3</text>
+    <path d="M0 40 Q 110 70 220 40 T 440 40" stroke="#0e1124" stroke-width="1.5" fill="none"/>
+    <g><circle cx="40" cy="50" r="7" fill="#e2683c"/><circle cx="110" cy="58" r="7" fill="#f2b33d"/><circle cx="180" cy="48" r="7" fill="#e2683c"/><circle cx="260" cy="48" r="7" fill="#f2b33d"/><circle cx="330" cy="58" r="7" fill="#e2683c"/><circle cx="410" cy="50" r="7" fill="#f2b33d"/></g></svg>`,
+  cam2:`<svg viewBox="0 0 320 220"><rect width="320" height="220" fill="#1c241f"/>
+    <g stroke="#2c3a31" stroke-width="1">${Array.from({length:22},(_,i)=>`<line x1="0" y1="${i*10}" x2="320" y2="${i*10}"/>`).join("")}</g>
+    <rect x="0" y="150" width="320" height="70" fill="#27302a"/><rect x="220" y="40" width="80" height="110" fill="#151b17"/><text x="260" y="100" text-anchor="middle" font-size="9" fill="#5d6e62" font-family="monospace">KHO</text>
+    <path d="M0 30 Q 160 60 320 30" stroke="#48584d" fill="none"/>
+    <g transform="translate(118 64)">
+      <circle cx="30" cy="10" r="11" fill="#8e9a90"/><path d="M16 6 h28 v-6 a14 8 0 0 0 -28 0z" fill="#303a33"/>
+      <rect x="10" y="22" width="40" height="52" rx="6" fill="#4f8a62"/>
+      <rect x="44" y="26" width="18" height="34" rx="4" fill="#2d332f"/><line x1="58" y1="60" x2="60" y2="72" stroke="#9aa59c" stroke-width="1.5"/>
+      <path d="M54 74 q6 -6 12 0 q-6 6 -12 0z" fill="#d9894a"/><path d="M66 74 l4 -3 v6z" fill="#d9894a"/>
+      <g fill="#3a6f9e" stroke="#21405c"><rect x="-6" y="40" width="34" height="10"/><rect x="-6" y="50" width="34" height="10"/><rect x="-6" y="60" width="34" height="10"/></g>
+      <rect x="14" y="74" width="12" height="44" fill="#2e3430"/><rect x="34" y="74" width="12" height="44" fill="#2e3430"/></g>
+    <rect width="320" height="220" fill="#7fb38f" opacity=".08"/>
+    <text x="8" y="16" font-size="10" fill="#e6efe8" font-family="monospace">CAM 02 · SÂN NVH · 05/10/2025 02:14:37</text>
+    <circle cx="306" cy="12" r="4" fill="#e2683c"/></svg>`,
+  box:`<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#f1ede3"/>
+    <rect x="34" y="52" width="132" height="110" rx="4" fill="#3a6f9e"/><rect x="34" y="52" width="132" height="18" fill="#2c5a84"/>
+    <circle cx="100" cy="112" r="24" fill="#f6f2e8"/><ellipse cx="90" cy="84" rx="5" ry="14" fill="#f6f2e8"/><ellipse cx="108" cy="84" rx="5" ry="14" fill="#f6f2e8"/>
+    <circle cx="93" cy="110" r="2" fill="#3a6f9e"/><circle cx="107" cy="110" r="2" fill="#3a6f9e"/>
+    <rect x="112" y="136" width="50" height="20" rx="2" fill="#f2c94c"/><text x="137" y="144" text-anchor="middle" font-size="5.5" fill="#5a3e00" font-family="sans-serif">Quà Trung thu KP3</text><text x="137" y="151" text-anchor="middle" font-size="5.5" fill="#5a3e00" font-family="sans-serif">không bán</text></svg>`,
+  saleBox:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#efe9dd"/>
+    <rect x="40" y="26" width="120" height="100" rx="4" fill="#3a6f9e"/><rect x="40" y="26" width="120" height="16" fill="#2c5a84"/>
+    <circle cx="100" cy="82" r="22" fill="#f6f2e8"/><ellipse cx="91" cy="56" rx="5" ry="12" fill="#f6f2e8"/><ellipse cx="108" cy="56" rx="5" ry="12" fill="#f6f2e8"/>
+    <rect x="110" y="102" width="46" height="18" rx="2" fill="#7a9cc0"/><g stroke="#c9d6e4" stroke-width="1.2"><path d="M112 104 l40 14"/><path d="M114 116 l38 -10"/><path d="M118 103 l6 16"/></g></svg>`,
+  lanterns:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#232845"/><path d="M0 30 Q 160 70 320 30" stroke="#121530" stroke-width="1.5" fill="none"/>
+    <g>${[30,80,130,180,230,280].map((x,i)=>`<line x1="${x}" y1="${36+Math.round(Math.sin(i)*6)+8}" x2="${x}" y2="${54}" stroke="#121530"/><ellipse cx="${x}" cy="64" rx="13" ry="11" fill="${i%2?"#f2b33d":"#e2683c"}"/>`).join("")}</g>
+    <rect x="0" y="130" width="320" height="50" fill="#1a1d33"/><rect x="200" y="112" width="44" height="40" fill="#5b4a3a"/>
+    <rect x="208" y="88" width="28" height="36" rx="5" fill="#2d332f"/><line x1="230" y1="124" x2="232" y2="134" stroke="#c7cfc8" stroke-width="1.5"/>
+    <path d="M226 136 q7 -7 14 0 q-7 7 -14 0z" fill="#e8914f"/><path d="M240 136 l5 -4 v8z" fill="#e8914f"/>
+    <text x="10" y="170" font-size="11" fill="#ffffffa0" font-family="sans-serif">Sân nhà văn hóa · 21:12</text></svg>`,
+  library:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#2b2a33"/><rect y="120" width="320" height="60" fill="#4a3a2e"/>
+    <rect x="90" y="40" width="140" height="84" rx="4" fill="#15171c"/><rect x="96" y="46" width="128" height="72" fill="#e9eef7"/>
+    <rect x="104" y="56" width="70" height="6" fill="#9bb0cf"/><rect x="104" y="68" width="100" height="4" fill="#c8d3e4"/><rect x="104" y="76" width="90" height="4" fill="#c8d3e4"/>
+    <text x="218" y="114" text-anchor="end" font-size="9" fill="#5a6475" font-family="monospace">02:12</text>
+    <path d="M70 124 h180 l10 10 h-200z" fill="#3b3e46"/><rect x="262" y="100" width="18" height="22" rx="3" fill="#f3efe6"/><path d="M280 106 q8 0 8 6 q0 6 -8 6" stroke="#f3efe6" stroke-width="3" fill="none"/>
+    <text x="10" y="170" font-size="11" fill="#ffffffa0" font-family="sans-serif">Thư viện 24h · Q.3</text></svg>`,
+  redTin:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#f4eee8"/><rect x="50" y="34" width="100" height="86" rx="10" fill="#b8322a"/><rect x="50" y="34" width="100" height="14" rx="6" fill="#8f2620"/>
+    <path d="M70 84 q30 -26 56 0 q-26 22 -56 0z" fill="#f2c94c"/><path d="M126 84 l12 -10 v20z" fill="#f2c94c"/><circle cx="82" cy="82" r="2" fill="#8f2620"/></svg>`,
+  lantern:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#f3efe8"/><line x1="100" y1="10" x2="100" y2="34" stroke="#555"/><path d="M100 34 l30 30 l-30 50 l-30 -50z" fill="#e2683c"/><path d="M100 34 l0 80" stroke="#a8462a"/></svg>`,
+  wire:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#eef0f2"/><circle cx="100" cy="76" r="40" fill="none" stroke="#2c2f35" stroke-width="10"/><circle cx="100" cy="76" r="22" fill="none" stroke="#c84a3a" stroke-width="6"/></svg>`,
+};
+const hero = s=>s.replace("<svg",'<svg preserveAspectRatio="xMidYMid slice"');
+
+/* ================= CHAPTERS ================= */
+const CHAPTERS = [
+{ /* ---------- CHƯƠNG 1 ---------- */
+  title:"Chậu lan biến mất", place:"Hẻm 42, Quận 3 · 14/9/2025", day:"CN 14/9", start:[6,40], deskLabel:"Vụ chậu lan", art:SVG.alley,
+  intro:"Đêm thứ Bảy, chậu lan hồ điệp quý nhất của cô Ba biến mất khỏi bậc thềm. Camera đầu hẻm lại hư đúng đêm đó. Cả hẻm ai cũng có chuyện để nghi.",
+  lead:"ti",
+  people:{ti:{n:"Anh Ti dân phòng",i:"T",c:"#2d6f73"},ba:{n:"Cô Ba nhà số 7",i:"B",c:"#b5577a"},hem:{n:"Nhóm Hẻm 42",i:"42",c:"#5d6bb0"}},
+  chats:{
+    ti:[{day:"Chủ nhật, 14/9/2025"},
+      {t:"06:31",x:"Sáng sớm đã phải nhờ em rồi 😅"},
+      {t:"06:31",x:"Chậu lan hồ điệp của cô Ba nhà số 7, hẻm 42 bị mất trong đêm qua."},
+      {t:"06:32",x:"Camera đầu hẻm hư từ 22h tối qua tới 5h sáng nay, không quay được gì.",clue:"cam"},
+      {t:"06:32",x:"Mặt Sách của cô Ba đây, xem ai hay qua lại nhà cô:",link:"matsach.vn/coba.hem42"},
+      {t:"06:33",x:"Em đọc tin nhắn, lướt mạng, ghim manh mối vào Sổ vụ án. Biết ai làm thì ghi tên đầy đủ vào Hồ sơ gửi anh. Sai ba lần là anh tự xử đó nha."}],
+    ba:[{day:"Chủ nhật, 14/9/2025"},
+      {t:"06:12",x:"Tối qua 21g30 cô còn tưới nó ở bậc thềm trước nhà, sáng ra chỉ còn cái đĩa lót.",clue:"time"},
+      {t:"06:13",x:"Chậu sứ men lam, miệng chậu bị mẻ một miếng bên phải. Hình cô chụp có trong máy con đó.",clue:"chip"},
+      {t:"06:15",x:"Cô nghi ông Tư nhà bên. Ổng hay càm ràm nước nhỏ xuống xe ổng."}],
+    hem:[{day:"Thứ năm, 11/9"},
+      {who:"Chú Tư",t:"19:02",x:"Tôi nói lần cuối nha, chậu bông nhà số 7 nhỏ nước xuống xe tôi hoài!",clue:"tu1"},
+      {day:"Thứ bảy, 13/9"},
+      {who:"Chú Tư",t:"17:48",x:"Tối nay tôi đi Vũng Tàu đám giỗ, trưa mai mới về. Bà con để ý nhà giùm.",clue:"tu2"},
+      {who:"Mẹ bé Na",t:"18:20",x:"Bé Na nhà em lấy phấn vẽ bông lan trước cửa cô Ba, cô đừng giận nha 😂"},
+      {who:"Khoa",t:"20:05",x:"Tối nay ai ra đầu hẻm đá cầu không, thiếu một người nè."},
+      {who:"Anh Lộc",t:"21:55",x:"Camera đầu hẻm tắt đèn rồi kìa, mai ai báo phường giùm."}]},
+  clues:{
+    cam:{src:"Tin nhắn",x:"Camera đầu hẻm hư từ 22h đến 5h.",key:1},
+    time:{src:"Tin nhắn",x:"Cô Ba tưới lan lúc 21g30, sáng ra mất.",key:1},
+    chip:{src:"Tin nhắn",x:"Chậu sứ men lam, mẻ miệng bên phải.",key:1},
+    tu1:{src:"Tin nhắn",x:"Chú Tư hay than nước nhỏ xuống xe."},
+    tu2:{src:"Tin nhắn",x:"Chú Tư đi Vũng Tàu tối 13/9, trưa mai về.",key:1},
+    khoa1:{src:"Tin nhắn",x:"Khoa trong hẻm có bán cây cảnh.",key:1},
+    fbk:{src:"Mặt Sách",x:"Khoa đăng lúc 01:20: vừa chạy đơn về, hẻm 42 tối thui.",key:1},
+    khoaeye:{src:"Mặt Sách",x:"10/9 Khoa bình luận: lan tím đốm này ngoài chợ nửa triệu một chậu.",key:1},
+    ha2330:{src:"Mặt Sách",x:"Chị Hà thấy chậu lan còn trên thềm lúc 23g30.",key:1},
+    tamcall:{src:"Mặt Sách",x:"Tâm gọi lúc 23h, Khoa nói đang ở nhà sắp ngủ. Vậy “chạy đơn” 01:20 là sao?",key:1},
+    khoadebt:{src:"Mặt Sách",x:"Khoa nợ Tâm 2 triệu, hứa “tuần này có tiền”.",key:1},
+    tustay:{src:"Mặt Sách",x:"Chú Tư ngủ lại nhà người quen ở Vũng Tàu, trưa mới về.",key:1},
+    fbt:{src:"Mặt Sách",x:"Chú Tư đăng ảnh ở Bãi Sau Vũng Tàu lúc 23:04.",key:1},
+    shop:{src:"Chợ Hẻm",x:"khoa.cayxanh rao lan tím + chậu men lam mẻ miệng, đăng 05:12.",key:1},
+    photo:{src:"Ảnh",x:"Ảnh chậu lan của cô Ba: men lam, mẻ miệng bên phải.",key:1}},
+  fbStart:"coba.hem42",
+  profiles:{
+    "coba.hem42":{n:"Nguyễn Thị Ba",i:"B",c:"#b5577a",bio:"Trồng bông cho vui, bán thì không 🌸",live:"Hẻm 42, Quận 3",from:"Bến Tre",friends:["leminhkhoa","tuhoa42","thuha.mena","thanhtam.vo"],posts:[
+      {t:"10 tháng 9 lúc 07:15",x:"Chậu lan hồ điệp con gái gửi từ Đà Lạt về. Chậu men lam bị mẻ miệng mà cô thương nhất nhà.",svg:SVG.lan,likes:12,clue:"photo",cm:[
+        {h:"leminhkhoa",t:"10 tháng 9 lúc 07:40",x:"Đẹp quá cô ơi. Lan tím đốm này ngoài chợ giờ cũng nửa triệu một chậu đó 😮",clue:"khoaeye"},
+        {h:"coba.hem42",t:"10 tháng 9 lúc 07:52",x:"Cô không bán đâu con 😄"},
+        {h:"thuha.mena",t:"10 tháng 9 lúc 08:05",x:"Bé Na thấy là đòi vẽ liền cô ơi."}]},
+      {t:"Hôm nay lúc 06:20",x:"Ai thấy chậu lan men lam của tôi thì báo giùm. Mới để ngoài thềm một đêm mà mất 😢",likes:20,cm:[
+        {h:"tuhoa42",t:"Hôm nay lúc 06:35",x:"Tôi còn ở Vũng Tàu nha bà Ba, đừng có nghi tôi đó 😤"},
+        {h:"thuha.mena",t:"Hôm nay lúc 06:41",x:"Tối qua 23g30 em ra đổ rác còn thấy chậu lan trên thềm nhà cô mà!",clue:"ha2330"},
+        {h:"thanhtam.vo",t:"Hôm nay lúc 06:50",x:"Hẻm mình dạo này lạ ghê, camera hư cái là khuya tối om."}]}]},
+    "leminhkhoa":{n:"Lê Minh Khoa",i:"K",c:"#4e9a7a",alias:["khoa.cayxanh"],bio:"Cây xanh giao tận nơi · Chợ Hẻm: khoa.cayxanh",live:"Hẻm 42, Quận 3",from:"TP.HCM",friends:["coba.hem42","thanhtam.vo"],posts:[
+      {t:"Hôm nay lúc 01:20",x:"Chạy đơn tới giờ mới về, hẻm 42 tối thui không thấy đường. Mai dậy sớm lên hàng mới cho shop 🌿",likes:3,clue:"fbk",cm:[
+        {h:"thanhtam.vo",t:"Hôm nay lúc 06:02",x:"Đơn gì mà 1 giờ sáng ông? Tối qua 23h tui gọi, ông nói đang nằm ở nhà sắp ngủ mà.",clue:"tamcall"},
+        {h:"leminhkhoa",t:"Hôm nay lúc 06:10",x:"Thì… khách gọi gấp nên dậy đi giao. Hỏi hoài."}]},
+      {t:"12 tháng 9 lúc 21:00",x:"Shop sắp lên hàng lan hồ điệp cao cấp. Ai muốn đặt trước inbox nha!",likes:5,cm:[
+        {h:"thanhtam.vo",t:"12 tháng 9 lúc 21:20",x:"Vốn đâu nhập lan ông? Tháng trước mượn tui 2 triệu còn chưa trả kìa 😒",clue:"khoadebt"},
+        {h:"leminhkhoa",t:"12 tháng 9 lúc 21:31",x:"Tuần này có tiền trả liền, yên tâm."}]}]},
+    "tuhoa42":{n:"Trần Văn Tư",i:"T",c:"#9a6a4e",bio:"Xe ôm công nghệ · ghét nước nhỏ lên xe",live:"Hẻm 42, Quận 3",from:"Vũng Tàu",friends:["coba.hem42"],posts:[
+      {t:"Hôm qua lúc 23:04 · Vũng Tàu",x:"Đám giỗ xong ra Bãi Sau ngồi hóng gió với mấy ông anh.",svg:SVG.beach,likes:8,clue:"fbt",cm:[
+        {n:"Sáu Vũng Tàu",t:"Hôm qua lúc 23:30",x:"Tối nay anh ngủ lại nhà em, trưa mai em chở ra bến xe.",clue:"tustay"},
+        {n:"Hai Bà Rịa",t:"Hôm nay lúc 07:00",x:"Ông Tư nhậu say ngủ tới giờ chưa dậy kìa 😂"}]},
+      {t:"11 tháng 9 lúc 19:05",x:"Lần thứ ba trong tuần xe tôi ướt nhẹp vì chậu bông nhà ai đó. Ai hiểu cảm giác này không?",likes:4,cm:[
+        {h:"coba.hem42",t:"11 tháng 9 lúc 19:20",x:"Thì ông dời xe qua chỗ khác đi ông Tư."}]}]},
+    "thuha.mena":{n:"Lý Thu Hà",i:"H",c:"#c27aa8",bio:"Mẹ bé Na 👧",live:"Hẻm 42, Quận 3",friends:["coba.hem42"],posts:[
+      {t:"Hôm qua lúc 18:22",x:"Con gái vẽ tặng cô Ba bông lan bằng phấn nè.",svg:SVG.chalk,likes:9,cm:[
+        {h:"coba.hem42",t:"Hôm qua lúc 18:40",x:"Cô thích lắm, đừng la bé nha 😄"}]}]},
+    "thanhtam.vo":{n:"Võ Thanh Tâm",i:"T",c:"#6a7fb0",bio:"Bạn thân của Khoa từ hồi cấp 3",live:"Quận 10",friends:["leminhkhoa","coba.hem42"],posts:[
+      {t:"Hôm nay lúc 06:05",x:"Có thằng bạn nợ 2 triệu cả tháng nay, sáng nay tự nhiên khoe “tuần này có tiền”. Lạ ghê.",likes:2,cm:[
+        {h:"leminhkhoa",t:"Hôm nay lúc 06:12",x:"Ông đăng chi vậy trời 😑"}]}]}},
+  shop:[
+    {n:"Lan hồ điệp tím đốm + chậu sứ men lam (mẻ nhẹ miệng chậu)",p:"450.000đ",s:"khoa.cayxanh · Q.3",t:"Đăng 05:12 hôm nay",svg:SVG.listing,clue:"shop",k:"lan ho diep chau men lam"},
+    {n:"Xương rồng mini chậu đất nung",p:"35.000đ",s:"vuonnho.hcm",t:"Đăng 3 ngày trước",svg:SVG.cactus,k:"xuong rong"},
+    {n:"Trầu bà lá xẻ, chậu nhựa trắng",p:"180.000đ",s:"khoa.cayxanh · Q.3",t:"Đăng 1 tuần trước",svg:SVG.monstera,k:"trau ba monstera"}],
+  shopHint:"vd: lan",
+  news:[{h:"Mưa lớn đầu tuần, nhiều hẻm ở quận 3 ngập nhẹ",t:"14/9/2025",svg:SVG.alley,x:"Bản tin thời tiết, không liên quan vụ án. Thám tử giỏi biết bỏ qua chi tiết thừa."}],
+  photos:{lan:{n:"Lan của cô Ba · 10/9",svg:SVG.lan,clue:"photo"},chalk:{n:"Hình vẽ phấn trước cửa",svg:SVG.chalk},alley:{n:"Hẻm 42 buổi tối",svg:SVG.alley}},
+  files:{},
+  suspects:[{id:"tu",n:"Chú Tư",r:"Hàng xóm nhà bên"},{id:"na",n:"Bé Na",r:"Bé 6 tuổi trong hẻm"},{id:"tam",n:"Tâm",r:"Bạn của Khoa"},{id:"khoa",n:"Khoa",r:"Thanh niên bán cây cảnh"}],
+  form:{q:"Họ và tên người lấy chậu lan (ghi đầy đủ):"},
+  check(n){
+    if(n==="le minh khoa")return{ok:1};
+    if(n.includes("khoa"))return{m:"Đúng người nhưng anh cần họ tên đầy đủ để ghi biên bản. Tìm trên Mặt Sách xem."};
+    if(n.includes("tu")||n.includes("hoa"))return{m:"Chú Tư có ảnh ở Vũng Tàu lúc 23:04. Ông ấy không thể ở hẻm 42 khuya đó."};
+    if(n.includes("tam"))return{m:"Tâm ở Quận 10, chính Tâm là người vạch ra lời nói dối của Khoa đó."};
+    if(n.includes("ha")&&!n.includes("hoa"))return{m:"Chị Hà là nhân chứng thấy chậu lan còn lúc 23g30, đâu phải thủ phạm."};
+    if(n.includes("na"))return{m:"Bé Na mới 6 tuổi và chỉ vẽ phấn thôi mà!"};
+    return{m:"Không có ai tên vậy dính tới vụ này. Xem lại manh mối nhé."}},
+  culprit:"Lê Minh Khoa", win:"Chuẩn rồi! Anh qua nhà Khoa liền. Cô Ba mừng muốn khóc 😄",
+  solution:"Chị Hà còn thấy chậu lan lúc 23g30, nên chậu mất sau giờ đó. Khoa nói với Tâm lúc 23h là đang ở nhà sắp ngủ, nhưng 01:20 lại khoe vừa “chạy đơn” về. Khoa đang nợ tiền và từng khen chậu lan đáng nửa triệu. Đến 05:12 tài khoản <b>khoa.cayxanh</b> đã rao một chậu lan men lam mẻ miệng bên phải, giống hệt ảnh cô Ba chụp. Chú Tư có ảnh ở Vũng Tàu lúc 23:04 nên ngoại phạm.",
+  coach:"Bấm vào link Mặt Sách anh Ti gửi. Trên Mặt Sách, đọc kỹ <b>bình luận</b> và bấm vào <b>Bạn bè</b> để xem trang người khác. Muốn tìm ai thì gõ <b>họ tên đầy đủ</b> hoặc tên tài khoản.",
+},
+{ /* ---------- CHƯƠNG 2 ---------- */
+  title:"Ai ăn bánh trung thu?", place:"Nhà văn hóa Khu phố 3 · 5/10/2025", day:"CN 5/10", start:[7,10], deskLabel:"Vụ bánh trung thu", art:SVG.hall,
+  intro:"Tối mai là Trung thu của 120 bé trong khu phố. Sáng nay kho nhà văn hóa thiếu 12 hộp bánh. Ổ khóa còn nguyên, chìa thì chỉ có hai người giữ. Vậy mà ai cũng có vẻ vô can.",
+  lead:"ti",
+  people:{
+    ti:{n:"Anh Ti dân phòng",i:"T",c:"#2d6f73"},
+    lan:{n:"Chị Lan · Ban văn nghệ",i:"L",c:"#b5577a"},
+    sau:{n:"Chú Sáu bảo vệ",i:"S",c:"#8a6a3a"},
+    tuan:{n:"Tuấn · Đội tình nguyện",i:"T",c:"#3f7fbf"},
+    doi:{n:"Nhóm Đội Tình Nguyện KP3",i:"TN",c:"#2f8f5b"}},
+  chats:{
+    ti:[{day:"Chủ nhật, 5/10/2025"},
+      {t:"07:02",x:"Em ơi, có vụ mới, lần này rối hơn nhiều."},
+      {t:"07:02",x:"Sáng nay chị Lan kiểm kho nhà văn hóa thì thấy mất 12 trong 40 hộp bánh trung thu phát cho các bé tối mai.",clue:"missing"},
+      {t:"07:03",x:"Cửa kho không bị cạy, ổ khóa không trầy một vết. Người lấy chắc chắn mở bằng chìa.",clue:"nolock"},
+      {t:"07:03",x:"Mặt Sách chị Lan đây, bạn bè chị là cả đội tình nguyện:",link:"matsach.vn/lethilan.kp3"},
+      {t:"07:04",x:"Camera ngoài sân quay được một tấm, anh bỏ vào app Ảnh. Sổ trực, biên bản kiểm kho và danh sách đội tình nguyện anh để trong app Tệp."},
+      {t:"07:05",x:"Lần này ghi cả họ tên lẫn cách người đó vào kho nha. Nhớ dùng bảng Nghi phạm trong Sổ vụ án. Sai ba lần là anh tự xử đó 😏"}],
+    lan:[{day:"Chủ nhật, 5/10/2025"},
+      {t:"06:50",x:"Chị là người kiểm kho sáng nay. Thiếu đúng 12 hộp, mấy hộp còn lại vẫn nguyên tem."},
+      {t:"06:51",x:"Kho chỉ có 2 chìa. Chú Sáu giữ một cái, chị giữ chìa dự phòng.",clue:"twokeys"},
+      {t:"06:52",x:"Tối qua 20g chị cho Tuấn mượn chìa dự phòng để lấy loa. 21g Tuấn trả, chìa nằm trong túi chị tới sáng nay.",clue:"spare"},
+      {t:"06:54",x:"Hộp quà năm nay là hộp giấy xanh in thỏ ngọc, có dán tem vàng “Quà Trung thu KP3 – không bán”. Chị có gửi hình."},
+      {t:"06:56",x:"À, hôm qua chị cho chú Sáu ăn thử một cái. Đừng nghi oan chú nha.",clue:"sauate"}],
+    sau:[{day:"Chủ nhật, 5/10/2025"},
+      {t:"06:40",x:"Tui nghe rồi, buồn ghê. Mười mấy năm trực chưa mất cây kim."},
+      {t:"06:41",x:"22g tui khóa kho, đếm đủ 40 hộp, có ký sổ trực đàng hoàng.",clue:"lock22"},
+      {t:"06:42",x:"Chìa của tui đeo ở thắt lưng, ngủ cũng đeo. Tối qua tui ngủ ở phòng trực, cách kho một bức tường.",clue:"saukey"},
+      {t:"06:44",x:"Khoảng 2g sáng tui nghe tiếng xe máy đề ngoài cổng sau, tưởng ai đi chợ sớm nên ngủ tiếp.",clue:"engine"},
+      {t:"06:46",x:"Cổng sau chỉ cài chốt bên trong. Ai trong đội treo đèn cũng biết chỗ đó.",clue:"backgate"}],
+    tuan:[{day:"Chủ nhật, 5/10/2025"},
+      {t:"07:00",x:"Dạ em nghe chị Lan nói rồi 😥 Em không có lấy đâu ạ."},
+      {t:"07:01",x:"Tối qua 20g em mượn chìa lấy loa. Lúc đó anh Đức cũng đang treo đèn ngoài sân."},
+      {t:"07:02",x:"Anh Đức nói thiếu dây điện, cầm luôn chìa chạy ra tiệm điện đầu hẻm, cạnh tiệm khóa Ba Tèo. Khoảng 20 phút sau mới quay lại đưa em.",clue:"duckey"},
+      {t:"07:03",x:"21g em trả chìa cho chị Lan rồi lên thư viện 24h chạy deadline tới sáng. Em có đăng bài trên Mặt Sách.",clue:"tuanclaim"},
+      {t:"07:05",x:"Áo đội tình nguyện ai cũng màu xanh lá, nhìn camera chắc khó phân biệt lắm.",clue:"shirt"}],
+    doi:[{day:"Thứ bảy, 4/10"},
+      {who:"Chị Lan",t:"17:30",x:"Tối nay 19g ai rảnh qua nhà văn hóa treo đèn lồng giúp chị nha."},
+      {who:"Đức",t:"17:42",x:"Em qua ạ. Mọi người lưu số mới của em: 0909 888 215.",clue:"ducphone"},
+      {who:"Tuấn",t:"17:45",x:"Em ghé mượn loa thôi, tối em lên thư viện."},
+      {who:"Vy",t:"18:10",x:"Em bận rồi chị ơi, mai em qua gói quà."},
+      {day:"Chủ nhật, 5/10"},
+      {who:"Đức",t:"06:30",x:"Hôm nay em bận việc nhà, chắc không qua phụ được 🙏",clue:"ducabsent"}]},
+  clues:{
+    missing:{src:"Tin nhắn",x:"Mất 12/40 hộp bánh trong kho nhà văn hóa.",key:1},
+    nolock:{src:"Tin nhắn",x:"Ổ khóa kho nguyên vẹn, người lấy dùng chìa.",key:1},
+    twokeys:{src:"Tin nhắn",x:"Kho chỉ có 2 chìa: chú Sáu và chị Lan (dự phòng).",key:1},
+    spare:{src:"Tin nhắn",x:"Chìa dự phòng: Tuấn mượn 20g, trả 21g, chị Lan giữ tới sáng.",key:1},
+    sauate:{src:"Tin nhắn",x:"Chú Sáu được chị Lan cho ăn thử một cái."},
+    lock22:{src:"Tin nhắn",x:"Chú Sáu khóa kho 22g, còn đủ 40 hộp.",key:1},
+    saukey:{src:"Tin nhắn",x:"Chú Sáu đeo chìa ở thắt lưng, ngủ ở phòng trực."},
+    engine:{src:"Tin nhắn",x:"Khoảng 2g sáng có tiếng xe máy ở cổng sau.",key:1},
+    backgate:{src:"Tin nhắn",x:"Cổng sau chỉ cài chốt bên trong, đội treo đèn đều biết.",key:1},
+    duckey:{src:"Tin nhắn",x:"Đức cầm chìa dự phòng ra đầu hẻm khoảng 20 phút (sau 20g).",key:1},
+    tuanclaim:{src:"Tin nhắn",x:"Tuấn nói ở thư viện 24h từ sau 21g tới sáng."},
+    shirt:{src:"Tin nhắn",x:"Cả đội tình nguyện đều mặc áo xanh lá.",key:1},
+    ducphone:{src:"Tin nhắn",x:"Số mới của Đức: 0909 888 215.",key:1},
+    ducabsent:{src:"Tin nhắn",x:"Sáng 5/10 Đức báo bận, không qua phụ."},
+    locksmith:{src:"Mặt Sách",x:"Tiệm khóa Ba Tèo 20:40: đánh gấp một chìa cho cậu áo xanh tình nguyện.",key:1},
+    keytype:{src:"Mặt Sách",x:"Chìa được đánh là chìa ổ Việt Tiệp to, loại khóa kho.",key:1},
+    locksmithshark:{src:"Mặt Sách",x:"Ba Tèo nhớ người đánh chìa đeo balo có móc cá mập cam.",key:1},
+    ducshark2:{src:"Mặt Sách",x:"Đức nói móc cá mập là “bùa hộ mệnh”, đi đâu cũng đeo.",key:1},
+    ducgate:{src:"Mặt Sách",x:"Đức lái nghi ngờ sang “người ngoài vô bằng cổng sau”."},
+    ducprice:{src:"Mặt Sách",x:"3/10 Đức để ý: hộp thỏ ngọc bán ngoài gần trăm nghìn một hộp.",key:1},
+    ducdebt:{src:"Mặt Sách",x:"Đức kẹt tiền, ngày 7 phải đóng hụi 1 triệu.",key:1},
+    tuanwit:{src:"Mặt Sách",x:"Bạn ngồi bàn bên xác nhận Tuấn ở thư viện từ 1g tới sáng.",key:1},
+    vywork:{src:"Mặt Sách",x:"Vy đóng ca trà sữa lúc 02:05, quản lý chở về."},
+    ducshark:{src:"Mặt Sách",x:"Ảnh Đức đăng 21:15: balo có móc khóa hình cá mập cam.",key:1},
+    tuanlib:{src:"Mặt Sách",x:"Tuấn đăng 02:12 từ Thư viện 24h, ảnh có đồng hồ màn hình.",key:1},
+    banam:{src:"Mặt Sách",x:"Bà Năm bán bánh hộp thiếc đỏ cá chép, nhận đặt từ 1/10."},
+    sale:{src:"Chợ Hẻm",x:"“Mẹ Thỏ Bakery” rao 12 hộp xanh thỏ ngọc lúc 06:05, tem bị cạo, SĐT 0909 888 215.",key:1},
+    banam2:{src:"Chợ Hẻm",x:"Tin rao của bà Năm: hộp thiếc đỏ, đăng 01/10."},
+    cam:{src:"Ảnh",x:"Camera 02:14: người áo xanh ôm hộp xanh, balo có móc cá mập cam.",key:1},
+    box:{src:"Ảnh",x:"Hộp quà KP3: hộp giấy xanh thỏ ngọc, tem vàng góc dưới bên phải.",key:1},
+    log:{src:"Tệp",x:"Sổ trực: 21:40 Đức về sau cùng, đi bằng cổng sau.",key:1},
+    members:{src:"Tệp",x:"Danh sách đội: Phạm Quốc Đức — 0909 888 215.",key:1},
+    found:{src:"Tệp",x:"Biên bản: nhặt được móc khóa cá mập đứt dây trên sàn kho.",key:1}},
+  fbStart:"lethilan.kp3",
+  profiles:{
+    "lethilan.kp3":{n:"Lê Thị Lan",i:"L",c:"#b5577a",bio:"Trưởng ban văn nghệ Khu phố 3 🏮",live:"Khu phố 3, Quận 3",friends:["duc.thodien","minhtuan.nguyen","thaovy.tran","chusau.baove"],posts:[
+      {t:"Hôm nay lúc 06:45",x:"Kho mất 12 hộp bánh của các bé. Ai biết gì nhắn chị với 😞",likes:18,cm:[
+        {h:"minhtuan.nguyen",t:"Hôm nay lúc 06:58",x:"Trời ơi, em ở thư viện tới sáng giờ mới thấy."},
+        {h:"duc.thodien",t:"Hôm nay lúc 07:15",x:"Chắc người ngoài vô đó chị, cổng sau dễ mở lắm.",clue:"ducgate"},
+        {h:"chusau.baove",t:"Hôm nay lúc 07:20",x:"Người ngoài sao có chìa kho được Đức?"}]},
+      {t:"3 tháng 10 lúc 16:00",x:"40 hộp bánh trung thu cho các bé đã về kho! Cảm ơn các nhà hảo tâm 🥮",svg:SVG.box,likes:31,clue:"box",cm:[
+        {h:"duc.thodien",t:"3 tháng 10 lúc 16:20",x:"Hộp thỏ ngọc đẹp ghê chị. Ngoài tiệm bán chắc gần trăm một hộp.",clue:"ducprice"},
+        {h:"chusau.baove",t:"3 tháng 10 lúc 16:45",x:"Kho tui khóa kỹ rồi. Chìa dự phòng cô Lan giữ nha."},
+        {h:"thaovy.tran",t:"3 tháng 10 lúc 17:02",x:"Chủ nhật em qua gói quà với chị nha!"}]}]},
+    "duc.thodien":{n:"Phạm Quốc Đức",i:"Đ",c:"#c0704a",bio:"Thợ điện tự do · Đội tình nguyện KP3",live:"Quận 4",friends:["lethilan.kp3","thaovy.tran","minhtuan.nguyen"],posts:[
+      {t:"Hôm qua lúc 21:15",x:"Đèn lồng sân nhà văn hóa xong rồi nha cả nhà! Mai các bé tha hồ rước đèn 🏮",svg:SVG.lanterns,likes:22,clue:"ducshark",cm:[
+        {h:"thaovy.tran",t:"Hôm qua lúc 21:20",x:"Móc cá mập trên balo anh dễ thương ghê 🦈"},
+        {h:"duc.thodien",t:"Hôm qua lúc 21:22",x:"Đi đâu anh cũng đeo nó á, bùa hộ mệnh 😎",clue:"ducshark2"},
+        {h:"lethilan.kp3",t:"Hôm qua lúc 21:40",x:"Cảm ơn Đức nha. Về nhớ cài cổng sau giùm chị."}]},
+      {t:"2 tháng 10 lúc 22:10",x:"Tháng này kẹt quá anh em ơi. Ai có việc điện nước gì gọi em nha, làm hết.",likes:6,cm:[
+        {n:"Hụi Bà Bảy",t:"2 tháng 10 lúc 22:30",x:"Đức ơi, ngày 7 đóng hụi 1 triệu rồi đó nghen.",clue:"ducdebt"},
+        {h:"duc.thodien",t:"2 tháng 10 lúc 22:41",x:"Dạ, tuần này em lo đủ."}]}]},
+    "khoabateo":{n:"Tiệm Khóa Ba Tèo",i:"B",c:"#6b6f7a",page:true,bio:"Sửa khóa · đánh chìa lấy liền · đầu hẻm nhà văn hóa KP3",live:"Khu phố 3, Quận 3",friends:[],posts:[
+      {t:"Hôm qua lúc 20:40",x:"Tối nay có cậu mặc áo xanh tình nguyện chạy vô đánh gấp một cái chìa, xong còn dặn đừng kể ai. Thanh niên bây giờ bí ẩn ghê 😆",likes:15,clue:"locksmith",cm:[
+        {n:"Út Mập",t:"Hôm qua lúc 20:52",x:"Chìa gì mà gấp dữ vậy anh?"},
+        {h:"khoabateo",t:"Hôm qua lúc 20:55",x:"Chìa ổ Việt Tiệp to, loại khóa kho á. Năm phút là xong.",clue:"keytype"},
+        {n:"Út Mập",t:"Hôm qua lúc 21:01",x:"Biết ai không anh?"},
+        {h:"khoabateo",t:"Hôm qua lúc 21:03",x:"Không biết tên, chỉ nhớ cái balo có con cá mập cam lủng lẳng 😂",clue:"locksmithshark"}]}]},
+    "minhtuan.nguyen":{n:"Nguyễn Minh Tuấn",i:"T",c:"#3f7fbf",bio:"Sinh viên năm 3 · Đội tình nguyện KP3",live:"Khu phố 3, Quận 3",friends:["lethilan.kp3","duc.thodien"],posts:[
+      {t:"Hôm nay lúc 02:12 · tại Thư viện 24h Q.3",x:"Hai giờ sáng rồi mà còn ba slide 😵 Cà phê ly thứ hai.",svg:SVG.library,likes:7,clue:"tuanlib",cm:[
+        {n:"Hoàng Gia Bảo",t:"Hôm nay lúc 02:20",x:"Tui ngồi bàn bên nè, thấy ông cắm mặt vô máy từ 1 giờ tới giờ 😂",clue:"tuanwit"},
+        {n:"Hoàng Gia Bảo",t:"Hôm nay lúc 05:30",x:"Ông về chưa? Tui về trước nha."},
+        {h:"minhtuan.nguyen",t:"Hôm nay lúc 05:40",x:"Chưa, 6h tui mới về."}]},
+      {t:"Hôm qua lúc 21:30 · tại Thư viện 24h Q.3",x:"Check-in chiến deadline tới sáng.",likes:3,cm:[]}]},
+    "thaovy.tran":{n:"Trần Thảo Vy",i:"V",c:"#c95c8a",bio:"Phụ gói quà · làm ca tối ở quán trà sữa",live:"Quận 3",friends:["lethilan.kp3","duc.thodien"],posts:[
+      {t:"Hôm qua lúc 18:30",x:"Ca tối ở quán trà sữa tới 2g sáng 🥲 Mai mới qua nhà văn hóa được.",likes:5,cm:[
+        {n:"Trà Sữa Mây",t:"Hôm nay lúc 02:05",x:"Vy đóng ca rồi nè, quản lý chở em về luôn. Cảm ơn em!",clue:"vywork"}]}]},
+    "chusau.baove":{n:"Võ Văn Sáu",i:"S",c:"#8a6a3a",bio:"Bảo vệ nhà văn hóa KP3",live:"Khu phố 3, Quận 3",friends:["lethilan.kp3"],posts:[
+      {t:"Hôm qua lúc 22:05",x:"Khóa kho xong, đủ 40 hộp. Ngủ thôi.",likes:4,cm:[
+        {h:"lethilan.kp3",t:"Hôm qua lúc 22:10",x:"Cảm ơn chú Sáu!"}]}]},
+    "banhbanam":{n:"Bánh Nhà Bà Năm",i:"N",c:"#b8322a",page:true,bio:"Bánh trung thu nhà làm · hộp thiếc đỏ cá chép",live:"Quận 3",friends:[],posts:[
+      {t:"1 tháng 10",x:"Bánh trung thu nhà làm, hộp thiếc đỏ cá chép, nhận đặt tới hết ngày 5/10.",svg:SVG.redTin,likes:40,clue:"banam",cm:[
+        {n:"Khách quen",t:"2 tháng 10",x:"Bà Năm có bán hộp giấy xanh không bà?"},
+        {h:"banhbanam",t:"2 tháng 10",x:"Bà chỉ làm hộp thiếc đỏ thôi con."}]}]}},
+  shop:[
+    {n:"Thanh lý 12 hộp bánh trung thu thập cẩm, hộp giấy xanh thỏ ngọc",p:"90.000đ/hộp",s:"Mẹ Thỏ Bakery · Q.3",t:"Đăng 06:05 hôm nay",d:"Hộp hơi trầy chỗ dán tem. Lấy hết giảm còn 1 triệu. Gọi 0909 888 215.",svg:SVG.saleBox,clue:"sale",k:"banh trung thu thap cam hop xanh tho"},
+    {n:"Bánh trung thu nhà làm, hộp thiếc đỏ cá chép",p:"150.000đ",s:"banhnhabanam · Q.3",t:"Đăng 01/10",d:"Nhận đặt tới 5/10.",svg:SVG.redTin,clue:"banam2",k:"banh trung thu hop thiec do ca chep"},
+    {n:"Lồng đèn giấy kéo quân",p:"45.000đ",s:"pholongden",t:"Đăng 2 ngày trước",svg:SVG.lantern,k:"long den trung thu"},
+    {n:"Dây điện đôi 2 lõi, cuộn 10m",p:"60.000đ",s:"dienmayhem",t:"Đăng 1 tuần trước",svg:SVG.wire,k:"day dien"}],
+  shopHint:"vd: bánh trung thu",
+  news:[
+    {h:"Khu phố 3 tổ chức Trung thu cho 120 thiếu nhi tối 6/10",t:"3/10/2025",svg:SVG.hall,x:"Ban tổ chức chuẩn bị 40 hộp bánh làm quà cho các bé có hoàn cảnh khó khăn, cùng đêm rước đèn quanh khu phố."},
+    {h:"Mẹo giữ nhà an toàn mùa lễ",t:"1/10/2025",x:"Đừng đưa chìa khóa cho người khác cầm đi lâu: thợ khóa chỉ cần vài phút là đánh thêm được một chìa giống hệt, ổ khóa không để lại dấu vết."}],
+  photos:{
+    cam:{n:"Camera sân NVH · 02:14",svg:SVG.cam2,clue:"cam"},
+    box:{n:"Hộp quà KP3 (chị Lan gửi)",svg:SVG.box,clue:"box"},
+    hall:{n:"Nhà văn hóa tối 4/10",svg:SVG.hall}},
+  files:{
+    log:{n:"So_truc_NVH_04-10.txt",clue:"log",x:
+`SỔ TRỰC NHÀ VĂN HÓA KHU PHỐ 3
+Thứ bảy, 04/10/2025 — Người trực: Sáu
+
+19:00  Mở sân cho đội tình nguyện treo đèn (Lan, Đức, Tuấn).
+20:00  Chị Lan đưa chìa kho dự phòng cho Tuấn lấy loa.
+21:00  Tuấn trả chìa dự phòng cho chị Lan. Tuấn, Lan ra về.
+21:40  Đức treo đèn xong, ra về bằng cổng sau.
+22:00  Khóa kho. Đếm đủ 40 hộp quà.          (ký) Sáu
+22:10  Nghỉ tại phòng trực.`},
+    found:{n:"Bien_ban_kiem_kho_05-10.txt",clue:"found",x:
+`BIÊN BẢN KIỂM KHO
+06:35 ngày 05/10/2025 — Người kiểm: Lê Thị Lan
+
+- Số hộp quà còn lại: 28/40. Thiếu 12 hộp.
+- Ổ khóa kho: không trầy xước, không bị cạy.
+- Cổng sau: chốt đã mở từ bên trong.
+- Trên sàn kho, cạnh kệ bánh: nhặt được một móc
+  khóa nhựa hình cá mập màu cam, dây bị đứt.`},
+    members:{n:"Danh_sach_doi_tinh_nguyen.txt",clue:"members",x:
+`ĐỘI TÌNH NGUYỆN KHU PHỐ 3 — Trung thu 2025
+
+1. Lê Thị Lan        0903 221 909   Trưởng ban văn nghệ
+2. Nguyễn Minh Tuấn  0938 112 470   Âm thanh, loa
+3. Phạm Quốc Đức     0909 888 215   Treo đèn, điện
+4. Trần Thảo Vy      0912 604 338   Gói quà
+
+Đồng phục: áo thun xanh lá in logo đội.`}},
+  suspects:[
+    {id:"sau",n:"Chú Sáu",r:"Bảo vệ, giữ chìa chính"},{id:"lan",n:"Chị Lan",r:"Giữ chìa dự phòng"},
+    {id:"tuan",n:"Tuấn",r:"Mượn chìa lấy loa"},{id:"duc",n:"Đức",r:"Treo đèn lồng"},
+    {id:"vy",n:"Vy",r:"Phụ gói quà"},{id:"nam",n:"Bà Năm",r:"Bán bánh trung thu"}],
+  form:{q:"Họ và tên người lấy 12 hộp bánh (ghi đầy đủ):",how:{q:"Người đó vào kho bằng cách nào?",opts:[
+    {v:"pha",l:"Cạy ổ khóa kho"},{v:"sau",l:"Lấy chìa của chú Sáu lúc chú ngủ"},
+    {v:"spare",l:"Mượn lại chìa dự phòng của chị Lan"},{v:"copy",l:"Dùng chìa đánh thêm từ chìa dự phòng"}],a:"copy"}},
+  check(n,how){
+    const nameOk=n==="pham quoc duc";
+    if(nameOk&&how==="copy")return{ok:1};
+    if(nameOk){
+      if(how==="pha")return{m:"Đúng người rồi! Nhưng ổ khóa không trầy một vết, đâu có bị cạy."};
+      if(how==="sau")return{m:"Đúng người rồi! Nhưng chú Sáu đeo chìa ở thắt lưng cả lúc ngủ. Xem kỹ chuyện chìa dự phòng rời tay ai, bao lâu."};
+      if(how==="spare")return{m:"Đúng người rồi! Nhưng chìa dự phòng đã về túi chị Lan từ 21g. Vậy cái chìa mở kho lúc 2g sáng ở đâu ra?"};
+      return{m:"Đúng người rồi! Giờ chọn luôn cách vào kho nha."}}
+    if(n.includes("duc"))return{m:"Có vẻ đúng hướng, nhưng anh cần đủ họ tên để lập biên bản. Thử mở app Tệp."};
+    if(n.includes("tuan"))return{m:"Tuấn đăng bài từ thư viện lúc 02:12, ảnh còn có đồng hồ màn hình. Camera ở nhà văn hóa quay lúc 02:14. Hai phút không thể đi kịp."};
+    if(n.includes("sau"))return{m:"Chú Sáu chỉ ăn thử một cái chị Lan cho. Người trong camera đeo balo móc cá mập, còn chú đâu có đeo balo."};
+    if(n.includes("lan"))return{m:"Chị Lan là người phát hiện và báo mất. Chìa dự phòng cũng nằm trong túi chị cả đêm."};
+    if(n.includes("nam"))return{m:"Bánh bà Năm là hộp thiếc đỏ, rao từ ngày 1/10, trước khi kho mất hàng."};
+    if(n.includes("vy"))return{m:"Vy làm ca trà sữa tới 02:05 rồi được quản lý chở về. Vy cũng không có mặt lúc Đức cầm chìa."};
+    if(n.includes("teo"))return{m:"Ba Tèo chỉ là thợ khóa. Chính bài đăng của ông ấy giúp mình lần ra người đánh chìa."};
+    return{m:"Không có ai tên vậy dính tới vụ này. Xem lại manh mối nhé."}},
+  culprit:"Phạm Quốc Đức", win:"Chuẩn luôn! Anh với chị Lan qua nhà Đức rồi, còn đủ 12 hộp chưa kịp bán. Tối mai các bé vẫn có quà 🥮",
+  solution:"Lúc 20g, Đức cầm chìa dự phòng “đi mua dây điện” 20 phút. Đúng 20:40, tiệm khóa Ba Tèo khoe vừa đánh gấp một chìa kho cho cậu áo xanh đeo balo móc cá mập cam, đúng cái móc Đức gọi là bùa hộ mệnh. Đức đang kẹt tiền đóng hụi. 21:40 Đức về sau cùng bằng cổng sau và để chốt mở. 02:14 camera quay người áo xanh đeo balo móc cá mập, và móc cá mập đứt dây rơi lại trong kho. 06:05 “Mẹ Thỏ Bakery” rao 12 hộp xanh thỏ ngọc bị cạo tem, để lại số 0909 888 215. Đó là số mới của Đức. Tuấn ngoại phạm nhờ bài đăng 02:12 ở thư viện.",
+  coach:"Đọc kỹ bình luận trên Mặt Sách, nhiều khi chủ bài đăng lỡ lời ở đó. Vụ này nhiều nghi phạm. Mở <b>Tệp</b> đọc sổ trực, rồi dùng <b>Sổ vụ án → Nghi phạm</b> đánh dấu ai ngoại phạm. Để ý số điện thoại xuất hiện ở hơn một chỗ.",
+}];
+
+/* ================= STATE ================= */
+let CH=CHAPTERS[0];
+const S={};
+function freshState(ci){Object.assign(S,{ch:ci,pinned:new Set(),open:{},z:10,chat:CHAPTERS[ci].lead,tries:3,solved:false,url:"",notes:"",nbFilter:"all",
+  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false})}
+let done=new Set();
+try{(JSON.parse(localStorage.getItem("tthn-done")||"[]")).forEach(i=>done.add(i))}catch(e){}
+const saveDone=()=>{try{localStorage.setItem("tthn-done",JSON.stringify([...done]))}catch(e){}};
+
+const $=(s,r=document)=>r.querySelector(s);
+const h=html=>{const t=document.createElement("template");t.innerHTML=html.trim();return t.content.firstElementChild};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/đ/gi,"d").toLowerCase().trim().replace(/\s+/g," ");
+const keyTotal=()=>Object.values(CH.clues).filter(c=>c.key).length;
+
+function toast(m){const t=h(`<div class="toast" role="status">${m}</div>`);$("#layer").append(t);setTimeout(()=>t.remove(),1900)}
+function nav(u){u=u||"";if(u===S.url)return;S.hist=S.hist.slice(0,S.hi+1);S.hist.push(u);S.hi=S.hist.length-1;S.url=u}
+function histGo(d){const i=S.hi+d;if(i<0||i>=S.hist.length)return;S.hi=i;S.url=S.hist[i]}
+const REG={};
+function pinOf(id,src,who,x){REG[id]={src,x:(who?who+": ":"")+x};return pinBtn(id)}
+function pinBtn(id){const on=S.pinned.has(id);return `<button class="pin ${on?"done":""}" data-pin="${id}">📌 ${on?"Đã ghim":"Ghim"}</button>`}
+function updateProg(){$("#pc").textContent=S.pinned.size}
+function pin(id){
+  if(S.pinned.has(id)){S.pinned.delete(id);toast("Đã bỏ ghim")}else{S.pinned.add(id);S.pinData[id]=REG[id];toast("Đã ghim vào Sổ vụ án")}
+  updateProg();refreshAll();
+}
+
+/* ================= APPS ================= */
+const ICONS={
+  chat:{n:"Nhắn",bg:"#2f8fd8",svg:`<path d="M4 5h16v10H9l-5 4z" fill="#fff"/>`},
+  web:{n:"Lướt",bg:"#7a5bd6",svg:`<circle cx="12" cy="12" r="8" fill="none" stroke="#fff" stroke-width="2"/><path d="M4 12h16M12 4c3 3 3 13 0 16M12 4c-3 3-3 13 0 16" stroke="#fff" stroke-width="1.6" fill="none"/>`},
+  files:{n:"Tệp",bg:"#3d8fd1",svg:`<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#fff"/>`},
+  photos:{n:"Ảnh",bg:"#e8545a",svg:`<rect x="4" y="6" width="16" height="12" rx="2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="#fff"/>`},
+  nb:{n:"Sổ vụ án",bg:"#c98a2f",svg:`<rect x="6" y="4" width="12" height="16" rx="1" fill="#fff"/><path d="M9 9h6M9 12h6M9 15h4" stroke="#c98a2f" stroke-width="1.6"/>`},
+  file:{n:"Hồ sơ",bg:"#3c4a63",svg:`<rect x="6" y="3" width="12" height="18" rx="1" fill="#fff"/><path d="M9 8h6M9 11h6" stroke="#3c4a63" stroke-width="1.6"/><circle cx="12" cy="16" r="2" fill="#e2683c"/>`},
+};
+const GEOM={chat:[40,60,580,420],web:[300,80,580,460],files:[120,100,560,380],photos:[160,140,460,380],nb:[220,70,560,420],file:[380,100,460,470]};
+
+function renderDock(){
+  const d=$("#dock");d.innerHTML="";
+  for(const [k,a] of Object.entries(ICONS)){
+    const b=h(`<button data-open="${k}" aria-label="${a.n}" class="${S.open[k]?"open":""}"><div class="ico" style="background:${a.bg}"><svg viewBox="0 0 24 24">${a.svg}</svg></div><span class="tip">${a.n}</span></button>`);
+    if(k==="chat"){const u=Object.values(S.unread).filter(Boolean).length;if(u)b.append(h(`<span class="badge">${u}</span>`))}
+    if(k==="nb"&&S.pinned.size)b.append(h(`<span class="badge" style="background:#c98a2f">${S.pinned.size}</span>`));
+    if(k==="files"&&Object.keys(CH.files).length&&!S.seenFiles)b.append(h(`<span class="badge" style="background:#3d8fd1">${Object.keys(CH.files).length}</span>`));
+    d.append(b);
+  }
+}
+function openApp(k){
+  if(k==="files")S.seenFiles=true;
+  if(S.open[k]){S.open[k].hidden=false;focus(S.open[k]);renderDock();return}
+  const [x,y,w,hh]=GEOM[k];const W=$("#desk").clientWidth,H=$("#desk").clientHeight;
+  const win=h(`<div class="win" data-app="${k}" role="dialog" aria-label="${ICONS[k].n}">
+    <div class="bar"><div class="dots"><button class="x" aria-label="Đóng" title="Đóng">×</button><button class="m" aria-label="Thu nhỏ xuống Dock" title="Thu nhỏ">–</button><button class="f" aria-label="Phóng to" title="Phóng to / Thu về">+</button></div><span class="t">${ICONS[k].n}</span></div>
+    <div class="content"></div></div>`);
+  win.style.left=Math.max(8,Math.min(x,W-w-8))+"px";win.style.top=Math.max(34,Math.min(y,H-hh-80))+"px";
+  win.style.width=Math.min(w,W-16)+"px";win.style.height=Math.min(hh,H-110)+"px";
+  $("#wins").append(win);S.open[k]=win;
+  $(".x",win).onclick=e=>{e.stopPropagation();win.remove();delete S.open[k];renderDock();updateMenu()};
+  $(".m",win).onclick=e=>{e.stopPropagation();win.hidden=true;updateMenu();toast(`Đã thu nhỏ ${ICONS[k].n}. Bấm icon trên Dock để mở lại.`)};
+  const zoom=()=>{win.classList.toggle("max");$(".f",win).setAttribute("aria-label",win.classList.contains("max")?"Thu về":"Phóng to")};
+  $(".f",win).onclick=e=>{e.stopPropagation();zoom()};
+  $(".bar",win).ondblclick=e=>{if(!e.target.closest("button"))zoom()};
+  win.addEventListener("pointerdown",()=>focus(win));
+  drag(win);render(k);focus(win);renderDock();
+}
+function focus(win){win.style.zIndex=++S.z;document.querySelectorAll(".win").forEach(w=>w.classList.toggle("inactive",w!==win));updateMenu(win.dataset.app)}
+function updateMenu(k){$("#mb-app").textContent=k?ICONS[k].n:"Phố Xanh"}
+function drag(win){
+  const bar=$(".bar",win);let sx,sy,ox,oy,on=false;
+  bar.addEventListener("pointerdown",e=>{if(e.target.closest("button")||innerWidth<=720||win.classList.contains("max"))return;on=true;sx=e.clientX;sy=e.clientY;ox=win.offsetLeft;oy=win.offsetTop;bar.setPointerCapture(e.pointerId)});
+  bar.addEventListener("pointermove",e=>{if(!on)return;win.style.left=(ox+e.clientX-sx)+"px";win.style.top=Math.max(26,oy+e.clientY-sy)+"px"});
+  bar.addEventListener("pointerup",()=>on=false);
+}
+const SCROLLERS=".msgs,.page,.nb-main,.photos,.doc,.file";
+function render(k,keep){const w=S.open[k];if(!w)return;const c=$(".content",w);const st=c.querySelector(SCROLLERS);const sc=st?st.scrollTop:0;
+  c.innerHTML=R[k]();const st2=c.querySelector(SCROLLERS);if(st2)st2.scrollTop=(k==="chat"&&!keep)?st2.scrollHeight:sc;bind(k,c)}
+function refreshAll(){Object.keys(S.open).forEach(k=>render(k,true));renderDock()}
+
+const av=(p,sz)=>`<div class="av" style="background:${p.c}${sz?`;width:${sz}px;height:${sz}px;font-size:11px`:""}">${p.i}</div>`;
+const R={
+  chat(){
+    const lead=CH.lead;
+    const visible=k=>k===lead?CH.chats[k].filter((m,i)=>m.day||i<=S.leadShown):CH.chats[k];
+    const last=k=>{const m=[...visible(k),...(k===lead?S.extra:[])].filter(m=>m.x);return m[m.length-1]};
+    const list=Object.keys(CH.chats).map(k=>{const p=CH.people[k],l=last(k);return `<button class="convo ${S.chat===k?"on":""}" data-chat="${k}">
+      ${av(p)}<div class="meta"><b>${p.n}<small>${l?l.t:""}</small></b><p>${l?esc(l.x):"…"}</p></div>${S.unread[k]?'<span class="unread"></span>':""}</button>`}).join("");
+    const p=CH.people[S.chat];
+    const msgs=[...visible(S.chat),...(S.chat===lead?S.extra:[])];
+    const body=msgs.map((m,mi)=>m.day?`<div class="day">${m.day}</div>`:
+      `<div class="msg">${m.who?av({c:"#8a8f99",i:m.who.split(" ").pop()[0]},30):av(p,30)}
+      <div class="bubble">${m.who?`<div class="who">${m.who}</div>`:""}${esc(m.x)}${m.link?` <button class="lnk" data-link="${m.link}">${m.link}</button>`:""}<div class="time">${m.t}</div>${pinOf(`c:${S.chat}:${mi}`,"Tin nhắn",m.who||p.n,m.x)}</div></div>`).join("");
+    const typing=S.chat===lead&&S.leadShown<CH.chats[lead].length-1?`<div class="typing">${p.n.replace(" dân phòng","")} đang soạn tin…</div>`:"";
+    return `<div class="chat-list"><input id="chat-q" placeholder="Tìm tin nhắn…" aria-label="Tìm tin nhắn">${list}</div>
+      <div class="chat-pane"><div class="chat-head">${av(p)}<div><b>${p.n}</b><small>Vừa truy cập</small></div></div>
+      <div class="msgs">${body}${typing}</div><div class="chat-foot">Biết thủ phạm rồi thì gửi trong Hồ sơ.</div></div>`;
+  },
+  web(){
+    const u=S.url;
+    const tabs=`<div class="tabs"><button class="nav" data-hist="-1" aria-label="Quay lại" title="Quay lại" ${S.hi>0?"":"disabled"}>←</button><button class="nav" data-hist="1" aria-label="Tiến tới" title="Tiến tới" ${S.hi<S.hist.length-1?"":"disabled"}>→</button><button class="nav" data-go="" aria-label="Trang chủ" title="Trang chủ">⌂</button><form id="addr"><input id="addr-in" value="${esc(u)}" placeholder="Nhập địa chỉ, vd: chohem.vn" aria-label="Địa chỉ"></form></div>`;
+    let page;
+    if(!u) page=`<div class="home"><h3>Lướt</h3><div class="shortcuts">
+      <button data-go="matsach.vn"><span class="lg" style="background:#3c6fd1">M</span>Mặt Sách</button>
+      <button data-go="chohem.vn"><span class="lg" style="background:#e2683c">C</span>Chợ Hẻm</button>
+      <button data-go="tinpho.vn"><span class="lg" style="background:#3a3f48">T</span>Tin Phố</button></div>
+      <p style="font-size:12px;color:var(--ink-3);margin:0">Gõ địa chỉ vào thanh trên, hoặc chọn lối tắt.</p></div>`;
+    else if(u.startsWith("matsach")) page=fbPage(u);
+    else if(u.startsWith("chohem")) page=`<div class="site-head" style="background:#e2683c">Chợ Hẻm</div>
+      <form class="shop-search" id="shop-f"><input id="shop-q" value="${esc(S.shopQ)}" placeholder="Tìm món đồ, ${CH.shopHint}" aria-label="Tìm trên Chợ Hẻm"><button class="btn go">Tìm</button></form>
+      <div class="grid">${shopItems()}</div>`;
+    else if(u.startsWith("tinpho")) page=`<div class="site-head" style="background:#3a3f48">Tin Phố</div><div class="feed">${CH.news.map(n=>`
+      <article class="post"><header><div><b>${n.h}</b><small>${n.t}</small></div></header>${n.svg?`<div class="ph">${hero(n.svg)}</div>`:""}<p style="margin-top:8px">${n.x}</p></article>`).join("")}</div>`;
+    else page=`<div class="notfound"><b>404</b>Không tìm thấy trang “${esc(u)}”.</div>`;
+    return `<div class="browser">${tabs}<div class="page">${page}</div></div>`;
+  },
+  files(){
+    const fs=Object.entries(CH.files);
+    if(!fs.length)return `<div class="doc"><div class="empty">Thư mục vụ án này chưa có tệp nào.</div></div>`;
+    const sel=S.fileSel||fs[0][0],f=CH.files[sel];
+    const ic=`<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="#fff" stroke="#8b919b"/><path d="M14 3v4h4" fill="none" stroke="#8b919b"/><path d="M8.5 12h7M8.5 15h7M8.5 18h5" stroke="#3d8fd1"/></svg>`;
+    return `<div class="files-list"><small>${CH.deskLabel}</small>${fs.map(([k,x])=>`<button data-fsel="${k}" class="${k===sel?"on":""}">${ic}<span>${x.n}</span></button>`).join("")}</div>
+      <div class="doc"><header><b>${f.n}</b>${pinOf("f:"+sel,"Tệp","",f.n+" — "+f.x.split("\n").filter(l=>l.trim()).slice(0,1).join(""))}</header><pre>${esc(f.x)}</pre></div>`;
+  },
+  photos(){
+    if(S.photo){const p=CH.photos[S.photo];return `<div class="viewer"><div class="ph">${p.svg}</div><footer><span><button class="btn" data-back>← Tất cả ảnh</button></span><span>${p.n}</span>${pinOf("ph:"+S.photo,"Ảnh","",p.n)}</footer></div>`}
+    return `<div class="photos">${Object.entries(CH.photos).map(([k,p])=>`<button class="photo" data-photo="${k}"><div class="ph">${hero(p.svg)}</div><span>${p.n}</span></button>`).join("")}</div>`;
+  },
+  nb(){
+    const groups={};for(const id of S.pinned){const s=S.pinData[id].src;(groups[s]=groups[s]||[]).push(id)}
+    const srcs=["Tin nhắn","Mặt Sách","Chợ Hẻm","Ảnh"].concat(Object.keys(CH.files).length?["Tệp"]:[]);
+    const side=`<button data-nb="notes" class="${S.nbFilter==="notes"?"on":""}">✎ Ghi chú của tôi</button>
+      <button data-nb="sus" class="${S.nbFilter==="sus"?"on":""}">◎ Nghi phạm <span>${CH.suspects.length}</span></button><small>Manh mối đã ghim</small>
+      <button data-nb="all" class="${S.nbFilter==="all"?"on":""}">Tất cả <span>${S.pinned.size}</span></button>
+      ${srcs.map(s=>`<button data-nb="${s}" class="${S.nbFilter===s?"on":""}">${s} <span>${(groups[s]||[]).length}</span></button>`).join("")}`;
+    let main;
+    if(S.nbFilter==="notes") main=`<h4>Ghi chú của tôi</h4><textarea id="notes" aria-label="Ghi chú" placeholder="Ai có chìa? Ai ở đâu lúc 2 giờ sáng?">${esc(S.notes)}</textarea>`;
+    else if(S.nbFilter==="sus") main=`<h4>Bảng nghi phạm</h4><div class="sus">${CH.suspects.map(p=>{const m=S.marks[p.id]||"u";
+      return `<div class="sus-card ${m}"><b>${p.n}</b><span>${p.r}</span><div class="tg">
+        <button class="u ${m==="u"?"on":""}" data-mark="${p.id}:u">Chưa rõ</button><button class="s ${m==="s"?"on":""}" data-mark="${p.id}:s">Nghi</button><button class="c ${m==="c"?"on":""}" data-mark="${p.id}:c">Ngoại phạm</button></div></div>`}).join("")}</div>`;
+    else{const ids=[...S.pinned].filter(id=>S.nbFilter==="all"||S.pinData[id].src===S.nbFilter);
+      main=`<h4>${S.nbFilter==="all"?"Tất cả manh mối":S.nbFilter}</h4>`+(ids.length?ids.map(id=>`<div class="clue"><em>${S.pinData[id].src}</em><span>${esc(S.pinData[id].x)}</span><button data-pin="${id}" aria-label="Bỏ ghim">×</button></div>`).join(""):
+      `<div class="nb-empty">Chưa có manh mối nào. Bấm 📌 Ghim trên tin nhắn, bài đăng, ảnh hay tệp để lưu vào đây.</div>`)}
+    return `<div class="nb-side">${side}</div><div class="nb-main">${main}</div>`;
+  },
+  file(){
+    const dots=[0,1,2].map(i=>`<i class="${i>=S.tries?"used":""}"></i>`).join("");
+    const head=`<div class="org">Ban bảo vệ dân phố · Phường 5</div><h3>PHIẾU KẾT LUẬN VỤ VIỆC</h3><div class="sub">${CH.title} · ${CH.place.split("·").pop().trim()}</div>`;
+    const next=CHAPTERS[S.ch+1];
+    if(S.solved) return `<div class="file"><div class="sheet">${head}<div class="stamp" style="border-color:var(--ok);color:var(--ok)">ĐÃ PHÁ ÁN</div>
+      <p style="font-size:13px;line-height:1.6;margin:0">Thủ phạm: <b>${CH.culprit}</b>. ${CH.solution}</p>
+      <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${next?`<button class="btn go" data-next>Chương ${S.ch+2}: ${next.title} →</button>`:`<span class="tries">Chương 3 sắp ra mắt</span>`}</div></div></div>`;
+    if(S.tries<=0){const how=CH.form.how?CH.form.how.opts.find(o=>o.v===CH.form.how.a).l:"";
+      return `<div class="file"><div class="sheet">${head}<div class="stamp">ANH TI TỰ XỬ</div>
+      <p style="font-size:13px;margin:0;line-height:1.6">Hết 3 lần gửi rồi. Anh Ti sẽ kể chuyện này ở tổ dân phố đó.</p>
+      ${S.reveal?`<div class="answer"><div class="answer-h">Đáp án</div><p>Thủ phạm: <b>${CH.culprit}</b>${how?`<br>Cách vào kho: <b>${how}</b>`:""}</p><p>${CH.solution}</p></div>`:
+        `<p style="font-size:12px;margin:0;color:var(--ink-3)">Muốn tự phá lại thì bấm Chơi lại. Chịu thua thì xem đáp án.</p>`}
+      <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${S.reveal?(next?`<button class="btn go" data-next>Chương ${S.ch+2}: ${next.title} →</button>`:""):`<button class="btn go" data-reveal>Xem đáp án</button>`}</div></div></div>`}
+    const how=CH.form.how;
+    return `<div class="file"><form class="sheet" id="acc">${head}
+      <label for="acc-in">${CH.form.q}</label><input id="acc-in" autocomplete="off" placeholder="Ví dụ: Nguyễn Văn A">
+      ${how?`<label>${how.q}</label><div class="choices">${how.opts.map(o=>`<label><input type="radio" name="how" id="how-${o.v}" value="${o.v}" ${S.how===o.v?"checked":""}>${o.l}</label>`).join("")}</div>`:""}
+      ${S.verdict?`<div class="verdict no">${S.verdict}</div>`:""}
+      <div class="act"><span class="tries">${dots} Còn ${S.tries}/3 lần gửi</span><button class="btn go">Gửi anh Ti</button></div></form></div>`;
+  }
+};
+/* ---------- Mặt Sách ---------- */
+function fbFind(q){q=norm(q).replace(/^@/,"").replace(/^matsach\.vn\//,"");if(!q)return[];
+  return Object.entries(CH.profiles).filter(([hd,p])=>[hd,...(p.alias||[])].includes(q)||(q.split(" ").length>=2&&norm(p.n).includes(q)))}
+const fbAv=(hd,p,sz)=>`<div class="av" style="background:${p.c}${sz?`;width:${sz}px;height:${sz}px`:""}">${p.i}</div>`;
+function fbWho(cm){const p=cm.h&&CH.profiles[cm.h];return p?{p,hd:cm.h}:{p:{n:cm.n,i:norm(cm.n).split(" ").pop()[0].toUpperCase(),c:"#9aa0aa"}}}
+function fbWhen(t){const today=(CH.day.match(/(\d+)\/(\d+)/)||[]).slice(1).map(Number);let d,m;
+  if(/^Hôm nay/.test(t))[d,m]=today;else if(/^Hôm qua/.test(t))[d,m]=[today[0]-1,today[1]];
+  else{const x=t.match(/(\d+) tháng (\d+)/);[d,m]=x?[+x[1],+x[2]]:[0,0]}
+  const hm=(t.match(/(\d{1,2}):(\d{2})/)||[0,0,0]);return ((m*40+d)*24+ +hm[1])*60+ +hm[2]}
+const fbSorted=posts=>posts.map((po,pi)=>[po,pi]).sort((a,b)=>fbWhen(b[0].t)-fbWhen(a[0].t));
+function fbPage(u){
+  const path=u.replace(/^matsach\.vn\/?/,"");
+  const top=`<div class="fb-top"><button class="fb-logo" data-go="matsach.vn">mặt sách</button><form id="fb-f"><input id="fb-q" placeholder="Tìm kiếm trên Mặt Sách" aria-label="Tìm kiếm trên Mặt Sách" value="${path.startsWith("search?q=")?esc(decodeURIComponent(path.slice(9))):""}"></form></div>`;
+  let body;
+  if(!path) body=`<div class="fb-wrap"><div class="fb-card"><h5>Tìm người hoặc trang</h5><p class="fb-hint">Gõ <b>họ tên đầy đủ</b> (ví dụ: Nguyễn Văn A) hoặc <b>tên tài khoản</b> rồi nhấn Enter. Tên trong tin nhắn, tệp hay bình luận đều là đầu mối.</p></div></div>`;
+  else if(path.startsWith("search?q=")){const q=decodeURIComponent(path.slice(9));const r=fbFind(q);
+    body=`<div class="fb-wrap"><div class="fb-card"><h5>Kết quả cho “${esc(q)}”</h5>${r.length?r.map(([hd,p])=>`<button class="fb-res" data-go="matsach.vn/${hd}">${fbAv(hd,p)}<span><b>${p.n}</b><small>${p.page?"Trang":"Cá nhân"} · ${esc(p.bio)}</small></span></button>`).join(""):
+      `<p class="fb-hint">Không tìm thấy kết quả cho “${esc(q)}”. Thử gõ đủ họ và tên, hoặc đúng tên tài khoản.</p>`}</div></div>`}
+  else{const p=CH.profiles[path]||Object.values(CH.profiles).find(x=>(x.alias||[]).includes(path));
+    if(!p) body=`<div class="fb-wrap"><div class="fb-card"><h5>Trang này không tồn tại</h5><p class="fb-hint">Liên kết có thể bị sai hoặc tài khoản đã bị xóa.</p></div></div>`;
+    else{const hd=CH.profiles[path]?path:Object.keys(CH.profiles).find(k=>CH.profiles[k]===p);
+      const fr=p.friends.filter(f=>CH.profiles[f]);
+      body=`<div class="fb-wrap" style="gap:0;padding-top:0"><div class="fb-cover" style="background:linear-gradient(120deg,${p.c},#2b3356)"></div>
+        <div class="fb-id">${fbAv(hd,p)}<div><b>${p.n}</b><small><span class="hd">matsach.vn/${hd}</span> · ${p.page?"Trang":`${p.friends.length} bạn bè`}</small></div></div></div>
+        <div class="fb-wrap">
+        <div class="fb-card fb-intro"><h5>Giới thiệu</h5><p>${esc(p.bio)}</p>${p.live?`<span>🏠 Sống tại ${p.live}</span>`:""}${p.from?`<span>📍 Đến từ ${p.from}</span>`:""}</div>
+        ${fr.length?`<div class="fb-card"><h5>Bạn bè</h5><div class="fb-friends">${fr.map(f=>`<button data-go="matsach.vn/${f}">${fbAv(f,CH.profiles[f])}<b>${CH.profiles[f].n}</b></button>`).join("")}</div></div>`:""}
+        ${fbSorted(p.posts).map(([po,pi])=>`<article class="fb-card fb-post"><header>${fbAv(hd,p,36)}<div><b>${p.n}</b><small>${po.t}</small></div>${pinOf(`p:${hd}:${pi}`,"Mặt Sách",p.n,po.x+" ("+po.t+")")}</header>
+          <p>${esc(po.x)}</p>${po.svg?`<div class="ph">${hero(po.svg)}</div>`:""}
+          <div class="fb-stats">👍 ${po.likes} · ${po.cm.length} bình luận</div>
+          ${po.cm.map((cm,ci)=>{const w=fbWho(cm);return `<div class="fb-cm">${fbAv(w.hd,w.p,28)}<div style="min-width:0"><div class="bb">${w.hd?`<button class="fb-name" data-go="matsach.vn/${w.hd}">${w.p.n}</button>`:`<b>${esc(w.p.n)}</b>`}${esc(cm.x)}</div>
+            <div class="meta"><span>${cm.t}</span>${pinOf(`p:${hd}:${pi}:${ci}`,"Mặt Sách",w.p.n,cm.x+" ("+cm.t+")")}</div></div></div>`}).join("")}
+        </article>`).join("")}</div>`}}
+  return `<div class="fb-body">${top}${body}</div>`;
+}
+function shopItems(){const q=norm(S.shopQ||"");const it=CH.shop.filter(i=>!q||norm(i.n).includes(q)||i.k.includes(q)||norm(i.s).includes(q));
+  return it.length?it.map(i=>`<div class="item"><div class="ph">${hero(i.svg)}</div><div class="in"><b>${i.n}</b><span class="price">${i.p}</span>${i.d?`<span class="desc">${esc(i.d)}</span>`:""}<span class="sm">${i.s}</span><span class="sm">${i.t}</span>${pinOf("s:"+i.s+i.p,"Chợ Hẻm",i.s,i.n+" · "+i.p+(i.d?" · "+i.d:"")+" · "+i.t)}</div></div>`).join(""):`<div class="empty">Không có món nào khớp “${esc(S.shopQ)}”.</div>`}
+
+function bind(k,c){
+  c.querySelectorAll("[data-pin]").forEach(b=>b.onclick=()=>pin(b.dataset.pin));
+  if(k==="chat"){
+    c.querySelectorAll("[data-chat]").forEach(b=>b.onclick=()=>{S.chat=b.dataset.chat;S.unread[S.chat]=false;render("chat");renderDock()});
+    c.querySelectorAll("[data-link]").forEach(b=>b.onclick=()=>{nav(b.dataset.link);openApp("web");render("web")});
+    const q=$("#chat-q",c);q.oninput=()=>{const v=norm(q.value);c.querySelectorAll(".convo").forEach(b=>{const txt=norm(CH.chats[b.dataset.chat].map(m=>(m.x||"")+" "+(m.who||"")).join(" ")+CH.people[b.dataset.chat].n);b.hidden=v&&!txt.includes(v)})};
+  }
+  if(k==="web"){
+    c.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{nav(b.dataset.go);render("web");const pg=c.querySelector(".page");if(pg)pg.scrollTop=0});
+    $("#addr",c).onsubmit=e=>{e.preventDefault();nav($("#addr-in",c).value.trim().replace(/^https?:\/\//,"").replace(/^www\./,"").replace(/\/$/,""));render("web");const pg=c.querySelector(".page");if(pg)pg.scrollTop=0};
+    c.querySelectorAll("[data-hist]").forEach(b=>b.onclick=()=>{histGo(+b.dataset.hist);render("web");const pg=c.querySelector(".page");if(pg)pg.scrollTop=0});
+    const ff=$("#fb-f",c);if(ff)ff.onsubmit=e=>{e.preventDefault();const q=$("#fb-q",c).value.trim();nav("matsach.vn"+(q?"/search?q="+encodeURIComponent(q):""));render("web")};
+    const f=$("#shop-f",c);if(f)f.onsubmit=e=>{e.preventDefault();S.shopQ=$("#shop-q",c).value;render("web")};
+  }
+  if(k==="files")c.querySelectorAll("[data-fsel]").forEach(b=>b.onclick=()=>{S.fileSel=b.dataset.fsel;render("files")});
+  if(k==="photos"){c.querySelectorAll("[data-photo]").forEach(b=>b.onclick=()=>{S.photo=b.dataset.photo;render("photos")});const bk=$("[data-back]",c);if(bk)bk.onclick=()=>{S.photo=null;render("photos")}}
+  if(k==="nb"){
+    c.querySelectorAll("[data-nb]").forEach(b=>b.onclick=()=>{S.nbFilter=b.dataset.nb;render("nb")});
+    c.querySelectorAll("[data-mark]").forEach(b=>b.onclick=()=>{const [id,m]=b.dataset.mark.split(":");S.marks[id]=m;render("nb",true)});
+    const t=$("#notes",c);if(t)t.oninput=()=>S.notes=t.value}
+  if(k==="file"){
+    const f=$("#acc",c);if(f){f.onsubmit=e=>{e.preventDefault();const r=f.querySelector("input[name=how]:checked");accuse($("#acc-in",c).value,r?r.value:"")};
+      f.querySelectorAll("input[name=how]").forEach(r=>r.onchange=()=>S.how=r.value)}
+    const hm=$("[data-home]",c);if(hm)hm.onclick=goHome;
+    const rv=$("[data-reveal]",c);if(rv)rv.onclick=()=>{S.reveal=true;render("file")};
+    const r=$("[data-restart]",c);if(r)r.onclick=()=>startChapter(S.ch);
+    const nx=$("[data-next]",c);if(nx)nx.onclick=()=>showIntro(S.ch+1);
+  }
+}
+
+function accuse(name,how){
+  const n=norm(name);
+  if(!n){S.verdict="Hãy ghi họ tên đầy đủ trước khi gửi.";render("file");return}
+  if(CH.form.how&&!how){S.verdict="Chọn luôn cách người đó vào kho rồi mới gửi nha.";render("file");return}
+  const r=CH.check(n,how);
+  if(r.ok){S.solved=true;S.verdict="";done.add(S.ch);saveDone();render("file");say(CH.win);return}
+  S.tries--;S.verdict=r.m;render("file");
+  say(S.tries>0?`Sai rồi em. Còn ${S.tries} lần thôi đó 😏`:"Hết lượt rồi. Thôi để anh tự làm vậy.");
+}
+function say(x){const [hh,mm]=CH.start;const t=hh*60+mm+5+S.extra.length;S.extra.push({t:`${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`,x});
+  S.unread[CH.lead]=!(S.open.chat&&S.chat===CH.lead);if(S.open.chat)render("chat");renderDock()}
+
+/* ================= FLOW ================= */
+function modal(html,onReady){const m=h(`<div class="modal-bg">${html}</div>`);$("#layer").append(m);onReady&&onReady(m);return m}
+function showIntro(ci){
+  const c=CHAPTERS[ci];
+  document.querySelectorAll(".modal-bg").forEach(m=>m.remove());
+  modal(`<div class="modal" role="dialog" aria-label="Giới thiệu vụ án"><div class="hero">${hero(c.art)}
+  <div class="cap"><span class="chip">Chương ${ci+1}</span><h2>${c.title}</h2><p>${c.place}</p></div></div>
+  <div class="body"><p style="margin:0">${c.intro}</p>
+  <strong>${ci===0?"Sẵn sàng phá vụ án đầu tiên chưa?":"Vụ này khó hơn. Sẵn sàng chưa?"}</strong><div class="row"><button class="btn" data-x>Để sau</button><button class="btn go" data-ok>Sẵn sàng!</button></div></div></div>`,
+  m=>{$("[data-x]",m).onclick=()=>m.remove();$("[data-ok]",m).onclick=()=>{m.remove();startChapter(ci)}});
+}
+$("#b-play").onclick=()=>showIntro(done.has(0)&&!done.has(1)?1:0);
+$("#b-chap").onclick=()=>modal(`<div class="modal"><div class="body"><strong style="font-size:18px">Chọn chương</strong><div class="chapters">
+  ${CHAPTERS.map((c,i)=>`<button class="ch" data-ch="${i}"><span><b>${i+1}.</b> ${c.title}<small>${c.place}</small></span><span class="chip ${i===1&&!done.has(1)?"new":""}">${done.has(i)?"Đã phá":i===1?"Mới":"Mở"}</span></button>`).join("")}
+  <div class="lock"><span><b>3.</b> Bóng đèn lồng tầng thượng</span><span>Khóa</span></div></div>
+  <div class="row"><button class="btn" data-x>Đóng</button></div></div></div>`,m=>{$("[data-x]",m).onclick=()=>m.remove();
+  m.querySelectorAll("[data-ch]").forEach(b=>b.onclick=()=>showIntro(+b.dataset.ch))});
+$("#b-how").onclick=()=>modal(`<div class="modal"><div class="body"><strong style="font-size:18px">Cách chơi</strong>
+  <p style="margin:0">Bạn ngồi trước một chiếc máy tính. Mở các ứng dụng dưới thanh Dock: đọc tin nhắn trong <b>Nhắn</b>, gõ địa chỉ web trong <b>Lướt</b>, mở tài liệu trong <b>Tệp</b>, xem <b>Ảnh</b>.</p>
+  <p style="margin:0">Thấy chi tiết đáng ngờ thì bấm <b>📌 Ghim</b> để lưu vào <b>Sổ vụ án</b>. Ở đó còn có bảng <b>Nghi phạm</b> để đánh dấu ai bị nghi, ai ngoại phạm.</p>
+  <p style="margin:0">Khi chắc chắn, điền vào <b>Hồ sơ</b> và gửi. Bạn chỉ có 3 lần gửi.</p>
+  <div class="row"><button class="btn go" data-x>Hiểu rồi</button></div></div></div>`,m=>$("[data-x]",m).onclick=()=>m.remove());
+
+function goHome(){document.querySelectorAll(".win,.coach,.modal-bg").forEach(w=>w.remove());clearTimeout(stepTimer);clearTimeout(tick.t);
+  $("#desk").hidden=true;$("#start").hidden=false;
+  $("#b-play").querySelector("em").textContent=(done.has(0)&&!done.has(1))?"Chương 2 · "+CHAPTERS[1].title:"Chương 1 · "+CHAPTERS[0].title}
+$("#mb-home").onclick=()=>{if(S.solved||S.tries<=0){goHome();return}
+  modal(`<div class="modal" role="dialog" aria-label="Về màn hình chính"><div class="body"><strong style="font-size:17px">Về màn hình chính?</strong>
+  <p style="margin:0">Vụ án đang điều tra dở. Nếu thoát bây giờ, các manh mối đã ghim và ghi chú của vụ này sẽ mất.</p>
+  <div class="row"><button class="btn" data-x>Ở lại điều tra</button><button class="btn go" data-ok>Về màn hình chính</button></div></div></div>`,
+  m=>{$("[data-x]",m).onclick=()=>m.remove();$("[data-ok]",m).onclick=goHome})};
+let stepTimer;
+function startChapter(ci){
+  document.querySelectorAll(".win,.coach").forEach(w=>w.remove());clearTimeout(stepTimer);
+  CH=CHAPTERS[ci];freshState(ci);
+  $("#start").hidden=true;$("#desk").hidden=false;$("#desk-label").textContent=CH.deskLabel;
+  updateProg();renderDock();openApp("chat");
+  const step=()=>{if(S.leadShown<CH.chats[CH.lead].length-1){S.leadShown++;if(S.open.chat&&S.chat===CH.lead)render("chat");stepTimer=setTimeout(step,1300)}else coach()};
+  stepTimer=setTimeout(step,700);
+  mins=0;tick();
+}
+function coach(){if(S.ch>0||!CH.coach||$(".coach"))return;const c=h(`<div class="coach"><b>Mẹo của thám tử</b>${CH.coach}<br><button class="btn" data-x>Đã hiểu</button></div>`);$("#desk").append(c);$("[data-x]",c).onclick=()=>c.remove()}
+let mins=0;function tick(){const t=CH.start[0]*60+CH.start[1]+mins;$("#clock").textContent=`${CH.day} · ${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`;
+  clearTimeout(tick.t);tick.t=setTimeout(()=>{mins=Math.min(19,mins+1);tick()},30000)}
+
+document.addEventListener("click",e=>{const o=e.target.closest("[data-open]");if(o){openApp(o.dataset.open);if(o.dataset.open==="chat"&&S.unread[S.chat]){S.unread[S.chat]=false;render("chat");renderDock()}}});
+
+</script>
+
+</body>
+</html>

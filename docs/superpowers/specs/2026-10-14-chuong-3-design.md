@@ -47,7 +47,7 @@ So mật khẩu: `norm(s).replace(/[^a-z0-9]/g,"")` (bỏ dấu, chữ thường
 - Bảng: Tên (không đuôi tệp) · Tài khoản xóa · Lúc · Vị trí gốc. Vị trí gốc là thư mục có khóa thì ghi "🔒 Thư mục riêng", không lộ tên.
 - Mỗi dòng ghim được (id `t:<k>`, nguồn "Thùng rác", nội dung = tên + người xóa + lúc).
 - Nút **Khôi phục**: thư mục gốc không khóa → khôi phục ngay. Có khóa → hiện ô "Nhập mật khẩu của thư mục gốc" (không kèm gợi ý); đúng thì khôi phục **và** mở khóa luôn thư mục đó; sai thì "Sai mật khẩu."
-- Sau khôi phục: dòng đó hiện "Đã khôi phục về <tên thư mục>". `kind:"file"` → hiện trong thư mục gốc ở Tệp. `kind:"photo"` → hiện trong app Ảnh (nhãn "Khôi phục"), xem lớn được, kèm `info`; ghim id `ph:t:<k>`.
+- Sau khôi phục: dòng đó hiện "Đã khôi phục về <tên thư mục>". `kind:"file"` → hiện trong thư mục gốc ở Tệp. `kind:"photo"` → hiện trong app Ảnh (nhãn "Khôi phục"), xem lớn được, kèm `info`; ghim id `ph:t.<k>`.
 
 ### 2.5 Sổ vụ án
 

@@ -494,6 +494,13 @@ const SVG = {
     <path d="M70 84 q30 -26 56 0 q-26 22 -56 0z" fill="#f2c94c"/><path d="M126 84 l12 -10 v20z" fill="#f2c94c"/><circle cx="82" cy="82" r="2" fill="#8f2620"/></svg>`,
   lantern:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#f3efe8"/><line x1="100" y1="10" x2="100" y2="34" stroke="#555"/><path d="M100 34 l30 30 l-30 50 l-30 -50z" fill="#e2683c"/><path d="M100 34 l0 80" stroke="#a8462a"/></svg>`,
   wire:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#eef0f2"/><circle cx="100" cy="76" r="40" fill="none" stroke="#2c2f35" stroke-width="10"/><circle cx="100" cy="76" r="22" fill="none" stroke="#c84a3a" stroke-width="6"/></svg>`,
+  phong4:`<svg viewBox="0 0 440 150"><rect width="440" height="150" fill="#1f3a3a"/><rect y="128" width="440" height="22" fill="#3a2f2a"/>
+    <g fill="#16302f">${Array.from({length:12},(_,i)=>`<rect x="${304+(i%6)*18}" y="${18+Math.floor(i/6)*18}" width="12" height="12" rx="2"/>`).join("")}</g>
+    <rect x="30" y="20" width="100" height="40" fill="#eafff8" opacity=".08"/><rect x="40" y="24" width="80" height="5" rx="2" fill="#eafff8"/>
+    <rect x="170" y="30" width="90" height="98" fill="#5b3a26"/><rect x="176" y="36" width="78" height="86" fill="#6b4630"/>
+    <circle cx="244" cy="82" r="5" fill="#d9c27a"/><rect x="205" y="44" width="20" height="14" rx="2" fill="#e9e2d0"/>
+    <text x="215" y="55" text-anchor="middle" font-size="11" font-weight="700" fill="#333" font-family="sans-serif">4</text>
+    <rect x="330" y="70" width="34" height="44" fill="#b8322a"/><text x="347" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#f2c94c" font-family="sans-serif">14</text></svg>`,
   /* chapter 3 */
   hem7:`<svg viewBox="0 0 440 150"><rect width="440" height="150" fill="#232a44"/>
     <rect x="0" y="40" width="120" height="110" fill="#151a2c"/><rect x="330" y="30" width="110" height="120" fill="#151a2c"/>
@@ -559,7 +566,7 @@ const hero = s=>s.replace("<svg",'<svg preserveAspectRatio="xMidYMid slice"');
 
 /* ================= CHAPTERS ================= */
 /* Chương = nhóm nhiều phần; mỗi phần là một vụ án trong CHAPTERS (trường vol). */
-const VOLS={1:{title:"Thám tử tập sự"},2:{title:"",soon:true}};
+const VOLS={1:{title:"Thám tử tập sự"},2:{title:"Thám tử thực thụ"}};
 const CHAPTERS = [
 { /* ---------- CHƯƠNG 1 · PHẦN 1 ---------- */
   vol:1, title:"Chậu lan biến mất", place:"Hẻm 42, Quận 3 · 14/9/2025", day:"CN 14/9", start:[6,40], deskLabel:"Vụ chậu lan", art:SVG.alley,
@@ -1054,6 +1061,192 @@ Giá thuê: 45.000.000đ/tháng
     return{m:"Không có ai tên vậy dùng máy nhà văn hóa tối đó. Xem lại manh mối nhé."}},
   culprit:"Trịnh Văn Lộc", win:"Chuẩn luôn! Anh với chị Hai qua gặp chú Lộc rồi, chú nhận hết và gỡ bài. Trang Hẻm Bàn Tán đăng đính chính, khách quay lại tiệm rồi 🥖",
   solution:"Nhật ký máy cho thấy bài đăng lúc 22:47 từ chính máy nhà văn hóa, bằng tài khoản Khách. Camera tự xuất ghi đúng một người lớn vào lúc 22:06, ra tay không lúc 23:09. Người đó mượn chìa “lấy loa” và để số 0913 418 052. Thư mục của Trịnh Văn Lộc (mật khẩu 07121988: 4 số cuối biển số chiếc Cub trong bài đăng + năm mua 1988 trong bình luận) có nháp hợp đồng cho Cà phê Mây thuê nhà số 18 hẻm 7, chính là tiệm chị Hai, ghi đúng số điện thoại đó và hẹn bàn giao mặt bằng trống từ 1/12, khớp tin rao trên Chợ Hẻm, trong khi hợp đồng của chị Hai còn tới 2027. Hai tệp Khách xóa lúc 23:02 chỉ khôi phục được bằng mật khẩu của Lộc: ảnh thịt tải từ anhmienphi.vn không có túi giấy, và túi giấy đã tách nền, cả hai làm bằng tài khoản Lộc trong buổi học tối thứ Năm, buổi cô Hòa vắng. Tức là ảnh đã được ghép. Cô Hòa có tắt live đi trú mưa, nhưng số điện thoại và tệp ảnh không phải của cô.",
+},
+{ /* ---------- CHƯƠNG 2 · PHẦN 1 ---------- */
+  vol:2, title:"Căn phòng khóa trái", place:"Dãy trọ hẻm 51, Bình Thạnh · 15/11/2025", day:"T7 15/11", start:[8,40], deskLabel:"Vụ phòng 4", art:SVG.phong4,
+  intro:"Sáng nay chủ trọ mở cửa phòng 4 bằng chìa dự phòng: anh shipper Phúc nằm bất động cạnh bàn. Cửa khóa trái, ổ khóa còn nguyên, điện thoại biến mất. Trên bàn có hai hộp cơm, dù ai cũng nói Phúc sống một mình.",
+  lead:"ti",
+  coach:"Vụ này em nhắn thẳng được cho từng người. <b>1.</b> Ghim (📌) chi tiết làm lời ai đó không khớp. <b>2.</b> Mở khung chat của người đó. <b>3.</b> Bấm <b>📎 Đưa bằng chứng</b> và chọn chi tiết. Đưa trúng chỗ thì họ phải khai lại.",
+  people:{
+    ti:{n:"Anh Ti dân phòng",i:"T",c:"#2d6f73"},
+    bay:{n:"Cô Bảy · Chủ trọ",i:"B",c:"#8a6a3a"},
+    tram:{n:"Võ Ngọc Trâm",i:"T",c:"#c95c8a"},
+    bao:{n:"Trần Gia Bảo",i:"B",c:"#3f7fbf"},
+    huy:{n:"Lê Quang Huy · Shipper giao cơm",i:"H",c:"#2f8fd8"},
+    tu:{n:"Đỗ Minh Tú · Đồng nghiệp",i:"T",c:"#2f8f5b"},
+    tro:{n:"Nhóm Dãy trọ 51",i:"51",c:"#5d6bb0"}},
+  chats:{
+    ti:[{day:"Thứ Bảy, 15/11/2025"},
+      {t:"08:21",x:"Em ơi, vụ này nặng. Phúc, shipper ở dãy trọ hẻm 51, được phát hiện tử vong sáng nay trong phòng khóa trái."},
+      {t:"08:22",x:"Công an đang làm việc. Phúc là người quen của anh nên anh nhờ em xem giúp mấy manh mối, có gì anh báo lại. Mặt Sách của Phúc đây:",link:"matsach.vn/lamvanphuc"},
+      {t:"08:23",x:"Anh chép biên bản hiện trường, lịch sử đơn và thông báo trên laptop của Phúc (công an cho sao lại), cả nhật ký camera đầu hẻm, để hết trong app Tệp."},
+      {t:"08:24",x:"Vụ này anh xin được số của cả năm người liên quan rồi, em nhắn thẳng cho họ được."},
+      {t:"08:25",x:"Ai khai không khớp thì ghim cái chứng cứ đó, vào khung chat của người ta bấm 📎 Đưa bằng chứng. Đưa trúng chỗ thì họ hết chối."},
+      {t:"08:26",x:"Lần này ghi họ tên người gây ra chuyện, và cách người đó ra khỏi căn phòng khóa trái."}],
+    bay:[{day:"Thứ Bảy, 15/11/2025"},
+      {t:"08:10",x:"Sáng 7g tui gõ cửa thu tiền điện, gọi hoài không ai trả lời."},
+      {t:"08:12",x:"Tới 8g10 tui lấy chìa dự phòng mở thì thấy thằng Phúc… trời ơi."},
+      {t:"08:13",x:"Cửa khóa trái đàng hoàng, ổ khóa không ai phá."},
+      {t:"08:14",x:"Chìa dự phòng tui treo trên bảng trong nhà, không ai mượn. Tối qua tui đi đám cưới cháu ở Gò Vấp, 10g rưỡi mới về."}],
+    tram:[{day:"Thứ Bảy, 15/11/2025"},
+      {t:"08:30",x:"Em nghe cô Bảy gọi rồi… em không tin nổi."},
+      {t:"08:31",x:"Tối qua em có qua, khoảng 10g. Gõ cửa hoài không ai mở, đèn trong phòng vẫn sáng."},
+      {t:"08:32",x:"Hơn 11g ảnh còn nhắn em 'Đừng tới nữa'. Em tức quá nên chặn luôn."},
+      {t:"08:33",x:"Em giận ảnh thôi, em không có làm gì ảnh hết."}],
+    bao:[{day:"Thứ Bảy, 15/11/2025"},
+      {t:"08:35",x:"Em dọn ra từ đầu tháng 10 rồi anh."},
+      {t:"08:36",x:"Em có nợ Phúc thiệt, nhưng đang trả dần."},
+      {t:"08:37",x:"Tối qua em làm ca đêm ở xưởng in bên Tân Bình tới 6g sáng."}],
+    huy:[{day:"Thứ Bảy, 15/11/2025"},
+      {t:"08:28",x:"Tối qua em giao cơm cho anh Phúc nè anh."},
+      {t:"08:29",x:"Khoảng 9g10, em gõ cửa, ảnh ra lấy, còn cảm ơn em."},
+      {t:"08:30",x:"Lúc em đi thì ảnh vẫn bình thường mà."}],
+    tu:[{day:"Thứ Bảy, 15/11/2025"},
+      {t:"08:40",x:"Trời ơi em mới hay. Tối qua 9g40 em gọi Phúc mà không ai bắt máy."},
+      {t:"08:41",x:"Từ 10g em nhậu với anh em trong đội ở quán Ba Khía tới khuya, ai cũng thấy."},
+      {t:"08:42",x:"Tối qua em không có ghé phòng nó."}],
+    tro:[{day:"Thứ Tư, 15/10"},
+      {who:"Cô Bảy",t:"09:00",x:"Phòng 4 thay ổ khóa mới rồi nha, chìa cũ hết xài.",ev:"khoa"},
+      {day:"Thứ Sáu, 14/11"},
+      {who:"Chị Mai phòng 3",t:"20:52",x:"Phòng nào làm rớt gì mà cái rầm vậy?"},
+      {who:"Chị Mai phòng 3",t:"21:06",x:"Ai đóng cửa mạnh dữ vậy trời."},
+      {day:"Thứ Bảy, 15/11"},
+      {who:"Cô Bảy",t:"08:20",x:"Phòng 4 có chuyện rồi, mọi người đừng ra vô hành lang nha."}]},
+  clues:{},
+  fbStart:"lamvanphuc",
+  profiles:{
+    "lamvanphuc":{n:"Lâm Văn Phúc",i:"P",c:"#3a6f9e",bio:"Shipper Giao Nhanh · đội Bình Thạnh 3",live:"Bình Thạnh",friends:["dominhtu","vongoctram","trangiabao"],posts:[
+      {t:"13 tháng 11 lúc 22:00",x:"Có người trong đội làm ăn không sạch. Tui biết hết rồi đó, tự lên tiếng trước đi.",likes:9,ev:"cod",cm:[
+        {h:"dominhtu",t:"13 tháng 11 lúc 22:04",x:"Ai vậy ông, nói rõ coi"},
+        {n:"Anh em đội 3",t:"13 tháng 11 lúc 22:10",x:"Gì căng vậy Phúc?"}]},
+      {t:"2 tháng 11 lúc 20:15",x:"Có người nợ 8 triệu mà né hoài.",likes:4,ev:"no",cm:[
+        {h:"trangiabao",t:"2 tháng 11 lúc 20:40",x:"Tui trả từ từ mà, đừng đăng vậy chứ."}]},
+      {t:"20 tháng 9 lúc 21:30",x:"Chạy 42 đơn hôm nay, mệt mà vui.",likes:17,cm:[]}]},
+    "dominhtu":{n:"Đỗ Minh Tú",i:"T",c:"#2f8f5b",bio:"Giao Nhanh · đội Bình Thạnh 3",live:"Bình Thạnh",friends:["lamvanphuc"],posts:[
+      {t:"Hôm qua lúc 23:10 · tại Quán Ba Khía",x:"Nhậu với anh em đội 3 🍻",likes:21,ev:"nhau",cm:[
+        {n:"Anh em đội 3",t:"Hôm qua lúc 23:20",x:"Ủa sao ông để hai cái điện thoại trên bàn vậy? Cái ốp dán sticker mèo vàng của ai đó?"},
+        {h:"dominhtu",t:"Hôm qua lúc 23:22",x:"Máy phụ, chạy hai app."}]},
+      {t:"10 tháng 11 lúc 18:00",x:"Đôi giày bảo hộ mới, cam chói luôn.",likes:12,ev:"giaycam",cm:[]}]},
+    "vongoctram":{n:"Võ Ngọc Trâm",i:"T",c:"#c95c8a",bio:"Nhân viên spa · Phú Nhuận",live:"Phú Nhuận",friends:["lamvanphuc"],posts:[
+      {t:"Hôm qua lúc 22:10",x:"Có những người mình cứ chờ hoài…",likes:6,cm:[]}]},
+    "trangiabao":{n:"Trần Gia Bảo",i:"B",c:"#3f7fbf",bio:"Thợ in · xưởng in Tân Bình",live:"Tân Bình",friends:["lamvanphuc"],posts:[
+      {t:"Hôm nay lúc 03:05",x:"Ca đêm xưởng in, 3g sáng còn chạy máy.",likes:5,cm:[
+        {n:"Tổ trưởng Hùng",t:"Hôm nay lúc 06:10",x:"Bảo đứng máy tới 6g nha, chăm ghê."}]}]},
+    "nhatrocobay":{n:"Nhà trọ Cô Bảy",i:"B",c:"#8a6a3a",page:true,bio:"Dãy trọ hẻm 51, Bình Thạnh · còn phòng trống",live:"Bình Thạnh",friends:[],posts:[
+      {t:"Hôm qua lúc 21:30",x:"Đám cưới cháu gái ở Gò Vấp 💐",likes:14,cm:[
+        {n:"Họ hàng",t:"Hôm qua lúc 21:45",x:"Cô Bảy hát hay quá!"}]}]},
+    "lequanghuy":{n:"Lê Quang Huy",i:"H",c:"#2f8fd8",bio:"Shipper Giao Nhanh",live:"Bình Thạnh",friends:[],posts:[
+      {t:"Hôm qua lúc 23:00",x:"Tối thứ Sáu chạy 38 đơn, mệt xỉu.",likes:8,cm:[]}]}},
+  shop:[], shopHint:"vd: mũ bảo hiểm",
+  news:[{h:"Shipper và chuyện tiền thu hộ: nhiều tài xế bị dùng chung tài khoản",t:"12/11/2025",x:"Một số tài xế cho người quen mượn tài khoản để chạy thêm đơn. Khi tiền thu hộ (COD) không được nộp, chủ tài khoản là người phải chịu trách nhiệm trước công ty."}],
+  photos:{},
+  files:{
+    bienban:{n:"Bien_ban_hien_truong.txt",ev:"bienban",x:
+`BIÊN BẢN HIỆN TRƯỜNG — PHÒNG 4, DÃY TRỌ HẺM 51
+(anh Ti chép lại, sáng T7 15/11/2025)
+
+- Cửa gỗ, ổ khóa tay nắm tròn, KHÔNG có dấu hiệu bị phá. Cửa sổ có song sắt.
+- Ô thông gió gạch bông gió cao 2m, mỗi lỗ khoảng 8cm.
+- Trên bàn: 2 hộp cơm tấm còn nguyên nắp, 2 đôi đũa chưa bóc, ấm nước.
+- Lịch bloc trên tường còn tờ thứ Sáu 14/11 (hàng xóm nói Phúc hay xé lịch trước khi ngủ).
+- Quạt đứng đang chạy, đèn huỳnh quang bật.
+- Không tìm thấy điện thoại của Phúc. Áo Giao Nhanh treo trên cây móc.
+- Nạn nhân nằm cạnh bàn, chấn thương vùng đầu.
+- Ước tính thời gian tử vong: tối thứ Sáu 14/11, khoảng 20:00–23:30.`},
+    don:{n:"Lich_su_don_Phuc.txt",ev:"hoadon",x:
+`LỊCH SỬ ĐƠN — tài khoản Lâm Văn Phúc (app Giao Nhanh)
+
+Đơn #GN-88213
+  Đặt lúc:      20:05, thứ Sáu 14/11
+  Món:          2 phần cơm tấm sườn bì chả
+  Tài xế:       Lê Quang Huy
+  Trạng thái:   Giao thành công 20:31
+  Ảnh xác nhận: có (không xem được trên laptop)`},
+    thongbao:{n:"Thong_bao_laptop_14-11.txt",ev:"thuhoi",x:
+`TRUNG TÂM THÔNG BÁO — laptop của Phúc (đồng bộ từ điện thoại)
+Thứ Sáu 14/11
+
+19:52  Thư       Đã lưu nháp "Báo cáo đơn COD bất thường"
+20:01  Nhắn · Tú  "Đừng báo công ty, 8h tui qua nói…"
+20:02  Nhắn      Tú đã thu hồi một tin nhắn
+20:05  Giao Nhanh Đặt món thành công
+20:31  Giao Nhanh Đơn đã giao
+21:40  Cuộc gọi nhỡ: Tú
+23:12  Nhắn      Đã gửi tới Trâm: "Đừng tới nữa."`},
+    email:{n:"Nhap_email_COD.txt",ev:"cod",x:
+`[NHÁP — chưa gửi] Gửi: hotro@giaonhanh.vn
+Tiêu đề: Báo cáo đơn COD bất thường
+
+Kính gửi Giao Nhanh,
+Tài khoản của em có 7 đơn COD em không hề chạy, tiền thu hộ khoảng 30 triệu chưa nộp.
+Em nghi có người trong đội dùng tài khoản của em. Người đó là`},
+    camera:{n:"Camera_dau_hem_14-11.txt",ev:"camera",x:
+`NHẬT KÝ CAMERA ĐẦU HẺM 51 — tối thứ Sáu 14/11
+(camera chỉ quay lối vào hẻm; người đội mũ bảo hiểm không thấy mặt)
+
+19:40  vào  shipper áo xanh Giao Nhanh
+19:43  ra   shipper áo xanh Giao Nhanh
+19:55  vào  chị Mai phòng 3 (thấy mặt), xách đồ chợ
+20:18  vào  shipper áo xanh Giao Nhanh
+20:31  vào  shipper áo xanh Giao Nhanh
+20:33  ra   shipper áo xanh Giao Nhanh
+20:47  vào  shipper áo cam (hãng khác)
+20:50  ra   shipper áo cam
+21:07  ra   shipper áo xanh Giao Nhanh, đi nhanh
+21:58  vào  cô gái tóc dài áo trắng (thấy mặt)
+22:04  ra   cô gái tóc dài áo trắng
+22:31  vào  cô Bảy (thấy mặt)`},
+    anhxn:{n:"Anh_xac_nhan_GN-88213.txt",hidden:true,ev:"giaycam",x:
+`ẢNH XÁC NHẬN GIAO HÀNG — đơn #GN-88213 (Huy gửi)
+Chụp lúc 20:31, thứ Sáu 14/11, trước cửa phòng 4.
+
+Mô tả ảnh: túi cơm đặt trên bậc cửa. Cửa đóng.
+Cạnh cửa có đôi dép tổ ong và một đôi giày bảo hộ màu cam.`}},
+  confront:{
+    huy:{_:"Em chạy đơn cả ngày, nhớ sao nổi chi tiết anh ơi.",
+      hoadon:{reply:["Dạ… em nói thiệt. 20:31 em tới, để túi cơm trước cửa rồi chụp ảnh xác nhận, không gõ cửa, sợ trễ đơn sau. Công ty biết là em bị phạt.","20:33 em ra khỏi hẻm rồi, app có ghi hành trình. Em gửi anh ảnh xác nhận nè."],give:"anhxn"},
+      camera:{reply:["Tối qua shipper ra vô hẻm đó cả chục lượt, sao anh biết lượt nào là em?"]}},
+    tu:{_:"Cái này liên quan gì tui?",
+      thuhoi:{reply:["…Ừ thì tui có nhắn.","Tui có ghé chút, nói chuyện tiền nong thôi. Tầm 8g rưỡi tui về, Phúc còn khỏe re."]},
+      giaycam:{reply:["Giày bảo hộ cam shipper nào chẳng mang. Ông nghi tui hả?"]},
+      cod:{reply:["Tài khoản ai nấy chạy. Phúc nghi bậy đó."]},
+      meovang:{reply:["…","Tui không nói chuyện nữa. Có gì gặp công an."]}},
+    tram:{_:"Em không biết gì thêm hết.",
+      bienban:{reply:[{x:"Điện thoại anh Phúc có cái ốp dán sticker mèo vàng, em tặng hồi sinh nhật, tự tay em dán. Ai lấy nó vậy anh?",ev:"meovang"}]},
+      nhau:{reply:[{x:"Khoan… cái ốp mèo vàng đó là của anh Phúc, em tặng ảnh hồi sinh nhật. Sao nó nằm trên bàn nhậu lúc 11g đêm?",ev:"meovang"}]},
+      camera:{reply:["Cô gái 21:58 là em đó. Em gõ cửa không ai mở, đèn vẫn sáng, em về liền."]}},
+    bay:{_:"Tui già rồi, mấy cái này tui không rành.",
+      bienban:{reply:["Ổ khóa thay hồi tháng 10 là loại tay nắm bấm. Bấm cái nút bên trong rồi kéo cửa là nó tự khóa, khỏi cần chìa. Mấy đứa trọ bị nhốt ngoài hoài."]},
+      camera:{reply:["Tui về 22:31 đó, camera có quay. Tui đi thẳng vô nhà ngủ, không ghé phòng 4."]}},
+    bao:{_:"Em ở xưởng cả đêm, anh hỏi tổ trưởng em.",
+      no:{reply:["Em trả 2 triệu rồi, còn 6. Phúc biết mà, ảnh đăng cho em quê thôi."]},
+      bienban:{reply:["Ổ khóa đổi rồi mà, chìa cũ em còn giữ chứ mở không được. Anh hỏi cô Bảy coi."]},
+      khoa:{reply:["Đó, cô Bảy thay ổ khóa rồi. Chìa cũ của em giờ vô dụng."]}}},
+  suspects:[
+    {id:"tram",n:"Trâm",r:"Người yêu cũ"},{id:"bao",n:"Bảo",r:"Bạn cùng phòng cũ, đang nợ tiền"},
+    {id:"bay",n:"Cô Bảy",r:"Chủ trọ, giữ chìa dự phòng"},{id:"huy",n:"Huy",r:"Shipper giao cơm"},
+    {id:"tu",n:"Tú",r:"Đồng nghiệp, người gọi cuối cùng"}],
+  form:{q:"Họ và tên người gây ra cái chết của Phúc (ghi đầy đủ):",how:{q:"Người đó rời căn phòng khóa trái bằng cách nào?",label:"Cách rời phòng",need:"Chọn luôn cách người đó rời căn phòng khóa trái rồi mới gửi nha.",opts:[
+    {v:"bam",l:"Bấm chốt khóa tay nắm rồi kéo cửa sập lại"},{v:"chiadp",l:"Dùng chìa dự phòng của chủ trọ"},
+    {v:"chiacu",l:"Dùng chìa cũ của bạn cùng phòng"},{v:"bonggio",l:"Thò tay qua ô bông gió để khóa từ ngoài"}],a:"bam"}},
+  check(n,how){
+    const w=n.split(" "),nameOk=n==="do minh tu";
+    if(nameOk&&how==="bam")return{ok:1};
+    if(nameOk){
+      if(how==="chiadp")return{m:"Đúng người rồi! Nhưng chìa dự phòng treo trong nhà cô Bảy cả tối, cô đi đám cưới."};
+      if(how==="chiacu")return{m:"Đúng người rồi! Nhưng ổ khóa phòng 4 thay từ tháng 10, chìa cũ hết xài."};
+      if(how==="bonggio")return{m:"Đúng người rồi! Nhưng ô bông gió cao 2m, lỗ chỉ 8cm, không thò tay tới ổ khóa được."};
+      return{m:"Đúng người rồi! Giờ chọn luôn cách người đó rời phòng nha."}}
+    if(w.includes("tu"))return{m:"Có vẻ đúng hướng, nhưng ghi đủ họ tên giùm anh để lập biên bản.",free:1};
+    if(w.includes("tram"))return{m:"Camera thấy rõ mặt Trâm lúc 21:58, khi đó hai hộp cơm đã nguội từ lâu. Tin 23:12 là gửi cho Trâm chứ đâu phải Trâm gửi."};
+    if(w.includes("bao"))return{m:"Ổ khóa phòng 4 đã thay từ tháng 10, chìa cũ của Bảo không mở được. Tổ trưởng còn xác nhận Bảo đứng máy tới 6g."};
+    if(w.includes("bay"))return{m:"Cô Bảy về lúc 22:31. Phúc mất từ trước khi kịp ăn hộp cơm giao lúc 20:31."};
+    if(w.includes("huy"))return{m:"Huy có nói dối giờ giao thật, nhưng GPS ghi Huy rời hẻm lúc 20:33. Mà nhìn kỹ tấm ảnh Huy chụp trước cửa xem, có đôi giày của ai ngoài dép của Phúc?"};
+    if(w.includes("phuc"))return{m:"Phúc là nạn nhân mà em."};
+    if(w.includes("mai"))return{m:"Chị Mai phòng 3 chỉ nghe tiếng động rồi nhắn vào nhóm trọ thôi."};
+    return{m:"Không có ai tên vậy dính tới vụ này. Xem lại manh mối nhé."}},
+  culprit:"Đỗ Minh Tú", win:"Chuẩn rồi. Anh đưa hết chứng cứ cho công an phường. Tú đã khai nhận, chiếc điện thoại ốp mèo vàng của Phúc còn nằm trong cốp xe Tú.",
+  solution:"Hai hộp cơm còn nguyên, đũa chưa bóc, tờ lịch còn ngày 14: Phúc mất ngay sau khi cơm tới lúc 20:31, nên tin “Đừng tới nữa” lúc 23:12 không phải Phúc gửi. Đối chất bằng lịch sử đơn, Huy thú nhận để cơm trước cửa rồi đi lúc 20:33; ảnh xác nhận của Huy cho thấy một đôi giày bảo hộ cam trước cửa phòng 4. Camera đầu hẻm còn dư một shipper áo xanh vào 20:18, ra 21:07, đúng lúc chị Mai nghe tiếng đóng cửa mạnh. Đỗ Minh Tú khoe giày bảo hộ cam, nhắn hẹn Phúc 8h rồi thu hồi, bị đối chất thì nhận có ghé nhưng nói về lúc 8g rưỡi, sai với camera. Phúc định báo công ty chuyện Tú dùng tài khoản của mình ôm 30 triệu tiền thu hộ. Ảnh nhậu 23:10 của Tú có chiếc điện thoại ốp mèo vàng mà Trâm xác nhận là của Phúc. Ổ khóa tay nắm loại bấm tự khóa khi kéo cửa, nên Tú rời đi mà không cần chìa.",
 }];
 
 /* ================= STATE ================= */

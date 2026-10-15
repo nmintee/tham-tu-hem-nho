@@ -36,12 +36,12 @@ test("màn thắng chương cuối báo chương mới sắp ra mắt", () => {
   const G = loadGame();
   G.setCh(G.CHAPTERS.length - 1);
   G.S.solved = true;
-  assert.ok(G.R.file().includes("Chương 2 sắp ra mắt"));
+  assert.ok(G.R.file().includes("Chương mới sắp ra mắt"));
 });
 
 test("ba vụ án là ba phần của Chương 1", () => {
   const G = loadGame();
-  assert.deepEqual([...G.CHAPTERS.map(c => c.vol)], [1, 1, 1]);
+  assert.deepEqual([...G.CHAPTERS.map(c => c.vol)], [1, 1, 1, 2]);
   assert.equal(G.partLabel(0), "Chương 1 · Phần 1");
   assert.equal(G.partLabel(2), "Chương 1 · Phần 3");
 });
@@ -52,7 +52,7 @@ test("màn chọn chương nhóm theo chương, có Chương 2 sắp ra mắt", 
   assert.ok(html.includes("Chương 1: Thám tử tập sự"));
   assert.ok(html.includes("<b>Phần 1.</b> Chậu lan biến mất"));
   assert.ok(html.includes("<b>Phần 3.</b> Ai đứng sau Hẻm Bàn Tán?"));
-  assert.match(html, /Chương 2[\s\S]*Sắp ra mắt/);
+  assert.ok(html.includes("Chương 2: Thám tử thực thụ") && html.includes("<b>Phần 1.</b> Căn phòng khóa trái") && !html.includes("Sắp ra mắt"));
 });
 
 test("màn thắng mời sang phần tiếp theo", () => {
@@ -87,4 +87,10 @@ test("Cách chơi nhắc tới Đưa bằng chứng; app Ảnh trống có câu 
   G.CHAPTERS.push({...G.CHAPTERS[0], vol: 9, photos: {}});
   G.setCh(G.CHAPTERS.length - 1);
   assert.ok(G.R.photos().includes("Chưa có ảnh nào trong vụ này."));
+});
+
+test("phần cuối chương 1 mời sang Chương 2", () => {
+  const G = loadGame();
+  G.setCh(2); G.S.solved = true;
+  assert.ok(G.R.file().includes("Chương 2: Thám tử thực thụ →"));
 });

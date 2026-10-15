@@ -403,6 +403,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 
 <script>
 /* ================= ART ================= */
+const TRAY=`<rect x="40" y="70" width="150" height="70" rx="8" fill="#3fa36b"/><rect x="48" y="76" width="134" height="56" rx="6" fill="#4fb57b"/>
+  <g fill="#8a7d6a"><ellipse cx="85" cy="100" rx="26" ry="14"/><ellipse cx="135" cy="104" rx="28" ry="15"/></g>
+  <g fill="#6f8a5a" opacity=".8"><circle cx="78" cy="96" r="5"/><circle cx="96" cy="104" r="4"/><circle cx="140" cy="98" r="6"/><circle cx="128" cy="110" r="4"/></g>
+  <g fill="#f4efe2"><circle cx="70" cy="104" r="1.6"/><circle cx="110" cy="99" r="1.6"/><circle cx="150" cy="108" r="1.6"/><circle cx="122" cy="96" r="1.6"/></g>`;
+const BAG=(x,y)=>`<g transform="translate(${x} ${y})"><path d="M0 0 h70 l6 100 h-82z" fill="#c9a26b"/><path d="M0 0 h70 l-4 10 h-62z" fill="#b48d58"/>
+  <circle cx="35" cy="48" r="20" fill="#e2683c"/><text x="35" y="46" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="sans-serif">BÁNH MÌ</text>
+  <text x="35" y="56" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="sans-serif">CHỊ HAI</text></g>`;
 const SVG = {
   lan:`<svg viewBox="0 0 200 200"><rect width="200" height="200" fill="#e9e2d0"/><rect y="150" width="200" height="50" fill="#c9b99a"/>
     <path d="M100 120 C 80 80, 120 60, 105 30" stroke="#4d7d3f" stroke-width="4" fill="none"/>
@@ -475,6 +482,66 @@ const SVG = {
     <path d="M70 84 q30 -26 56 0 q-26 22 -56 0z" fill="#f2c94c"/><path d="M126 84 l12 -10 v20z" fill="#f2c94c"/><circle cx="82" cy="82" r="2" fill="#8f2620"/></svg>`,
   lantern:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#f3efe8"/><line x1="100" y1="10" x2="100" y2="34" stroke="#555"/><path d="M100 34 l30 30 l-30 50 l-30 -50z" fill="#e2683c"/><path d="M100 34 l0 80" stroke="#a8462a"/></svg>`,
   wire:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#eef0f2"/><circle cx="100" cy="76" r="40" fill="none" stroke="#2c2f35" stroke-width="10"/><circle cx="100" cy="76" r="22" fill="none" stroke="#c84a3a" stroke-width="6"/></svg>`,
+  /* chapter 3 */
+  hem7:`<svg viewBox="0 0 440 150"><rect width="440" height="150" fill="#232a44"/>
+    <rect x="0" y="40" width="120" height="110" fill="#151a2c"/><rect x="330" y="30" width="110" height="120" fill="#151a2c"/>
+    <rect x="150" y="50" width="160" height="100" fill="#2c3352"/><rect x="150" y="50" width="160" height="22" fill="#e2683c"/>
+    <text x="230" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="sans-serif">BÁNH MÌ CHỊ HAI</text>
+    <g stroke="#4a5378" stroke-width="2">${Array.from({length:9},(_,i)=>`<line x1="158" y1="${84+i*7}" x2="302" y2="${84+i*7}"/>`).join("")}</g>
+    <circle cx="318" cy="60" r="9" fill="#f2c94c"/><text x="318" y="64" text-anchor="middle" font-size="10" font-weight="700" fill="#232a44" font-family="sans-serif">18</text>
+    <g fill="#ffcf7a"><rect x="20" y="60" width="12" height="16"/><rect x="70" y="90" width="12" height="16"/><rect x="360" y="50" width="12" height="16"/><rect x="400" y="96" width="12" height="16"/></g>
+    <rect x="0" y="140" width="440" height="10" fill="#1a1f33"/></svg>`,
+  fakePost:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#d9d4c7"/><rect y="120" width="320" height="60" fill="#bfb6a3"/>${TRAY}${BAG(210,40)}</svg>`,
+  rawMeat:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#d9d4c7"/><rect y="120" width="320" height="60" fill="#bfb6a3"/>${TRAY}
+    <text x="310" y="170" text-anchor="end" font-size="11" fill="#ffffff" opacity=".6" font-family="sans-serif">anhmienphi.vn</text></svg>`,
+  bagCut:`<svg viewBox="0 0 200 150"><defs><pattern id="chk3" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#fff"/><rect width="8" height="8" fill="#e3e3e3"/><rect x="8" y="8" width="8" height="8" fill="#e3e3e3"/></pattern></defs>
+    <rect width="200" height="150" fill="url(#chk3)"/>${BAG(65,22)}<rect x="56" y="16" width="94" height="112" fill="none" stroke="#3d8fd1" stroke-dasharray="4 3"/></svg>`,
+  cub:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#e9e2d0"/><rect y="140" width="320" height="40" fill="#c9b99a"/>
+    <circle cx="90" cy="130" r="28" fill="#2b2b2b"/><circle cx="90" cy="130" r="12" fill="#9aa0aa"/><circle cx="230" cy="130" r="28" fill="#2b2b2b"/><circle cx="230" cy="130" r="12" fill="#9aa0aa"/>
+    <path d="M90 130 L140 90 H200 L230 130" stroke="#3c4a63" stroke-width="8" fill="none"/><path d="M120 92 Q160 60 200 92 Z" fill="#b8322a"/>
+    <rect x="150" y="70" width="50" height="10" rx="4" fill="#3a2a22"/><path d="M200 92 L215 55 H235" stroke="#555" stroke-width="5" fill="none"/>
+    <rect x="240" y="96" width="56" height="26" rx="2" fill="#fff" stroke="#333"/><text x="268" y="108" text-anchor="middle" font-size="9" font-weight="700" fill="#222" font-family="monospace">52-S1</text>
+    <text x="268" y="119" text-anchor="middle" font-size="9" font-weight="700" fill="#222" font-family="monospace">0712</text></svg>`,
+  nightLive:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#1d2443"/>
+    <g fill="#ffcf7a" opacity=".7"><circle cx="40" cy="30" r="4"/><circle cx="90" cy="24" r="4"/><circle cx="140" cy="30" r="4"/><circle cx="190" cy="24" r="4"/><circle cx="240" cy="30" r="4"/><circle cx="290" cy="24" r="4"/></g>
+    <rect x="90" y="70" width="140" height="70" rx="6" fill="#f2e3c6"/><rect x="90" y="60" width="140" height="16" fill="#3a6f9e"/>
+    <text x="160" y="72" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="sans-serif">BÁNH MÌ CÔ HÒA</text>
+    <circle cx="115" cy="150" r="10" fill="#333"/><circle cx="205" cy="150" r="10" fill="#333"/>
+    <g fill="#c98a4a"><rect x="105" y="88" width="40" height="14" rx="7"/><rect x="150" y="92" width="40" height="14" rx="7"/></g>
+    <rect x="10" y="10" width="44" height="18" rx="4" fill="#e8394a"/><text x="32" y="23" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="sans-serif">LIVE</text>
+    <text x="310" y="170" text-anchor="end" font-size="11" fill="#ffffffa0" font-family="sans-serif">Chợ đêm Hồ Thị Kỷ</text></svg>`,
+  busTicket:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#eef0f2"/><rect x="20" y="30" width="160" height="90" rx="8" fill="#fff" stroke="#c7ccd4"/>
+    <rect x="20" y="30" width="160" height="22" rx="8" fill="#2f8fd8"/><text x="100" y="45" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="sans-serif">VÉ XE KHÁCH</text>
+    <text x="100" y="74" text-anchor="middle" font-size="12" font-weight="700" fill="#1f2328" font-family="sans-serif">SÀI GÒN → BẾN TRE</text>
+    <text x="100" y="94" text-anchor="middle" font-size="11" fill="#5c6370" font-family="sans-serif">Khởi hành 21:45 · 8/11</text>
+    <text x="100" y="110" text-anchor="middle" font-size="10" fill="#8b919b" font-family="monospace">Ghế B07</text></svg>`,
+  muop:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#f3efe6"/><ellipse cx="100" cy="112" rx="50" ry="26" fill="#c98a4a"/><circle cx="100" cy="72" r="28" fill="#d39b5a"/>
+    <path d="M78 52 L82 30 L94 48z M122 52 L118 30 L106 48z" fill="#d39b5a"/>
+    <g stroke="#8a5a2a" stroke-width="3"><path d="M90 50 v10M100 46 v12M110 50 v10"/><path d="M70 105 h18M112 105 h18M80 118 h14M108 118 h14"/></g>
+    <circle cx="90" cy="72" r="4" fill="#2f4a2a"/><circle cx="110" cy="72" r="4" fill="#2f4a2a"/><path d="M96 82 q4 4 8 0" stroke="#5a3a1a" stroke-width="2" fill="none"/></svg>`,
+  binGran:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#e8f0ea"/><rect y="118" width="200" height="32" fill="#c9d8cc"/>
+    <circle cx="78" cy="58" r="18" fill="#e9c3a0"/><path d="M60 52 q18 -22 36 0" fill="#d8d8d8"/><rect x="58" y="76" width="40" height="46" rx="10" fill="#8a6fb0"/>
+    <circle cx="128" cy="72" r="13" fill="#e9c3a0"/><path d="M115 68 q13 -16 26 0" fill="#2b2b2b"/><rect x="114" y="86" width="28" height="34" rx="8" fill="#3f7fbf"/>
+    <text x="10" y="142" font-size="10" fill="#5c6370" font-family="sans-serif">Nhà ngoại · Thủ Đức · 20:00</text></svg>`,
+  streamRoom:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#1e1b2e"/><rect y="130" width="320" height="50" fill="#2a2540"/>
+    <rect x="90" y="40" width="140" height="84" rx="4" fill="#0e0d16"/><rect x="96" y="46" width="128" height="72" fill="#3d2f6b"/><circle cx="160" cy="82" r="18" fill="#7a5bd6"/>
+    <rect x="150" y="30" width="20" height="8" rx="3" fill="#333"/><circle cx="160" cy="34" r="2" fill="#e8394a"/><path d="M60 128 h200" stroke="#7a5bd6" stroke-width="3"/>
+    <rect x="250" y="20" width="50" height="16" rx="4" fill="#e8394a"/><text x="275" y="32" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="sans-serif">● LIVE</text>
+    <text x="10" y="170" font-size="11" fill="#ffffffa0" font-family="sans-serif">Phòng trọ · Bình Thạnh · 22:30</text></svg>`,
+  awning:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#dfe9ef"/><rect x="60" y="50" width="200" height="130" fill="#f3efe6"/>
+    <path d="M50 50 h220 l-12 26 h-196z" fill="#e2683c"/>
+    <g fill="#fff"><path d="M72 50 h20 l-4 26 h-20z"/><path d="M112 50 h20 l-3 26 h-20z"/><path d="M152 50 h20 l-2 26 h-20z"/><path d="M192 50 h20 l-1 26 h-20z"/><path d="M232 50 h20 v26 h-20z"/></g>
+    <rect x="80" y="96" width="160" height="70" fill="#c9a26b"/><text x="160" y="136" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="sans-serif">BÁNH MÌ</text>
+    <circle cx="285" cy="70" r="11" fill="#f2c94c"/><text x="285" y="74" text-anchor="middle" font-size="10" font-weight="700" fill="#333" font-family="sans-serif">18</text></svg>`,
+  shopSpace:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#eceff2"/><rect x="30" y="30" width="140" height="110" fill="#d5d9df"/>
+    <g stroke="#b6bcc6" stroke-width="2">${Array.from({length:12},(_,i)=>`<line x1="36" y1="${40+i*8}" x2="164" y2="${40+i*8}"/>`).join("")}</g>
+    <rect x="56" y="60" width="88" height="34" rx="3" fill="#fff" stroke="#e2683c" stroke-width="2"/>
+    <text x="100" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#e2683c" font-family="sans-serif">CHO THUÊ</text></svg>`,
+  noichien:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#f1f1ef"/><rect x="62" y="30" width="76" height="96" rx="18" fill="#2b2f36"/><rect x="72" y="70" width="56" height="44" rx="8" fill="#3a3f48"/><circle cx="100" cy="50" r="9" fill="#e2683c"/></svg>`,
+  xedap:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#eef3ea"/><g fill="none" stroke="#2b2f36" stroke-width="4"><circle cx="60" cy="100" r="26"/><circle cx="140" cy="100" r="26"/><path d="M60 100 L90 60 H130 L140 100 M90 60 L100 100 L60 100 M125 50 H140"/></g></svg>`,
+  meme:`<svg viewBox="0 0 200 150"><rect width="200" height="150" fill="#fff6d8"/><circle cx="100" cy="66" r="30" fill="#f2c94c"/><circle cx="90" cy="60" r="4" fill="#333"/><circle cx="110" cy="60" r="4" fill="#333"/>
+    <path d="M86 78 q14 12 28 0" stroke="#333" stroke-width="3" fill="none"/>
+    <text x="100" y="128" text-anchor="middle" font-size="10" font-weight="800" fill="#333" font-family="sans-serif">KHI CÔ NÓI "KIỂM TRA 15 PHÚT"</text></svg>`,
 };
 const hero = s=>s.replace("<svg",'<svg preserveAspectRatio="xMidYMid slice"');
 
@@ -757,6 +824,221 @@ Thứ bảy, 04/10/2025 — Người trực: Sáu
   culprit:"Phạm Quốc Đức", win:"Chuẩn luôn! Anh với chị Lan qua nhà Đức rồi, còn đủ 12 hộp chưa kịp bán. Tối mai các bé vẫn có quà 🥮",
   solution:"Lúc 20g, Đức cầm chìa dự phòng “đi mua dây điện” 20 phút. Đúng 20:40, tiệm khóa Ba Tèo khoe vừa đánh gấp một chìa kho cho cậu áo xanh đeo balo móc cá mập cam, đúng cái móc Đức gọi là bùa hộ mệnh. Đức đang kẹt tiền đóng hụi. 21:40 Đức về sau cùng bằng cổng sau và để chốt mở. 02:14 camera quay người áo xanh đeo balo móc cá mập, và móc cá mập đứt dây rơi lại trong kho. 06:05 “Mẹ Thỏ Bakery” rao 12 hộp xanh thỏ ngọc bị cạo tem, để lại số 0909 888 215. Đó là số mới của Đức. Tuấn ngoại phạm nhờ bài đăng 02:12 ở thư viện.",
   coach:"Đọc kỹ bình luận trên Mặt Sách, nhiều khi chủ bài đăng lỡ lời ở đó. Vụ này nhiều nghi phạm. Mở <b>Tệp</b> đọc sổ trực, rồi dùng <b>Sổ vụ án → Nghi phạm</b> đánh dấu ai ngoại phạm. Để ý số điện thoại xuất hiện ở hơn một chỗ.",
+},
+{ /* ---------- CHƯƠNG 3 ---------- */
+  title:"Ai đứng sau Hẻm Bàn Tán?", place:"Khu phố 3, Quận 3 · 9/11/2025", day:"CN 9/11", start:[7,15], deskLabel:"Vụ Hẻm Bàn Tán", art:SVG.hem7,
+  intro:"Tối qua, trang ẩn danh Hẻm Bàn Tán đăng ảnh khay thịt ôi cạnh túi Bánh Mì Chị Hai. Sáng nay tiệm vắng tanh. Trang ấy vẫn còn đăng nhập trên máy tính chung của nhà văn hóa, nhưng máy đó cả khu phố cùng dùng.",
+  lead:"ti",
+  people:{
+    ti:{n:"Anh Ti dân phòng",i:"T",c:"#2d6f73"},
+    hai:{n:"Chị Hai bánh mì",i:"H",c:"#e2683c"},
+    khang:{n:"Võ Minh Khang · Quản lý NVH",i:"K",c:"#7a5bd6"},
+    kp3:{n:"Nhóm Cư dân KP3",i:"KP",c:"#2f8f5b"}},
+  chats:{
+    ti:[{day:"Chủ nhật, 9/11/2025"},
+      {t:"07:02",x:"Em ơi vụ này hơi gắt nha. Trang Hẻm Bàn Tán đăng bài nói tiệm bánh mì chị Hai bán thịt ôi."},
+      {t:"07:02",x:"Trang đó đây:",link:"matsach.vn/hembantan"},
+      {t:"07:03",x:"Bài đó 300 lượt chia sẻ rồi. Sáng nay tiệm chị Hai bán được có 4 ổ."},
+      {t:"07:05",x:"Sáng nay Khang mở cửa nhà văn hóa thì thấy máy tính chung vẫn đang đăng nhập trang đó, bằng tài khoản Khách. Ai ngồi máy cũng dùng được tài khoản Khách, khỏi mật khẩu."},
+      {t:"07:06",x:"Anh mở quyền truy cập máy đó cho em rồi, vào app Tệp mà xem. Thùng rác của máy hình như chưa ai dọn."},
+      {t:"07:07",x:"Máy đó ai hay dùng thì hỏi Khang."},
+      {t:"07:08",x:"Lần này ghi cả họ tên lẫn cách người đó dựng tấm ảnh nha. Sai ba lần là anh tự xử đó 😏"}],
+    hai:[{day:"Chủ nhật, 9/11/2025"},
+      {t:"06:50",x:"Tui bán bánh mì ở hẻm 7 sáu năm nay, chưa ai chê một tiếng. Ảnh đó đâu phải bếp tui."},
+      {t:"06:52",x:"Cô Hòa xe bánh mì đối diện thì xưa giờ không ưa tui, mà tui không tin cô làm vậy."},
+      {t:"06:55",x:"Con Ngân hồi tháng rồi tui cho nghỉ vì đi trễ hoài, nó có giận."},
+      {t:"06:58",x:"Mặt bằng tui thuê, hợp đồng còn tới 2027. Giờ khách bỏ hết thì lấy gì trả tiền nhà."}],
+    khang:[{day:"Chủ nhật, 9/11/2025"},
+      {t:"06:40",x:"Máy chung có 4 người hay dùng có thư mục riêng: cô Hòa với chú Lộc (lớp tin học người cao tuổi), chị Ngân (hay ghé in hồ sơ ban ngày), với thằng Bin. Còn lại ai cũng vào tài khoản Khách được."},
+      {t:"06:41",x:"Thư mục riêng mỗi người tự đặt mật khẩu, máy có dòng gợi ý. Em không biết mật khẩu ai hết."},
+      {t:"06:43",x:"Tối thứ Bảy em khóa cửa lúc 22h rồi về phòng trọ bên Bình Thạnh. Sau 22h ai cần vô thì mở hộp chìa có mã gắn ngoài cửa, lớp tin học với ban điều hành KP3 mới biết mã. Mượn thì tự ghi vô sổ giấy treo cạnh hộp chìa, bắt buộc để số điện thoại. Ghi số bậy là sáng em gọi không được, báo ban điều hành đổi mã liền, nên mấy cô chú lớp tin học lần nào cũng ghi đúng số."},
+      {t:"06:44",x:"Sáng nay em chụp sổ gõ lại vô thư mục Chung, chưa kịp gọi ai. Có dòng chữ ký nguệch ngoạc em đọc không ra. Camera cửa thì tự xuất file lúc 6h sáng, em không sửa được."}],
+    kp3:[{day:"Thứ bảy, 8/11"},
+      {who:"Nguyễn Thị Hòa",t:"21:10",x:"Tối nay cô ra chợ đêm bán nha bà con, ghé ủng hộ."},
+      {who:"Phan Văn Tài",t:"21:50",x:"Mưa to quá bà con ơi, ai còn ngoài đường nhớ mặc áo mưa."},
+      {who:"Phan Văn Tài",t:"22:52",x:"Ủa ai đăng bài vụ tiệm chị Hai vậy trời"},
+      {day:"Chủ nhật, 9/11"},
+      {who:"Lê Thị Mỹ",t:"06:30",x:"Hèn chi sáng nay tiệm chị Hai vắng"}]},
+  clues:{},
+  fbStart:"hembantan",
+  profiles:{
+    "hembantan":{n:"Hẻm Bàn Tán",i:"?",c:"#6b6f7a",page:true,bio:"Người trong hẻm nói thật · Trang tạo ngày 8/11/2025 · 1 bài viết",friends:[],posts:[
+      {t:"Hôm qua lúc 22:47",x:"Một người bán bánh mì lâu năm trong hẻm nói thật: đừng ăn ở đây. Thịt ôi tới mức này luôn.",svg:SVG.fakePost,likes:212,cm:[
+        {n:"Lê Thị Mỹ",t:"Hôm qua lúc 22:55",x:"Trời ơi, tui ăn ở đó hoài 😨"},
+        {n:"Phan Văn Tài",t:"Hôm qua lúc 23:10",x:"Ủa ảnh này chụp ở đâu vậy? Trang ai lập vậy?"},
+        {n:"Khách quen",t:"Hôm nay lúc 06:40",x:"Sáng nay đi ngang tiệm vắng hoe luôn."}]}]},
+    "banhmichihai":{n:"Bánh Mì Chị Hai",i:"H",c:"#e2683c",page:true,bio:"Bánh mì thịt nướng · 18 hẻm 7, KP3",live:"18 hẻm 7, Khu phố 3, Quận 3",friends:[],posts:[
+      {t:"Hôm nay lúc 06:20",x:"Tiệm vẫn bán bình thường. Bếp tui sạch, ai nghi thì ghé xem tận mắt. Ảnh trên mạng không phải bếp tiệm tui.",likes:41,cm:[
+        {n:"Khách quen",t:"Hôm nay lúc 06:35",x:"Ủng hộ chị Hai!"}]},
+      {t:"6 tháng 10 lúc 09:00",x:"Cảm ơn chủ nhà đã làm thêm mái hiên cho tiệm trước mùa mưa. Giờ khách ngồi ăn không sợ ướt nữa 🥖",svg:SVG.awning,likes:53,cm:[
+        {n:"Lê Thị Mỹ",t:"6 tháng 10 lúc 09:30",x:"Mái hiên đẹp ghê chị."}]}]},
+    "nguyenthihoa":{n:"Nguyễn Thị Hòa",i:"H",c:"#3a6f9e",bio:"Xe bánh mì cô Hòa · đầu hẻm 7 · tối thứ Bảy bán chợ đêm",live:"Khu phố 3, Quận 3",friends:[],posts:[
+      {t:"Hôm qua lúc 23:20",x:"Tạnh mưa rồi, cô live bán tiếp tới 0g nha bà con.",svg:SVG.nightLive,likes:12,cm:[
+        {n:"Út Mập",t:"Hôm qua lúc 23:35",x:"Cô ơi chừa con 2 ổ nha."}]},
+      {t:"Hôm qua lúc 22:00",x:"Mưa to quá, cô tắt live dẹp hàng đi trú mưa, lát tạnh bán tiếp.",likes:5,cm:[]},
+      {t:"Hôm qua lúc 21:25",x:"Live bán đêm ở chợ đêm Hồ Thị Kỷ nè bà con!",svg:SVG.nightLive,likes:18,cm:[
+        {n:"Út Mập",t:"Hôm qua lúc 21:40",x:"Xe cô đông khách ghê."}]},
+      {t:"4 tháng 11 lúc 19:30",x:"Bé Bông nhà bà, sinh năm 2019, giờ đã biết đọc rồi nè 🥰",likes:30,cm:[
+        {n:"Hàng xóm",t:"4 tháng 11 lúc 19:45",x:"Bông giỏi quá!"}]},
+      {t:"12 tháng 8 lúc 08:10",x:"Có tiệm cứ để xe khách đậu lấn qua chỗ xe bánh mì của tui, sáng nay lại cãi nhau một trận.",likes:9,cm:[
+        {h:"banhmichihai",t:"12 tháng 8 lúc 08:30",x:"Chỗ đó trước cửa tiệm tui mà cô."},
+        {h:"nguyenthihoa",t:"12 tháng 8 lúc 08:41",x:"Đường là đường chung nha."}]}]},
+    "dangkimngan":{n:"Đặng Kim Ngân",i:"N",c:"#c95c8a",bio:"Từng làm ở tiệm bánh mì · đang tìm việc mới",live:"Khu phố 3, Quận 3",from:"Mỏ Cày, Bến Tre",friends:["dangthithu"],posts:[
+      {t:"Hôm qua lúc 21:30",x:"Về quê thăm má nè 🚌",svg:SVG.busTicket,likes:14,cm:[
+        {h:"dangkimngan",t:"Hôm qua lúc 22:50",x:"Tới Trung Lương rồi nè."},
+        {h:"dangthithu",t:"Hôm qua lúc 23:55",x:"Má đón con ở bến Mỏ Cày nè."}]},
+      {t:"7 tháng 11 lúc 11:00",x:"Có những chỗ làm bóc lột người ta mà ngoài mặt thì hiền lắm.",likes:6,cm:[
+        {n:"Bạn của Ngân",t:"7 tháng 11 lúc 11:20",x:"Thôi bỏ đi bà, kiếm chỗ khác."}]},
+      {t:"20 tháng 9 lúc 20:00",x:"Ghét nhất đời là pate. Làm tiệm bánh mì mà ghét pate mới ghê 😂",likes:22,cm:[]}]},
+    "dangthithu":{n:"Đặng Thị Thu",i:"T",c:"#8a6a3a",bio:"Bán trái cây ở chợ Mỏ Cày",live:"Mỏ Cày, Bến Tre",friends:["dangkimngan"],posts:[]},
+    "trinhvanloc":{n:"Trịnh Văn Lộc",i:"L",c:"#5d6bb0",bio:"Hưu trí · Học tin học ở NVH KP3",live:"Khu phố 3, Quận 3",friends:[],posts:[
+      {t:"5 tháng 11 lúc 20:10",x:"Tuổi già học gõ văn bản, làm bảng tính cũng vui. Cảm ơn lớp tin học nhà văn hóa.",likes:11,cm:[
+        {n:"Bạn cùng lớp",t:"5 tháng 11 lúc 20:30",x:"Chú học nhanh nhất lớp đó."}]},
+      {t:"2 tháng 11 lúc 09:15",x:"Chiếc Cub 52-S1 0712, mua năm 1988, chiếc xe đầu tiên đời tôi. Giờ vẫn chạy ngon.",svg:SVG.cub,likes:27,cm:[
+        {n:"Bạn già",t:"2 tháng 11 lúc 10:00",x:"Xe này giờ hiếm lắm anh ơi."}]}]},
+    "lygiabin":{n:"Lý Gia Bin",i:"B",c:"#2f8f5b",bio:"Lớp 9A · team mèo",live:"Khu phố 3, Quận 3",friends:["tranthimai"],posts:[
+      {t:"1 tháng 11 lúc 17:00",x:"Con mèo Mướp nhà em, trùm ngủ ngày 😼",svg:SVG.muop,likes:19,cm:[
+        {h:"tranthimai",t:"1 tháng 11 lúc 17:20",x:"Mướp mập quá rồi con."}]}]},
+    "tranthimai":{n:"Trần Thị Mai",i:"M",c:"#b5577a",bio:"Mẹ Bin 👦",live:"Khu phố 3, Quận 3",friends:["lygiabin"],posts:[
+      {t:"Hôm qua lúc 20:00",x:"Tối nay cho Bin ngủ bên ngoại ở Thủ Đức, mai mới về.",svg:SVG.binGran,likes:8,cm:[
+        {n:"Bà ngoại Bin",t:"Hôm qua lúc 20:15",x:"Cháu ngoan lắm, ăn xong đi ngủ rồi."}]}]},
+    "vominhkhang":{n:"Võ Minh Khang",i:"K",c:"#7a5bd6",bio:"Sinh viên CNTT · Quản lý máy tính NVH KP3",live:"Bình Thạnh",friends:[],posts:[
+      {t:"Hôm qua lúc 22:30",x:"Livestream rank tối nay tới 1h, có bật cam nha anh em.",svg:SVG.streamRoom,likes:25,cm:[
+        {n:"Gamer Tí",t:"Hôm qua lúc 22:45",x:"Thấy Khang gào trên cam kìa 🤣"},
+        {n:"Gamer Tí",t:"Hôm qua lúc 23:40",x:"Khang gánh team ghê."}]}]}},
+  shop:[
+    {n:"Cho thuê mặt bằng Khu phố 3, mặt tiền 5m",p:"Thương lượng",s:"Chủ nhà · KP3",t:"Đăng 3/11",d:"Trống từ 1/12. Liên hệ 0913 418 052.",svg:SVG.shopSpace,k:"cho thue mat bang kp3"},
+    {n:"Nồi chiên không dầu 5L, còn bảo hành",p:"650.000đ",s:"dogiadungq3",t:"Đăng 2 ngày trước",svg:SVG.noichien,k:"noi chien khong dau"},
+    {n:"Xe đạp mini cho học sinh",p:"900.000đ",s:"xedaphem",t:"Đăng 1 tuần trước",svg:SVG.xedap,k:"xe dap"}],
+  shopHint:"vd: nồi chiên",
+  news:[
+    {h:"Chuỗi Cà phê Mây đang săn mặt bằng trong hẻm Q.3, trả giá cao",t:"1/11/2025",x:"Đại diện chuỗi cho biết sẽ mở thêm 5 điểm trong các hẻm lớn ở Quận 3 trước Tết, ưu tiên mặt bằng trống bàn giao ngay, giá thuê có thể gấp đôi mặt bằng thông thường."},
+    {h:"Tin giả trên mạng xã hội: trước khi chia sẻ, hãy hỏi nguồn",t:"28/10/2025",x:"Nhiều trang ẩn danh đăng ảnh gây sốc để kéo tương tác. Trước khi chia sẻ, hãy hỏi ảnh chụp ở đâu, khi nào, ai chụp."}],
+  photos:{
+    post:{n:"Ảnh bài Hẻm Bàn Tán (anh Ti chụp lại)",svg:SVG.fakePost},
+    hem:{n:"Hẻm 7 sáng Chủ nhật",svg:SVG.hem7}},
+  files:{
+    ti:{n:"Ghi_chu_anh_Ti.txt",x:
+`GHI CHÚ — VỤ HẺM BÀN TÁN
+
+- 22:47 T7 8/11: trang Hẻm Bàn Tán đăng ảnh "thịt ôi" gắn với tiệm Bánh Mì Chị Hai.
+- Sáng CN 9/11: Khang thấy máy chung NVH vẫn đăng nhập trang đó, tài khoản Khách.
+- Anh đã cấp quyền truy cập từ xa: ổ "Máy chung NVH" ngay bên dưới, cả Thùng rác của máy.
+- Cần: họ tên người đứng sau trang + cách tấm ảnh được dựng.`}},
+  drive:{n:"Máy chung NVH",folders:[
+    {k:"chung",n:"Chung",files:{
+      so:{n:"So_muon_chia_NVH.txt",m:"CN 9/11 06:35",x:
+`SỔ MƯỢN CHÌA NHÀ VĂN HÓA KP3
+(Khang gõ lại từ sổ giấy treo cạnh hộp chìa, sáng CN 9/11)
+
+T5 6/11  22:10        Khang                   đóng cửa
+T7 8/11  19:30–21:00  Nguyễn Thị Hòa          lấy xe đẩy bánh mì gửi trong kho   0938 207 114
+T7 8/11  22:05–23:10  (chữ ký đọc không ra)   mượn lấy loa                       0913 418 052`},
+      cam:{n:"Camera_cua_NVH_08-11.txt",m:"CN 9/11 06:00",x:
+`CAMERA CỬA NHÀ VĂN HÓA — bản ghi tự động
+Xuất tự động 06:00 CN 9/11/2025 · không chỉnh sửa được
+
+19:31  Một người lớn mở cửa vào.
+20:58  Người đó đẩy xe bánh mì ra, khóa cửa.
+22:00  Khang khóa cửa, ra về.
+22:06  Một người lớn mở cửa vào (áo mưa trùm kín, đội nón).
+23:09  Người đó ra, tay không, khóa cửa.
+23:09–06:00  Không ai ra vào.`},
+      log:{n:"Nhat_ky_may_NVH_08-11.txt",m:"CN 9/11 06:00",x:
+`NHẬT KÝ MÁY CHUNG NVH — T7 8/11/2025
+
+19:40  Hòa    đăng nhập
+20:50  Hòa    đăng xuất
+22:07  Khách  đăng nhập
+22:12  Khách  mở một thư mục riêng (nhập đúng mật khẩu)
+22:41  Khách  mở matsach.vn/hembantan
+22:47  Khách  đăng bài lên trang Hẻm Bàn Tán
+23:02  Khách  xóa 2 tệp
+23:05  Khách  khóa màn hình (không đăng xuất)`},
+      lop:{n:"Lop_tin_hoc_nguoi_cao_tuoi.txt",m:"T5 6/11 20:05",x:
+`LỚP TIN HỌC NGƯỜI CAO TUỔI — NVH KP3
+Thứ Ba, thứ Năm · 18:00–20:00
+
+Điểm danh T5 6/11/2025
+- Trịnh Văn Lộc ........ có mặt
+- Nguyễn Thị Hòa ....... vắng (đi bán)
+- 3 học viên khác ...... có mặt`}}},
+    {k:"hoa",n:"Hòa — Nguyễn Thị Hòa",lock:{hint:"tên cháu nội + năm sinh",pass:["bong2019","bebong2019"]},files:{
+      menu:{n:"Thuc_don_xe_banh_mi.txt",m:"T3 4/11 18:20",x:
+`XE BÁNH MÌ CÔ HÒA
+
+Thịt nguội ........ 20.000
+Xíu mại .......... 20.000
+Trứng ốp la ...... 15.000
+Thêm pate ........  3.000`},
+      plan:{n:"Ke_hoach_ban_cho_dem_T7.txt",m:"T7 8/11 20:15",x:
+`KẾ HOẠCH BÁN CHỢ ĐÊM THỨ BẢY 8/11
+
+- 19:30 qua NVH lấy xe đẩy trong kho.
+- 21:00 dọn hàng ở chợ đêm Hồ Thị Kỷ, mở live.
+- Chuẩn bị 80 ổ. Nhớ mang áo mưa, dự báo tối mưa to.`}}},
+    {k:"ngan",n:"Ngân — Đặng Kim Ngân",lock:{hint:"món tui ghét nhất",pass:["pate"]},files:{
+      cv:{n:"CV_Dang_Kim_Ngan.txt",m:"T6 7/11 10:05",x:
+`HỒ SƠ XIN VIỆC — ĐẶNG KIM NGÂN
+Kinh nghiệm: 2 năm phụ bếp, bán hàng tiệm bánh mì.
+Mong muốn: làm ca sáng, gần nhà.`},
+      thu:{n:"Thu_xin_viec_Com_Tam_Mo.txt",m:"T6 7/11 10:20",x:
+`Kính gửi quán Cơm Tấm Mơ,
+Em xin ứng tuyển vị trí phụ bếp ca sáng. Em có thể bắt đầu từ thứ Hai 10/11, sau khi về quê thăm má.
+Đặng Kim Ngân`}}},
+    {k:"bin",n:"Bin — Lý Gia Bin",lock:{hint:"tên con mèo",pass:["muop"]},files:{
+      game:{n:"Danh_sach_game.txt",m:"T3 4/11 16:50",x:
+`GAME HAY
+1. Đua xe hẻm nhỏ
+2. Mèo săn chuột
+(Mẹ cấm máy tới Chủ nhật 😭)`}}},
+    {k:"loc",n:"Lộc — Trịnh Văn Lộc",lock:{hint:"4 số cuối biển số chiếc xe đầu tiên + năm mua",pass:["07121988"]},files:{
+      hd:{n:"Nhap_hop_dong_Ca_phe_May.txt",m:"T6 7/11 21:30",x:
+`NHÁP HỢP ĐỒNG THUÊ MẶT BẰNG
+
+Bên cho thuê: TRỊNH VĂN LỘC
+  SĐT: 0913 418 052
+  Mặt bằng: số 18 hẻm 7, Khu phố 3, Quận 3
+Bên thuê: CHUỖI CÀ PHÊ MÂY
+
+Giá thuê: 45.000.000đ/tháng
+Điều 3: Bên cho thuê bàn giao MẶT BẰNG TRỐNG từ 01/12/2025.
+
+(ghi tay: còn vướng người thuê cũ, hợp đồng tới 2027)`},
+      note:{n:"Ghi_chu_lop_tin_hoc.txt",m:"T5 6/11 19:10",x:
+`BÀI HỌC THỨ NĂM
+- Cách tách nền một vật ra khỏi ảnh.
+- Cách ghép hai ảnh thành một, chỉnh bóng cho giống thật.`}}}]},
+  trash:[
+    {k:"nhap",n:"ban-nhap",by:"Ngân",when:"T5 6/11 15:40",from:"ngan",kind:"file",x:
+`Tiệm bánh mì ** trả lương trễ, bắt làm thêm giờ không trả tiền. Ai xin vô làm thì cân nhắc.
+(nháp, chưa đăng)`},
+    {k:"meme",n:"meme-co-giao",by:"Bin",when:"T3 4/11 17:15",from:"bin",kind:"photo",svg:SVG.meme,info:"tạo T3 4/11 17:00, tài khoản Bin"},
+    {k:"img47",n:"IMG_0847",by:"Khách",when:"T7 8/11 23:02",from:"loc",kind:"photo",svg:SVG.rawMeat,info:"tải về T5 6/11 19:18, tài khoản Lộc"},
+    {k:"img48",n:"IMG_0848",by:"Khách",when:"T7 8/11 23:02",from:"loc",kind:"photo",svg:SVG.bagCut,info:"tạo T5 6/11 19:20, tài khoản Lộc"}],
+  suspects:[
+    {id:"hoa",n:"Cô Hòa",r:"Xe bánh mì đối diện"},{id:"ngan",n:"Ngân",r:"Nhân viên cũ của tiệm"},
+    {id:"khang",n:"Khang",r:"Quản lý máy NVH"},{id:"bin",n:"Bin",r:"Học sinh lớp 9"},
+    {id:"loc",n:"Chú Lộc",r:"Học viên lớp tin học"}],
+  form:{q:"Họ và tên người đứng sau trang Hẻm Bàn Tán (ghi đầy đủ):",how:{q:"Ảnh trong bài được dựng bằng cách nào?",label:"Cách dựng ảnh",need:"Chọn luôn cách ảnh được dựng rồi mới gửi nha.",opts:[
+    {v:"ghep",l:"Ghép túi giấy của tiệm vào ảnh thịt ôi tải trên mạng"},{v:"len",l:"Lẻn vào bếp tiệm, chụp thịt thật"},
+    {v:"mua",l:"Mua khay thịt hư ngoài chợ, đặt cạnh túi giấy thật của tiệm rồi chụp"},{v:"nho",l:"Nhờ nhân viên cũ chụp hộ trong bếp"}],a:"ghep"}},
+  check(n,how){
+    const nameOk=n==="trinh van loc";
+    if(nameOk&&how==="ghep")return{ok:1};
+    if(nameOk){
+      if(how==="mua")return{m:"Đúng người rồi! Nhưng ảnh thịt gốc không hề có túi giấy. Túi giấy là một ảnh tách nền riêng, ghép vào."};
+      if(how==="len"||how==="nho")return{m:"Đúng người rồi! Nhưng ảnh thịt gốc là ảnh tải trên mạng, đâu phải chụp trong bếp tiệm."};
+      return{m:"Đúng người rồi! Giờ chọn luôn cách ảnh được dựng nha."}}
+    if(n.includes("loc"))return{m:"Có vẻ đúng hướng, nhưng ghi đủ họ tên giùm anh để lập biên bản."};
+    if(n.includes("hoa"))return{m:"Cô Hòa có tắt live đi trú mưa thật. Nhưng số điện thoại trong sổ chìa đâu phải của cô, còn hai tấm ảnh được làm từ buổi học tối thứ Năm, buổi đó cô vắng."};
+    if(n.includes("ngan"))return{m:"Bản nháp đó Ngân xóa từ chiều thứ Năm, mà đâu có nói gì thịt ôi. Tối thứ Bảy Ngân đang trên xe về Bến Tre."};
+    if(n.includes("khang"))return{m:"Camera ghi Khang khóa cửa về lúc 22:00, 22:45 người xem live còn thấy mặt Khang trên cam ở phòng trọ."};
+    if(n.includes("bin"))return{m:"Tối đó Bin ngủ bên ngoại ở Thủ Đức, mà Bin cũng đâu biết mã hộp chìa."};
+    if(n.includes("hai"))return{m:"Ai lại đi bôi nhọ tiệm của chính mình?"};
+    return{m:"Không có ai tên vậy dùng máy nhà văn hóa tối đó. Xem lại manh mối nhé."}},
+  culprit:"Trịnh Văn Lộc", win:"Chuẩn luôn! Anh với chị Hai qua gặp chú Lộc rồi, chú nhận hết và gỡ bài. Trang Hẻm Bàn Tán đăng đính chính, khách quay lại tiệm rồi 🥖",
+  solution:"Nhật ký máy cho thấy bài đăng lúc 22:47 từ chính máy nhà văn hóa, bằng tài khoản Khách. Camera tự xuất ghi đúng một người lớn vào lúc 22:06, ra tay không lúc 23:09. Người đó mượn chìa “lấy loa” và để số 0913 418 052, cùng số với tin cho thuê một mặt bằng “trống từ 1/12”. Thư mục của Trịnh Văn Lộc (mật khẩu 07121988: 4 số cuối biển số chiếc Cub + năm mua) có nháp hợp đồng cho Cà phê Mây thuê nhà số 18 hẻm 7, chính là tiệm chị Hai, ghi đúng số điện thoại đó, trong khi hợp đồng của chị Hai còn tới 2027. Hai tệp Khách xóa lúc 23:02 chỉ khôi phục được bằng mật khẩu của Lộc: ảnh thịt tải từ anhmienphi.vn không có túi giấy, và túi giấy đã tách nền, cả hai làm bằng tài khoản Lộc trong buổi học tối thứ Năm, buổi cô Hòa vắng. Tức là ảnh đã được ghép. Cô Hòa có tắt live đi trú mưa, nhưng số điện thoại và tệp ảnh không phải của cô.",
 }];
 
 /* ================= STATE ================= */

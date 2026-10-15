@@ -11,7 +11,7 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
 - `partLabel(i)` → "Chương 1 · Phần 2"; `nextLabel`, `soonVol()` — nhãn sang phần/chương sau, chương sắp ra mắt.
 - `S` — state của chương đang chơi (`freshState(ci)` khởi tạo lại).
 - `R` — các hàm render từng app: `chat`, `web`, `files`, `photos`, `nb` (Sổ vụ án), `file` (Hồ sơ), `trash` (Thùng rác).
-- `trace(k)` — dấu vết hành động (`file:` `chat:` `url:` `cf:người:ev` `deduce:` `unlock:` `restore:` `pin:`); `hintStep()`, `hintMore()`, `openHints()`, `nudgeCheck()` — gợi ý theo bước; `deduceTry(ids)` — ghép suy luận.
+- `trace(k)` — dấu vết hành động (`file:` `chat:` `url:` `cf:người:ev` `deduce:` `unlock:` `restore:` `pin:`); `hintStep()`, `hintMore()`, `openHints()`, `nudgeCheck()` — gợi ý theo bước; `deduceTry(ids)` — ghép suy luận (chỉ khớp khi mọi chi tiết đã chọn đều thuộc suy luận đó, chống tick hết).
 - `confront(p, id)` — Đối chất: đưa chi tiết đã ghim `id` cho người `p`, ghi tin vào `S.cx[p]`, mở tệp ẩn qua `S.given`. `showsCoach(i)` — mẹo hiện ở phần đầu mỗi chương.
 - `pwNorm`, `tryUnlock`, `tryRestore` — thư mục khóa và Thùng rác; `dockApps()` — app hiện trên Dock; `nextCh()` — chương đầu tiên chưa phá.
 - `bind(k, c)` — gắn sự kiện sau mỗi lần render app `k`.
@@ -31,8 +31,8 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
             posts:[{t,x,svg?,likes,ev?,cm:[{h:handle | n:tên, t, x, ev?}]}]}},
   shop:[{n,p,s,t,d?,svg,k}], shopHint, news:[{h,t,svg?,x}],
   photos:{k:{n,svg,ev?}}, files:{k:{n,x,ev?,hidden?}},          // hidden: chỉ hiện khi nghi phạm gửi (confront.give)
-  drive?:{n, folders:[{k,n,lock?:{hint,pass:[…]},files:{k:{n,x,m?}}}]},   // ổ đĩa có thư mục khóa (Tệp)
-  trash?:[{k,n,by,when,from,kind:"file"|"photo",x?,svg?,info?}],          // app Thùng rác; khôi phục cần mật khẩu thư mục gốc
+  drive?:{n, folders:[{k,n,lock?:{hint,pass:[…]},files:{k:{n,x,m?,ev?}}}]},   // ổ đĩa có thư mục khóa (Tệp)
+  trash?:[{k,n,by,when,from,kind:"file"|"photo",x?,svg?,info?,ev?}],          // app Thùng rác; khôi phục cần mật khẩu thư mục gốc
   confront?:{người:{ev:{reply:["…"|{x,ev?}],give?:"tệp"|["tệp"],needs?:[dấu vết],early?:"…"},_:"câu đáp chung"}},  // Đối chất (app Nhắn, nút 📎)
   deduce?:[{id,title,x,need:[{ev:[…],l:"nhãn loại chứng cứ"}]}],   // Sổ vụ án → 🧩 Suy luận
   hints?:[{done:[dấu vết | [một trong các]],tips:[nấc1,nấc2,nấc3]}],  // nút 💡 Gợi ý + tự nhắc sau 4 phút
@@ -76,7 +76,7 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
   Đường suy luận: sao kê (20:05 −7,5 triệu) → chi tiết GD (STK 0071 0023 4567) + tin 13/9 Hiển thu tiền áo cùng STK → d3 → đưa hóa đơn cho chị Vân → nhật ký máy in 21:05 + tin Hiển nhờ in → d2 → camera gốc → đối chất Quân → tin Hiển sai bê hộp → đưa báo cáo 7:00 cho Quân → ảnh sổ quỹ giấy (6 khoản, không Minh Phát) → d4. Mồi: chị Thư (nợ anh họ, bài ẩn danh), Quân (bê hộp), chị Vân (in hóa đơn). Sổ tiền: 86 − 6 = 80 gửi; 80 − 7,5 = 72,5. Spec: docs/superpowers/specs/2026-10-16-chuong-2-phan-2-design.md.
 
 ## Ý tưởng tiếp theo đã nêu
-- Gợi ý có giới hạn cho người chơi bị bí.
+- Viết thêm bộ gợi ý theo bước (`hints`) cho các vụ cũ nếu muốn.
 
 ## Kiểm thử
 - Unit test: `node --test tools/*.test.mjs` (nạp `<script>` của index.html trong `node:vm` với DOM giả).

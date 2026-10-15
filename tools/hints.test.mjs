@@ -113,3 +113,31 @@ test("Sổ vụ án có mục Suy luận khi chương có deduce; Hồ sơ có c
   assert.ok(G.R.file().includes('name="why"'));
   G.setCh(1); assert.ok(!G.R.nb().includes("🧩 Suy luận")); assert.ok(!G.R.file().includes('name="why"'));
 });
+
+test("ghép lẫn chi tiết không liên quan thì không ra suy luận (chống tick hết)", () => {
+  const G = G3();
+  show(G, "sk"); G.pin("f:sk"); show(G, "hd"); G.pin("f:hd");
+  G.S.chat = "an"; G.R.chat(); G.pin("c:an:0");
+  G.confront("an", "f:hd"); show(G, "log"); G.pin("f:log");
+  assert.equal(G.deduceTry(["f:sk", "f:hd", "f:log", "c:an:0"]).extra, true);
+  assert.equal(G.S.dFound.length, 0);
+  assert.equal(G.deduceTry(["f:sk", "f:hd", "f:log"]).found.id, "d1");
+  assert.equal(G.deduceTry(["f:sk", "f:hd", "f:log"]).again, true);
+});
+
+test("sau khi phá án, mở gợi ý không tính thêm; tin nhắc theo giờ game", () => {
+  const G = G3();
+  G.S.solved = true; G.openHints();
+  assert.equal(G.S.hintsUsed, 0);
+  const H = G3();
+  H.nudgeCheck(H.S.lastProg + 241000);
+  assert.equal(H.S.extra.at(-1).t, "08:00");
+});
+
+test("bỏ ghim thì bỏ chọn trong Ghép; tên trong Hồ sơ còn sau khi bị chặn", () => {
+  const G = G3();
+  show(G, "sk"); G.pin("f:sk"); G.S.dSel.add("f:sk"); G.pin("f:sk");
+  assert.equal(G.S.dSel.has("f:sk"), false);
+  G.accuse("Trần Văn An", "a", "x");
+  assert.ok(G.R.file().includes('value="Trần Văn An"'));
+});

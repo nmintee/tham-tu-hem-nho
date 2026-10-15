@@ -164,6 +164,46 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     await w.locator("#acc-in").press("Enter");
     expect((await w.locator(".verdict").textContent()).includes("Suy luận"), "chưa đủ suy luận thì chưa nộp được");
     expect((await w.textContent()).includes("Còn 3/3"), "không trừ lượt");
+    // đi tiếp tới hết vụ
+    const confront = async (who, pid, must) => {
+      const c = await open(page, "chat");
+      await c.locator(`[data-chat="${who}"]`).click();
+      await c.locator("[data-cfopen]").click();
+      await c.locator(`[data-cf="${pid}"]`).click();
+      expect((await c.locator(".msgs").textContent()).includes(must), `đối chất ${who} bằng ${pid}`);
+    };
+    const pinFile = async (fsel, pid, fold) => {
+      const t = await open(page, "files");
+      if (fold) await t.locator(`[data-fold="${fold}"]`).click();
+      await t.locator(`[data-fsel="${fsel}"]`).click();
+      await t.locator(`.doc header [data-pin="${pid}"]`).click({force: true});
+    };
+    const ghep = async (pids, must) => {
+      const n = await open(page, "nb");
+      await n.locator('[data-nb="deduce"]').click();
+      for (const id of pids) await n.locator(`[data-dsel="${id}"]`).check();
+      await n.locator("[data-dgo]").click();
+      expect((await n.textContent()).includes(must), `ghép ra: ${must}`);
+    };
+    await pinFile("quy|hoadon", "f:quy:hoadon", "quy");
+    await confront("van", "f:quy:hoadon", "9 giờ 5");
+    await pinFile("case|mayin", "f:mayin");
+    await ghep(["f:nganhang:chitiet", "f:quy:hoadon", "f:mayin"], "sau khi tiền đã đi");
+    await pinFile("camgoc|camgoc", "f:camgoc:camgoc", "camgoc");
+    await confront("quan", "f:camgoc:camgoc", "bê cái hộp");
+    w = await open(page, "chat");
+    await w.locator('[data-chat="btc"]').click();
+    await w.locator('[data-pin="c:btc:15"]').click({force: true});
+    await confront("quan", "c:btc:15", "kho ngoài");
+    await pinFile("case|tinquan", "f:tinquan");
+    await pinFile("case|soquy", "f:soquy");
+    await ghep(["f:tinquan", "f:soquy"], "giấu cuốn sổ");
+    w = await open(page, "file");
+    await w.locator("#acc-in").fill("Lâm Gia Hiển"); await w.locator("#how-ck").check(); await w.locator("#why-so").check();
+    await w.locator("#acc-in").press("Enter");
+    await w.locator(".stamp").waitFor();
+    expect((await w.textContent()).includes("Phá án với 3 gợi ý."), "màn thắng đếm gợi ý");
+    await page.screenshot({path: path.join(OUT, "ch2p2-win.png")});
     await page.close();
 
     // ---------- Mobile: Chương 1 · Phần 3 ----------
@@ -178,6 +218,14 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     await page.screenshot({path: path.join(OUT, "ch1p3-mobile-trash.png")});
     const sw = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(sw <= 390, "mobile không cuộn ngang");
+    await page.goto(URL);
+    await startCh(page, 4);
+    await page.click("#mb-hint");
+    await sleep(300);
+    await page.screenshot({path: path.join(OUT, "ch2p2-mobile-hint.png")});
+    const mb = await page.evaluate(() => ({h: document.querySelector(".menubar").scrollHeight, w: document.documentElement.scrollWidth,
+      pop: document.querySelector(".hint-pop").getBoundingClientRect().right}));
+    expect(mb.h <= 30 && mb.w <= 390 && mb.pop <= 390, `mobile: thanh menu ${mb.h}px, rộng ${mb.w}px, gợi ý tới ${mb.pop}px`);
     await page.close();
   } finally {
     await browser.close(); srv.kill();

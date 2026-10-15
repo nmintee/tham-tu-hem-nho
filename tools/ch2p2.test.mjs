@@ -91,3 +91,20 @@ test("chưa đủ suy luận thì không nộp được; nghi phạm sai sau khi
   assert.equal(G.S.tries, 2); assert.match(G.S.verdict, /biên nhận/);
   G.accuse("Hiển", "ck", "so"); assert.equal(G.S.tries, 2);
 });
+
+test("ra suy luận hóa đơn bằng bản nháp trong Thùng rác thì gợi ý không kẹt ở bước hỏi chị Vân", () => {
+  const G = ch();
+  showD(G, "nganhang", "saoke"); G.pin("f:nganhang:saoke"); showD(G, "nganhang", "chitiet"); G.pin("f:nganhang:chitiet");
+  const stk = pinBtc(G, "stkhien"); G.deduceTry(["f:nganhang:chitiet", stk]);
+  showD(G, "quy", "hoadon"); G.pin("f:quy:hoadon");
+  G.tryRestore("nhap", ""); showD(G, "quy", "t.nhap"); G.pin("f:quy:t.nhap");
+  assert.equal(G.deduceTry(["f:nganhang:saoke", "f:quy:hoadon", "f:quy:t.nhap"]).found.id, "d2");
+  assert.equal(G.hintStep(), 5);
+});
+
+test("anh Hiển chưa nhận số tài khoản khi người chơi chưa ghép ra d3", () => {
+  const G = ch();
+  showD(G, "nganhang", "chitiet"); G.pin("f:nganhang:chitiet");
+  assert.equal(G.confront("hien", "f:nganhang:chitiet").hit, false);
+  assert.ok(!/tài khoản/.test(G.S.cx.hien.at(-1).x) || /hóa đơn/.test(G.S.cx.hien.at(-1).x));
+});

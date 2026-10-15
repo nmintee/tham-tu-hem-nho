@@ -81,7 +81,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .mb-home{border:0;background:#ffffff80;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;color:#14262a}
 .mb-home:hover{background:#fff}
 .mb-hint{background:#fff3d6}
-.hint-pop{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:min(440px,calc(100% - 24px));background:#fff;color:var(--ink);border-radius:12px;box-shadow:0 18px 50px #0b2a2e55,0 0 0 1px #00000014;z-index:9500;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.5}
+.mb-home{white-space:nowrap}
+@media (max-width:720px){.menubar>span:not(#clock){display:none}}
+.hint-pop{box-sizing:border-box;position:absolute;top:34px;left:50%;transform:translateX(-50%);width:min(440px,calc(100% - 24px));background:#fff;color:var(--ink);border-radius:12px;box-shadow:0 18px 50px #0b2a2e55,0 0 0 1px #00000014;z-index:9500;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.5}
 .hint-pop .tip{margin:0;padding:8px 10px;border-radius:8px;background:#fff8e7;border:1px solid var(--paper-line)}
 .hint-pop .tip.t3{background:#fdeee7;border-color:#f3c3ad}
 .hint-pop .row{display:flex;justify-content:flex-end;gap:8px}
@@ -1293,9 +1295,9 @@ Cạnh cửa có đôi dép tổ ong và một đôi giày bảo hộ màu cam.`
       {t:"07:17",x:"Lần này Sổ vụ án có thêm mục 🧩 Suy luận: chọn mấy chi tiết đã ghim rồi bấm Ghép, nối đúng là ra kết luận. Phải có suy luận đàng hoàng mới nộp Hồ sơ được nha."},
       {t:"07:18",x:"Bí quá thì bấm 💡 Gợi ý trên thanh menu, anh chỉ từ từ cho. Cố lên em!"}],
     hien:[{day:"Thứ Hai, 24/11/2025"},
-      {t:"07:05",x:"Chào em, anh Ti có nói với anh rồi."},
-      {t:"07:06",x:"Hộp quỹ mất là lỗi tụi anh giữ không kỹ, anh nhận. Tối qua anh về sớm nên không kiểm lại cái hộp."},
-      {t:"07:07",x:"Mà sổ quỹ là Thư giữ hết đó em. Em hỏi Thư trước đi, anh không muốn nói nặng ai."}],
+      {t:"07:19",x:"Chào em, anh Ti có nói với anh rồi."},
+      {t:"07:20",x:"Hộp quỹ mất là lỗi tụi anh giữ không kỹ, anh nhận. Tối qua anh về sớm nên không kiểm lại cái hộp."},
+      {t:"07:21",x:"Mà sổ quỹ là Thư giữ hết đó em. Em hỏi Thư trước đi, anh không muốn nói nặng ai."}],
     thu:[{day:"Thứ Hai, 24/11/2025"},
       {t:"07:20",x:"Em ơi, chị bị đăng bài nói xấu nè 😢"},
       {t:"07:21",x:"Hôm qua chị ghi sổ đàng hoàng. Chi tiền mặt có 6 triệu, khoản nào cũng có chữ ký người nhận."},
@@ -1446,7 +1448,7 @@ Nội dung: TT vat tu hoi cho
 Kênh: Ngân hàng điện tử`}}},
     {k:"camera",n:"Camera",files:{
       camcat:{n:"CAM_hanh_lang_2142_cat.txt",m:"CN 23/11 22:20",ev:"camcrop",x:
-`ẢNH CAMERA HÀNH LANG — bản đã cắt để gửi nhóm
+`ẢNH CAMERA HÀNH LANG — bản đã cắt, gửi kèm tin báo mất hộp
 21:42, CN 23/11
 
 Mô tả: một người mặc áo tình nguyện viên bê một kiện đồ to ngang ngực, đi về phía cổng sau. Ảnh bị cắt ngang vai, không thấy mặt, không rõ kiện đồ là gì.
@@ -1472,7 +1474,11 @@ Ngày lập: [gõ tay] 23/11/2025 18:30`},
       hoadon:{reply:["Đó, hóa đơn ghi rõ 6 rưỡi chiều, trước lúc chuyển tiền luôn. Có gì đâu em."]},
       mayin:{reply:["Thì in lại thôi em, bản trước bị lem mực."]},
       tinvan:{reply:["Anh nhờ in chứng từ thì có sao đâu em."]},
-      stk:{reply:["Trùng số tài khoản hả? Thì… Minh Phát là mối quen, anh cho mượn tài khoản nhận tiền giùm thôi."]},
+      stk:{needs:["deduce:d3"],early:"Minh Phát là bên cung cấp vật tư, có hóa đơn đàng hoàng mà em.",reply:["Trùng số tài khoản hả? Thì… Minh Phát là mối quen, anh cho mượn tài khoản nhận tiền giùm thôi."]},
+      baocao:{reply:["Báo cáo anh làm theo hóa đơn đó em. Sổ giấy mất rồi thì đành chịu chứ sao."]},
+      nohien:{reply:["Chuyện làm ăn của anh thôi, đâu dính gì tới quỹ."]},
+      camcrop:{reply:["Thì cuối buổi ai cũng bưng bê, anh đâu để ý."]},
+      camfull:{reply:["Ờ anh có kêu Quân dọn kho. Mà hộp quỹ nằm trong đó anh đâu có biết."]},
       stkhien:{reply:["Ừ số đó của anh. Mà liên quan gì em?"]},
       tinquan:{reply:["Anh kêu Quân dọn kho thôi, đâu có biết hộp quỹ nằm trong đó."]},
       andanh:{reply:["Trang đó ai lập anh đâu biết. Anh cũng bị sốc mà."]},
@@ -1496,7 +1502,7 @@ Ngày lập: [gõ tay] 23/11/2025 18:30`},
   deduce:[
     {id:"d1",title:"Hộp quỹ không còn đồng nào khi bị bê đi",x:"80 triệu đã vô tài khoản quỹ lúc 19:00. Tới 21:42 Quân mới bê hộp ra kho. Cái hộp lúc đó chỉ còn cuốn sổ.",
       need:[{ev:["guiquy"],l:"việc gửi tiền vô tài khoản"},{ev:["camfull","tinquan"],l:"lúc cái hộp bị mang đi"}]},
-    {id:"d2",title:"Hóa đơn Minh Phát được làm ra sau khi tiền đã đi",x:"Tiền chuyển lúc 20:05, mà file hóa đơn tạo lúc 20:18 và in lúc 21:05. Giờ 18:30 trên hóa đơn là gõ tay, ghi lùi.",
+    {id:"d2",title:"Hóa đơn Minh Phát được làm ra sau khi tiền đã đi",x:"Tiền chuyển lúc 20:05, mà hóa đơn thì được làm ra sau đó (bản nháp tạo 20:18, tiệm in lúc 21:05). Giờ 18:30 trên hóa đơn là ghi lùi.",
       need:[{ev:["saoke","stk"],l:"giao dịch chuyển tiền"},{ev:["hoadon"],l:"tờ hóa đơn"},{ev:["mayin","nhap"],l:"giờ hóa đơn được làm hoặc in thật"}]},
     {id:"d3",title:"Tiền \"trả Minh Phát\" chảy về tài khoản của anh Hiển",x:"Tài khoản nhận 0071 0023 4567 chính là số anh Hiển đưa để thu tiền áo đồng phục hồi tháng 9.",
       need:[{ev:["stk"],l:"tài khoản nhận tiền"},{ev:["stkhien"],l:"chủ thật của số tài khoản đó"}]},
@@ -1505,14 +1511,14 @@ Ngày lập: [gõ tay] 23/11/2025 18:30`},
     {id:"d5",title:"Chị Thư bị nghi oan",x:"Khoản nợ riêng không phải bằng chứng. Chị Thư gửi đủ 80 triệu, đúng sổ, có biên nhận.",
       need:[{ev:["no","andanh"],l:"lý do chị Thư bị nghi"},{ev:["guiquy"],l:"việc chị Thư làm đúng"}]}],
   hints:[
-    {done:["file:saoke"],tips:["Tiền đi đâu thì coi sổ sách ngân hàng là rõ nhất nè.","Vô app Tệp, mở thư mục Ngân hàng, đọc sao kê tài khoản quỹ.","Mở Sao_ke_TK_quy_23-11: 80 triệu vô lúc 19:00, mà 20:05 có khoản 7 triệu rưỡi đi ra."]},
+    {done:[["file:saoke","file:chitiet"]],tips:["Tiền đi đâu thì coi sổ sách ngân hàng là rõ nhất nè.","Vô app Tệp, mở thư mục Ngân hàng, đọc sao kê tài khoản quỹ.","Mở Sao_ke_TK_quy_23-11: 80 triệu vô lúc 19:00, mà 20:05 có khoản 7 triệu rưỡi đi ra."]},
     {done:["file:chitiet"],tips:["Khoản 7 triệu rưỡi đó chuyển cho ai vậy ta?","Trong thư mục Ngân hàng còn một tệp chi tiết giao dịch.","Mở Chi_tiet_GD_200512: người nhận MINH PHAT DV, số tài khoản 0071 0023 4567. Nhớ số này nha."]},
     {done:["deduce:d3"],tips:["Số tài khoản 0071 0023 4567 em từng thấy ở đâu chưa?","Kéo lên tin cũ trong nhóm Ban tổ chức, hồi tháng 9 có người đưa số tài khoản.","Ghim chi tiết giao dịch và tin 13/9 của anh Hiển, vô Sổ vụ án → 🧩 Suy luận, chọn hai cái đó rồi bấm Ghép."]},
-    {done:["cf:van:hoadon"],tips:["Tờ hóa đơn Minh Phát được in ở đâu, lúc mấy giờ?","Hỏi chị Vân tiệm in thử coi.","Ghim Hoa_don_Minh_Phat (thư mục Quỹ), mở chat chị Vân, bấm 📎 đưa nó cho chị."]},
+    {done:[["cf:van:hoadon","deduce:d2"]],tips:["Tờ hóa đơn Minh Phát được in ở đâu, lúc mấy giờ?","Hỏi chị Vân tiệm in thử coi.","Ghim Hoa_don_Minh_Phat (thư mục Quỹ), mở chat chị Vân, bấm 📎 đưa nó cho chị."]},
     {done:["deduce:d2"],tips:["Giờ ghi trên hóa đơn với giờ in thật có khớp hông?","So hóa đơn (18:30), sao kê (20:05) với nhật ký máy in chị Vân gửi (21:05).","Ghim sao kê, hóa đơn và nhật ký máy in, rồi Ghép ba cái trong 🧩 Suy luận."]},
-    {done:["cf:quan:camfull"],tips:["Cái hộp quỹ đi đâu? Coi lại camera hành lang đi em.","Ảnh camera trong thư mục Camera bị cắt mất nửa. Bản gốc nằm trong thư mục Camera gốc.","Ghim CAM_hanh_lang_2142_goc rồi đưa cho Quân bằng nút 📎."]},
-    {done:["cf:quan:baocao"],tips:["Anh Hiển nói sổ quỹ mất theo cái hộp. Thiệt hông?","Quân biết cái hộp đang nằm ở đâu đó.","Ghim tin báo cáo 7 giờ sáng của anh Hiển trong nhóm Ban tổ chức, rồi đưa cho Quân."]},
-    {done:["deduce:d4"],tips:["Ai sai bê cái hộp, và trong hộp có gì đáng giấu?","Đọc tin nhắn Quân chụp gửi, với ảnh sổ quỹ Quân chụp trong kho.","Ghim Tin_nhan_Hien_Quan và So_quy_giay_Quan_chup, rồi Ghép trong 🧩 Suy luận."]}],
+    {done:[["cf:quan:camfull","deduce:d4"]],tips:["Cái hộp quỹ đi đâu? Coi lại camera hành lang đi em.","Ảnh camera trong thư mục Camera bị cắt mất nửa. Bản gốc nằm trong thư mục Camera gốc.","Ghim CAM_hanh_lang_2142_goc rồi đưa cho Quân bằng nút 📎."]},
+    {done:[["cf:quan:baocao","deduce:d4"]],tips:["Anh Hiển nói sổ quỹ mất theo cái hộp. Thiệt hông?","Quân biết cái hộp đang nằm ở đâu đó.","Ghim tin báo cáo 7 giờ sáng của anh Hiển trong nhóm Ban tổ chức, rồi đưa cho Quân."]},
+    {done:["deduce:d4"],tips:["Ai sai bê cái hộp, và trong hộp có gì đáng giấu?","Đọc tin nhắn Quân chụp gửi, với trang sổ quỹ Quân chụp trong kho (cả hai nằm trong app Tệp).","Ghim Tin_nhan_Hien_Quan và So_quy_giay_Quan_chup, rồi Ghép trong 🧩 Suy luận."]}],
   suspects:[
     {id:"hien",n:"Anh Hiển",r:"Trưởng ban gây quỹ, đồng chủ tài khoản quỹ"},{id:"thu",n:"Chị Thư",r:"Thủ quỹ, đang nợ tiền riêng"},
     {id:"quan",n:"Quân",r:"Tình nguyện viên, dọn kho"},{id:"van",n:"Chị Vân",r:"Tiệm in, in hóa đơn"}],
@@ -1553,7 +1559,7 @@ Ngày lập: [gõ tay] 23/11/2025 18:30`},
 let CH=CHAPTERS[0];
 const S={};
 function freshState(ci){Object.assign(S,{ch:ci,pinned:new Set(),open:{},z:10,chat:CHAPTERS[ci].lead,tries:3,solved:false,url:"",notes:"",nbFilter:"all",
-  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false,unlocked:new Set(),restored:new Set(),pwErr:{},folder:null,rsK:null,cx:{},cfUsed:new Set(),given:new Set(),cfOpen:false,traces:new Set(),lastProg:Date.now(),hintLv:{},hintsUsed:0,nudged:new Set(),dSel:new Set(),dFound:[],dMsg:"",why:""})}
+  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false,unlocked:new Set(),restored:new Set(),pwErr:{},folder:null,rsK:null,cx:{},cfUsed:new Set(),given:new Set(),cfOpen:false,traces:new Set(),lastProg:Date.now(),hintLv:{},hintsUsed:0,nudged:new Set(),dSel:new Set(),dFound:[],dMsg:"",why:"",accName:""})}
 let done=new Set();
 try{(JSON.parse(localStorage.getItem("tthn-done")||"[]")).forEach(i=>done.add(i))}catch(e){}
 const saveDone=()=>{try{localStorage.setItem("tthn-done",JSON.stringify([...done]))}catch(e){}};
@@ -1587,26 +1593,32 @@ function confront(p,id){const rules=CH.confront&&CH.confront[p],d=S.pinned.has(i
   if(r.give)[].concat(r.give).forEach(g=>S.given.add(g));
   return{hit:true,gave:r.give||null}}
 /* ---------- Dấu vết, gợi ý theo bước, ghép suy luận ---------- */
-function trace(k){if(!S.traces.has(k)){S.traces.add(k);S.lastProg=Date.now()}}
+function trace(k){if(!S.traces.has(k)){S.traces.add(k);S.lastProg=Date.now();if(CH.hints){const p=$(".hint-pop");if(p)renderHintPop(p)}}}
 const stepDone=st=>st.done.every(c=>Array.isArray(c)?c.some(x=>S.traces.has(x)):S.traces.has(c));
 const hintStep=()=>CH.hints?CH.hints.findIndex(st=>!stepDone(st)):-1;
 function hintMore(){const i=hintStep();if(i<0)return -1;const lv=S.hintLv[i]||0;if(lv<CH.hints[i].tips.length){S.hintLv[i]=lv+1;S.hintsUsed++}return i}
-function hintHTML(){const i=hintStep();
+function hintHTML(){if(S.solved)return `<b>💡 Anh Ti</b><p class="tip">Vụ này em phá xong rồi đó, giỏi ghê!</p><div class="row"><button class="btn" data-hx>Đóng</button></div>`;
+  if(S.tries<=0)return `<b>💡 Anh Ti</b><p class="tip">Hết lượt gửi rồi em. Mở Hồ sơ xem đáp án nha.</p><div class="row"><button class="btn" data-hx>Đóng</button></div>`;
+  const i=hintStep();
   if(i<0)return `<b>💡 Anh Ti gợi ý</b><p class="tip">Đủ chứng cứ rồi đó em, mở Hồ sơ nộp đi. Nhớ trả lời đủ cả ba câu nha.</p><div class="row"><button class="btn" data-hx>Đóng</button></div>`;
   const st=CH.hints[i],lv=S.hintLv[i]||0;
   return `<b>💡 Anh Ti gợi ý · bước ${i+1}/${CH.hints.length}</b>${st.tips.slice(0,lv).map((t,j)=>`<p class="tip t${j+1}">${t}</p>`).join("")}
     <div class="row"><button class="btn" data-hx>Đóng</button>${lv<st.tips.length?`<button class="btn go" data-hmore>${lv?"Gợi ý rõ hơn":"Xem gợi ý"}</button>`:""}</div>`}
-function openHints(){const i=hintStep();if(i>=0&&!S.hintLv[i])hintMore();
+function renderHintPop(p){p.innerHTML=hintHTML();$("[data-hx]",p).onclick=()=>p.remove();const m=$("[data-hmore]",p);if(m)m.onclick=()=>{hintMore();renderHintPop(p)}}
+function openHints(){if(!S.solved&&S.tries>0){const i=hintStep();if(i>=0&&!S.hintLv[i])hintMore()}
   let p=$(".hint-pop");if(!p){p=h(`<div class="hint-pop" role="dialog" aria-label="Gợi ý của anh Ti"></div>`);$("#desk").append(p)}
-  p.innerHTML=hintHTML();$("[data-hx]",p).onclick=()=>p.remove();const m=$("[data-hmore]",p);if(m)m.onclick=()=>{hintMore();openHints()}}
+  renderHintPop(p)}
 function nudgeCheck(now){if(!CH.hints||S.solved||S.tries<=0)return false;const i=hintStep();
   if(i<0||S.nudged.has(i)||now-S.lastProg<240000)return false;
   S.nudged.add(i);say("Bí hả em? Bấm 💡 Gợi ý trên thanh menu, anh chỉ cho nè.");return true}
-function deduceTry(ids){const evs=new Set(ids.map(id=>S.pinData[id]&&S.pinData[id].ev).filter(Boolean)),D=CH.deduce||[];
+function deduceTry(ids){const sel=ids.map(id=>S.pinData[id]&&S.pinData[id].ev),evs=new Set(sel.filter(Boolean)),D=CH.deduce||[];
   const cov=d=>d.need.filter(g=>g.ev.some(e=>evs.has(e))).length;
-  const hit=D.find(d=>!S.dFound.includes(d.id)&&cov(d)===d.need.length);
+  const exact=d=>{const u=new Set(d.need.flatMap(g=>g.ev));return sel.every(e=>e&&u.has(e))};
+  const full=D.filter(d=>cov(d)===d.need.length);
+  const hit=full.find(d=>!S.dFound.includes(d.id)&&exact(d));
   if(hit){S.dFound.push(hit.id);trace("deduce:"+hit.id);return{found:hit}}
-  if(D.some(d=>S.dFound.includes(d.id)&&cov(d)===d.need.length))return{again:true};
+  if(full.some(d=>S.dFound.includes(d.id)&&exact(d)))return{again:true};
+  if(full.some(d=>!S.dFound.includes(d.id)))return{extra:true};
   let best=null,bc=0;D.filter(d=>!S.dFound.includes(d.id)).forEach(d=>{const c=cov(d);if(c>bc){bc=c;best=d}});
   return best?{missing:best.need.filter(g=>!g.ev.some(e=>evs.has(e))).map(g=>g.l)}:{none:true}}
 function tryRestore(k,input){const t=(CH.trash||[]).find(x=>x.k===k);if(!t)return false;if(S.restored.has(k))return true;
@@ -1624,7 +1636,7 @@ function pinOf(id,src,who,x,ev){REG[id]={src,x:(who?who+": ":"")+x,ev};return pi
 function pinBtn(id){const on=S.pinned.has(id);return `<button class="pin ${on?"done":""}" data-pin="${id}">📌 ${on?"Đã ghim":"Ghim"}</button>`}
 function updateProg(){$("#pc").textContent=S.pinned.size}
 function pin(id){
-  if(S.pinned.has(id)){S.pinned.delete(id);toast("Đã bỏ ghim")}else{S.pinned.add(id);S.pinData[id]=REG[id];if(REG[id]&&REG[id].ev)trace("pin:"+REG[id].ev);toast("Đã ghim vào Sổ vụ án")}
+  if(S.pinned.has(id)){S.pinned.delete(id);S.dSel.delete(id);toast("Đã bỏ ghim")}else{S.pinned.add(id);S.pinData[id]=REG[id];if(REG[id]&&REG[id].ev)trace("pin:"+REG[id].ev);toast("Đã ghim vào Sổ vụ án")}
   updateProg();refreshAll();
 }
 
@@ -1786,7 +1798,7 @@ const R={
       <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${S.reveal?(next?`<button class="btn go" data-next>${nextLabel(S.ch,S.ch+1)} →</button>`:""):`<button class="btn go" data-reveal>Xem đáp án</button>`}</div></div></div>`}
     const how=CH.form.how,why=CH.form.why;
     return `<div class="file"><form class="sheet" id="acc">${head}
-      <label for="acc-in">${CH.form.q}</label><input id="acc-in" autocomplete="off" placeholder="Ví dụ: Nguyễn Văn A">
+      <label for="acc-in">${CH.form.q}</label><input id="acc-in" autocomplete="off" placeholder="Ví dụ: Nguyễn Văn A" value="${esc(S.accName||"")}">
       ${how?`<label>${how.q}</label><div class="choices">${how.opts.map(o=>`<label><input type="radio" name="how" id="how-${o.v}" value="${o.v}" ${S.how===o.v?"checked":""}>${o.l}</label>`).join("")}</div>`:""}
       ${why?`<label>${why.q}</label><div class="choices">${why.opts.map(o=>`<label><input type="radio" name="why" id="why-${o.v}" value="${o.v}" ${S.why===o.v?"checked":""}>${o.l}</label>`).join("")}</div>`:""}
       ${S.verdict?`<div class="verdict no">${S.verdict}</div>`:""}
@@ -1848,7 +1860,8 @@ function bind(k,c){
     const cfo=$("[data-cfopen]",c);if(cfo)cfo.onclick=()=>{S.cfOpen=!S.cfOpen;render("chat")};
     c.querySelectorAll("[data-cf]").forEach(b=>b.onclick=()=>{const p=S.chat,r=confront(p,b.dataset.cf);S.cfOpen=false;
       const nm=CH.people[p].n.split(" · ")[0];
-      if(r&&r.hit)toast(`Lời khai của ${nm} đã thay đổi`+(r.gave?` · ${nm} vừa gửi thêm một tệp`:""));
+      const ng=r&&r.gave?[].concat(r.gave).length:0;
+      if(r&&r.hit)toast(`Lời khai của ${nm} đã thay đổi`+(ng?` · ${nm} vừa gửi thêm ${ng>1?ng+" tệp":"một tệp"}`:""));
       render("chat");refreshAll()});
     c.querySelectorAll("[data-link]").forEach(b=>b.onclick=()=>{nav(b.dataset.link);openApp("web");render("web")});
     const q=$("#chat-q",c);q.oninput=()=>{const v=norm(q.value);c.querySelectorAll(".convo").forEach(b=>{const txt=norm(CH.chats[b.dataset.chat].map(m=>(m.x||"")+" "+(m.who||"")).join(" ")+CH.people[b.dataset.chat].n);b.hidden=v&&!txt.includes(v)})};
@@ -1867,14 +1880,14 @@ function bind(k,c){
   }
   if(k==="photos"){c.querySelectorAll("[data-photo]").forEach(b=>b.onclick=()=>{S.photo=b.dataset.photo;render("photos")});const bk=$("[data-back]",c);if(bk)bk.onclick=()=>{S.photo=null;render("photos")}}
   if(k==="nb"){
-    c.querySelectorAll("[data-nb]").forEach(b=>b.onclick=()=>{S.nbFilter=b.dataset.nb;render("nb")});
+    c.querySelectorAll("[data-nb]").forEach(b=>b.onclick=()=>{S.nbFilter=b.dataset.nb;S.dMsg="";render("nb")});
     c.querySelectorAll("[data-mark]").forEach(b=>b.onclick=()=>{const [id,m]=b.dataset.mark.split(":");S.marks[id]=m;render("nb",true)});
     const t=$("#notes",c);if(t)t.oninput=()=>S.notes=t.value;
     c.querySelectorAll("[data-dsel]").forEach(b=>b.onchange=()=>{const id=b.dataset.dsel;if(b.checked)S.dSel.add(id);else S.dSel.delete(id)});
     const dg=$("[data-dgo]",c);if(dg)dg.onclick=()=>{const ids=[...S.dSel].filter(id=>S.pinned.has(id));
       if(ids.length<2){S.dMsg="Chọn ít nhất hai chi tiết đã ghim để ghép.";render("nb",true);return}
       const r=deduceTry(ids);
-      S.dMsg=r.found?`Ghép được: ${r.found.title}`:r.again?"Cái này em ghép ra rồi.":r.missing?`Hướng này có lý, nhưng còn thiếu chứng cứ về: ${r.missing.join(", ")}.`:"Mấy chi tiết này chưa nối được với nhau.";
+      S.dMsg=r.found?`Ghép được: ${r.found.title}`:r.again?"Cái này em ghép ra rồi.":r.extra?"Có chi tiết không liên quan lẫn vô. Bỏ bớt rồi ghép lại thử.":r.missing?`Hướng này có lý, nhưng còn thiếu chứng cứ về: ${r.missing.join(", ")}.`:"Mấy chi tiết này chưa nối được với nhau.";
       if(r.found){S.dSel.clear();toast(S.dMsg)}render("nb",true)}}
   if(k==="trash"){
     const restoredMsg=t=>{S.rsK=null;toast(t.kind==="photo"?"Đã khôi phục. Mở app Ảnh để xem.":"Đã khôi phục. Mở app Tệp để xem.")};
@@ -1898,6 +1911,7 @@ function bind(k,c){
 }
 
 function accuse(name,how,why){
+  S.accName=name;
   const n=norm(name).replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim().replace(/^(chu|co|anh|chi|ba|ong|bac|em) /,"");
   if(!n){S.verdict="Hãy ghi họ tên đầy đủ trước khi gửi.";render("file");return}
   if(CH.form.how&&!how){S.verdict=CH.form.how.need;render("file");return}
@@ -1910,8 +1924,8 @@ function accuse(name,how,why){
   S.tries--;S.verdict=r.m;render("file");
   say(S.tries>0?`Sai rồi em. Còn ${S.tries} lần thôi đó 😏`:"Hết lượt rồi. Thôi để anh tự làm vậy.");
 }
-function say(x){const [hh,mm]=CH.start;const t=hh*60+mm+5+S.extra.length;S.extra.push({t:`${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`,x});
-  S.unread[CH.lead]=!(S.open.chat&&S.chat===CH.lead);if(S.open.chat)render("chat");renderDock()}
+function say(x){S.extra.push({t:gameTime(),x});
+  S.unread[CH.lead]=!(S.open.chat&&S.chat===CH.lead);if(S.open.chat)render("chat",true);renderDock()}
 
 /* ================= FLOW ================= */
 function modal(html,onReady){const m=h(`<div class="modal-bg">${html}</div>`);$("#layer").append(m);onReady&&onReady(m);return m}
@@ -1957,7 +1971,7 @@ $("#mb-home").onclick=()=>{if(S.solved||S.tries<=0){goHome();return}
   <div class="row"><button class="btn" data-x>Ở lại điều tra</button><button class="btn go" data-ok>Về màn hình chính</button></div></div></div>`,
   m=>{$("[data-x]",m).onclick=()=>m.remove();$("[data-ok]",m).onclick=goHome})};
 let stepTimer,nudgeT;
-$("#mb-hint").onclick=openHints;
+$("#mb-hint").onclick=()=>{const p=$(".hint-pop");if(p){p.remove();return}openHints()};
 function startChapter(ci){
   document.querySelectorAll(".win,.coach,.hint-pop").forEach(w=>w.remove());clearTimeout(stepTimer);clearInterval(nudgeT);
   CH=CHAPTERS[ci];freshState(ci);

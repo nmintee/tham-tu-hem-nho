@@ -274,6 +274,18 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .chapters button.ch:hover{border-color:var(--accent)}
 .chapters button.ch small{display:block;color:var(--ink-3);font-size:11px}
 @media (max-width:720px){.files-list{width:120px}.files-list button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+.files-list button.sub{padding-left:24px}
+.files-list button .lk{margin-left:auto;font-style:normal;font-size:11px}
+.lockbox{align-items:center;justify-content:center}
+.lk-card{max-width:340px;width:100%;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+.lk-ico{font-size:30px}
+.lk-card p{margin:0;font-size:13px;color:var(--ink-2)}
+.lk-card .hint{background:var(--win-2);border:1px solid var(--line);border-radius:6px;padding:6px 10px;color:var(--ink)}
+.pwf{display:flex;gap:6px;width:100%}
+.pwf input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-size:13px}
+.pw-err{color:var(--bad);font-size:12px}
+.meta-line{font-size:11px;color:var(--ink-3)}
+.tag-r{font-size:10px;font-weight:700;background:#e6f3ec;color:var(--ok);border-radius:4px;padding:1px 6px;margin-left:6px}
 
 /* Mặt Sách */
 .fb-top{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
@@ -740,7 +752,7 @@ Thứ bảy, 04/10/2025 — Người trực: Sáu
 let CH=CHAPTERS[0];
 const S={};
 function freshState(ci){Object.assign(S,{ch:ci,pinned:new Set(),open:{},z:10,chat:CHAPTERS[ci].lead,tries:3,solved:false,url:"",notes:"",nbFilter:"all",
-  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false})}
+  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false,unlocked:new Set(),restored:new Set(),pwErr:{},folder:null,rsK:null})}
 let done=new Set();
 try{(JSON.parse(localStorage.getItem("tthn-done")||"[]")).forEach(i=>done.add(i))}catch(e){}
 const saveDone=()=>{try{localStorage.setItem("tthn-done",JSON.stringify([...done]))}catch(e){}};
@@ -750,6 +762,16 @@ const h=html=>{const t=document.createElement("template");t.innerHTML=html.trim(
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const norm=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/đ/gi,"d").toLowerCase().trim().replace(/\s+/g," ");
 const keyTotal=()=>Object.values(CH.clues).filter(c=>c.key).length;
+const pwNorm=s=>norm(s).replace(/[^a-z0-9]/g,"");
+const driveF=k=>(CH.drive?CH.drive.folders:[]).find(f=>f.k===k);
+const isOpen=f=>!f.lock||S.unlocked.has(f.k);
+const passOk=(f,input)=>f.lock.pass.some(p=>pwNorm(p)===pwNorm(input||""));
+function tryUnlock(k,input){const f=driveF(k);if(!f)return false;if(isOpen(f))return true;
+  if(passOk(f,input)){S.unlocked.add(k);delete S.pwErr["d:"+k];return true}
+  S.pwErr["d:"+k]=(input||"").trim()?"Sai mật khẩu.":"Nhập mật khẩu trước đã.";return false}
+const folderFiles=f=>Object.entries(f.files).concat((CH.trash||[]).filter(t=>t.kind==="file"&&t.from===f.k&&S.restored.has(t.k))
+  .map(t=>["t."+t.k,{n:t.n,x:t.x,m:t.when,restored:1,info:t.info}]));
+const fileCount=()=>Object.keys(CH.files).length+(CH.drive?CH.drive.folders.length:0);
 
 function toast(m){const t=h(`<div class="toast" role="status">${m}</div>`);$("#layer").append(t);setTimeout(()=>t.remove(),1900)}
 function nav(u){u=u||"";if(u===S.url)return;S.hist=S.hist.slice(0,S.hi+1);S.hist.push(u);S.hi=S.hist.length-1;S.url=u}
@@ -780,7 +802,7 @@ function renderDock(){
     const b=h(`<button data-open="${k}" aria-label="${a.n}" class="${S.open[k]?"open":""}"><div class="ico" style="background:${a.bg}"><svg viewBox="0 0 24 24">${a.svg}</svg></div><span class="tip">${a.n}</span></button>`);
     if(k==="chat"){const u=Object.values(S.unread).filter(Boolean).length;if(u)b.append(h(`<span class="badge">${u}</span>`))}
     if(k==="nb"&&S.pinned.size)b.append(h(`<span class="badge" style="background:#c98a2f">${S.pinned.size}</span>`));
-    if(k==="files"&&Object.keys(CH.files).length&&!S.seenFiles)b.append(h(`<span class="badge" style="background:#3d8fd1">${Object.keys(CH.files).length}</span>`));
+    if(k==="files"&&fileCount()&&!S.seenFiles)b.append(h(`<span class="badge" style="background:#3d8fd1">${fileCount()}</span>`));
     d.append(b);
   }
 }
@@ -852,12 +874,26 @@ const R={
     return `<div class="browser">${tabs}<div class="page">${page}</div></div>`;
   },
   files(){
-    const fs=Object.entries(CH.files);
-    if(!fs.length)return `<div class="doc"><div class="empty">Thư mục vụ án này chưa có tệp nào.</div></div>`;
-    const sel=S.fileSel||fs[0][0],f=CH.files[sel];
+    const cs=Object.entries(CH.files),D=CH.drive;
+    if(!cs.length&&!D)return `<div class="doc"><div class="empty">Thư mục vụ án này chưa có tệp nào.</div></div>`;
     const ic=`<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="#fff" stroke="#8b919b"/><path d="M14 3v4h4" fill="none" stroke="#8b919b"/><path d="M8.5 12h7M8.5 15h7M8.5 18h5" stroke="#3d8fd1"/></svg>`;
-    return `<div class="files-list"><small>${CH.deskLabel}</small>${fs.map(([k,x])=>`<button data-fsel="${k}" class="${k===sel?"on":""}">${ic}<span>${x.n}</span></button>`).join("")}</div>
-      <div class="doc"><header><b>${f.n}</b>${pinOf("f:"+sel,"Tệp","",f.n+" — "+f.x.split("\n").filter(l=>l.trim()).slice(0,1).join(""))}</header><pre>${esc(f.x)}</pre></div>`;
+    const fic=`<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#f2c94c"/></svg>`;
+    const fo=S.folder||(cs.length?"case":D.folders[0].k);
+    const list=fo==="case"?cs:(driveF(fo)&&isOpen(driveF(fo))?folderFiles(driveF(fo)):[]);
+    const sel=list.find(([k])=>k===S.fileSel)?S.fileSel:(list[0]||[])[0];
+    let side=cs.length?`<small>${CH.deskLabel}</small>`+cs.map(([k,x])=>`<button data-fsel="case|${k}" class="${fo==="case"&&k===sel?"on":""}">${ic}<span>${x.n}</span></button>`).join(""):"";
+    if(D)side+=`<small>${D.n}</small>`+D.folders.map(f=>`<button data-fold="${f.k}" class="${fo===f.k&&!list.length?"on":""}">${fic}<span>${esc(f.n)}</span>${isOpen(f)?"":'<i class="lk">🔒</i>'}</button>`+
+      (fo===f.k&&isOpen(f)?folderFiles(f).map(([k,x])=>`<button data-fsel="${f.k}|${k}" class="sub ${k===sel?"on":""}">${ic}<span>${esc(x.n)}</span></button>`).join(""):"")).join("");
+    let main;
+    const F=fo==="case"?null:driveF(fo);
+    if(F&&!isOpen(F)){const err=S.pwErr["d:"+F.k];
+      main=`<div class="doc lockbox"><div class="lk-card"><div class="lk-ico">🔒</div><b>${esc(F.n)}</b><p>Thư mục riêng, cần mật khẩu.</p><p class="hint">Gợi ý mật khẩu: ${esc(F.lock.hint)}</p>
+        <form id="pw-f" class="pwf"><input id="pw-in" autocomplete="off" placeholder="Nhập mật khẩu" aria-label="Mật khẩu thư mục ${esc(F.n)}"><button class="btn go">Mở</button></form>${err?`<div class="pw-err" role="alert">${err}</div>`:""}</div></div>`}
+    else if(!list.length)main=`<div class="doc"><div class="empty">Thư mục này trống.</div></div>`;
+    else{const f=list.find(([k])=>k===sel)[1];const pid=fo==="case"?"f:"+sel:`f:${fo}:${sel}`;
+      main=`<div class="doc"><header><b>${esc(f.n)}${f.restored?'<span class="tag-r">Khôi phục</span>':""}</b>${pinOf(pid,"Tệp","",f.n+" — "+f.x.split("\n").filter(l=>l.trim()).slice(0,1).join(""))}</header>
+        ${f.m?`<div class="meta-line">Sửa lần cuối: ${esc(f.m)}${f.info?" · "+esc(f.info):""}</div>`:""}<pre>${esc(f.x)}</pre></div>`}
+    return `<div class="files-list">${side}</div>${main}`;
   },
   photos(){
     if(S.photo){const p=CH.photos[S.photo];return `<div class="viewer"><div class="ph">${p.svg}</div><footer><span><button class="btn" data-back>← Tất cả ảnh</button></span><span>${p.n}</span>${pinOf("ph:"+S.photo,"Ảnh","",p.n)}</footer></div>`}
@@ -865,7 +901,7 @@ const R={
   },
   nb(){
     const groups={};for(const id of S.pinned){const s=S.pinData[id].src;(groups[s]=groups[s]||[]).push(id)}
-    const srcs=["Tin nhắn","Mặt Sách","Chợ Hẻm","Ảnh"].concat(Object.keys(CH.files).length?["Tệp"]:[]);
+    const srcs=["Tin nhắn","Mặt Sách","Chợ Hẻm","Ảnh"].concat(fileCount()?["Tệp"]:[]).concat(CH.trash&&CH.trash.length?["Thùng rác"]:[]);
     const side=`<button data-nb="notes" class="${S.nbFilter==="notes"?"on":""}">✎ Ghi chú của tôi</button>
       <button data-nb="sus" class="${S.nbFilter==="sus"?"on":""}">◎ Nghi phạm <span>${CH.suspects.length}</span></button><small>Manh mối đã ghim</small>
       <button data-nb="all" class="${S.nbFilter==="all"?"on":""}">Tất cả <span>${S.pinned.size}</span></button>
@@ -953,7 +989,11 @@ function bind(k,c){
     const ff=$("#fb-f",c);if(ff)ff.onsubmit=e=>{e.preventDefault();const q=$("#fb-q",c).value.trim();nav("matsach.vn"+(q?"/search?q="+encodeURIComponent(q):""));render("web")};
     const f=$("#shop-f",c);if(f)f.onsubmit=e=>{e.preventDefault();S.shopQ=$("#shop-q",c).value;render("web")};
   }
-  if(k==="files")c.querySelectorAll("[data-fsel]").forEach(b=>b.onclick=()=>{S.fileSel=b.dataset.fsel;render("files")});
+  if(k==="files"){
+    c.querySelectorAll("[data-fsel]").forEach(b=>b.onclick=()=>{const [fo,fk]=b.dataset.fsel.split("|");S.folder=fo;S.fileSel=fk;render("files")});
+    c.querySelectorAll("[data-fold]").forEach(b=>b.onclick=()=>{S.folder=b.dataset.fold;S.fileSel=null;render("files");const i=$("#pw-in",S.open.files);if(i)i.focus()});
+    const pf=$("#pw-f",c);if(pf)pf.onsubmit=e=>{e.preventDefault();const ok=tryUnlock(S.folder,$("#pw-in",c).value);if(ok)toast("Đã mở khóa thư mục");render("files");if(!ok){const i=$("#pw-in",S.open.files);if(i)i.focus()}};
+  }
   if(k==="photos"){c.querySelectorAll("[data-photo]").forEach(b=>b.onclick=()=>{S.photo=b.dataset.photo;render("photos")});const bk=$("[data-back]",c);if(bk)bk.onclick=()=>{S.photo=null;render("photos")}}
   if(k==="nb"){
     c.querySelectorAll("[data-nb]").forEach(b=>b.onclick=()=>{S.nbFilter=b.dataset.nb;render("nb")});

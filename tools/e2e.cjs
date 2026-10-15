@@ -138,7 +138,7 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     await page.goto(URL);
     await startCh(page, 4);
     await page.click("#mb-hint");
-    expect((await page.textContent(".hint-pop")).includes("bước 1/8"), "gợi ý bắt đầu ở bước 1");
+    expect((await page.textContent(".hint-pop")).includes("sổ sách ngân hàng"), "gợi ý bắt đầu ở bước 1");
     await page.click(".hint-pop [data-hmore]");
     expect(await page.locator(".hint-pop .tip").count() === 2, "mở nấc 2");
     await page.screenshot({path: path.join(OUT, "ch2p2-hint.png")});
@@ -148,7 +148,7 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     await w.locator('[data-fsel="nganhang|chitiet"]').click();
     await w.locator('.doc header [data-pin="f:nganhang:chitiet"]').click({force: true});
     await page.click("#mb-hint");
-    expect((await page.textContent(".hint-pop")).includes("bước 3/8"), "gợi ý theo kịp sau khi đọc sao kê và chi tiết");
+    expect((await page.textContent(".hint-pop")).includes("từng thấy ở đâu"), "gợi ý theo kịp sau khi đọc sao kê và chi tiết");
     w = await open(page, "chat");
     await w.locator('[data-chat="btc"]').click();
     await w.locator('[data-pin="c:btc:1"]').click({force: true});
@@ -186,7 +186,7 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
       expect((await n.textContent()).includes(must), `ghép ra: ${must}`);
     };
     await pinFile("quy|hoadon", "f:quy:hoadon", "quy");
-    await confront("van", "f:quy:hoadon", "9 giờ 5");
+    await confront("van", "f:quy:hoadon", "chín giờ chị in");
     await pinFile("case|mayin", "f:mayin");
     await ghep(["f:nganhang:chitiet", "f:quy:hoadon", "f:mayin"], "sau khi tiền đã đi");
     await pinFile("camgoc|camgoc", "f:camgoc:camgoc", "camgoc");

@@ -108,3 +108,32 @@ test("anh Hiển chưa nhận số tài khoản khi người chơi chưa ghép r
   assert.equal(G.confront("hien", "f:nganhang:chitiet").hit, false);
   assert.ok(!/tài khoản/.test(G.S.cx.hien.at(-1).x) || /hóa đơn/.test(G.S.cx.hien.at(-1).x));
 });
+
+test("sau buổi chơi thử: bớt lộ, lời giải không khẳng định điều không chứng minh, chi tiết thật hơn", () => {
+  const C = ch().CH;
+  assert.ok(!C.chats.van.some(m => /Hiển/.test(m.x || "")), "tin đầu của chị Vân không nêu tên Hiển");
+  assert.ok(!/lập trang ẩn danh/.test(C.solution));
+  const f = k => C.drive.folders.flatMap(x => Object.entries(x.files)).find(([kk]) => kk === k)[1].x;
+  assert.match(f("chitiet"), /HO KINH DOANH MINH PHAT/);
+  assert.match(f("saoke"), /CDM/);
+  const titles = C.deduce.map(d => d.title);
+  for (const o of [...C.form.how.opts, ...C.form.why.opts]) assert.ok(!titles.includes(o.l));
+  const lens = C.form.how.opts.map(o => o.l.length);
+  assert.ok(Math.min(...lens) >= 45, "lựa chọn sai không quá ngắn so với đáp án");
+});
+
+test("Quân khai xong thì tự nhắc cái hộp còn trong kho; tệp gửi có dòng báo trong chat", () => {
+  const G = ch();
+  showD(G, "camgoc", "camgoc"); G.pin("f:camgoc:camgoc"); G.confront("quan", "f:camgoc:camgoc");
+  assert.ok(G.S.cx.quan.some(m => /kho ngoài/.test(m.x) && /sổ mất/.test(m.x)));
+  assert.ok(G.S.cx.quan.some(m => /📎 Đã gửi tệp: Tin_nhan_Hien_Quan\.txt/.test(m.x)));
+});
+
+test("gợi ý và chặn nộp không lộ con số tiến độ; Ảnh ẩn khi vụ không có ảnh", () => {
+  const G = ch();
+  assert.ok(!/bước \d+\/\d+/.test(G.hintHTML()));
+  G.accuse("Lâm Gia Hiển", "ck", "so");
+  assert.ok(!/\d/.test(G.S.verdict.replace(/🧩/g, "")), G.S.verdict);
+  assert.ok(!G.dockApps().includes("photos"));
+  G.setCh(0); assert.ok(G.dockApps().includes("photos"));
+});

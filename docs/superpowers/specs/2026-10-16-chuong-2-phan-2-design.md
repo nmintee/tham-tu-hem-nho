@@ -69,3 +69,16 @@ Unit: dấu vết, bước gợi ý và nấc, tự nhắc, ghép suy luận (đ
 (Nội dung chi tiết từng tin nhắn, bài đăng, tệp, đối chất, suy luận, gợi ý, Hồ sơ: xem dữ liệu chương trong `index.html`, object `CHƯƠNG 2 · PHẦN 2`; mọi câu chữ người chơi thấy nằm ở đó.)
 
 **Đường suy luận chuẩn:** sao kê (7,5 triệu ra lúc 20:05) → chi tiết giao dịch (STK 0071 0023 4567) → tin 13/9 của Hiển cùng STK → *suy luận: tiền về tay Hiển* → đưa hóa đơn cho Vân → nhật ký máy in 21:05 + tin Hiển nhờ in → *suy luận: hóa đơn làm sau khi tiền đã đi* → camera bản gốc (Quân bê hộp quỹ) → đối chất Quân → tin Hiển sai bê hộp + dặn giấu → đưa báo cáo 7:00 cho Quân → ảnh sổ quỹ giấy (6 khoản, không có Minh Phát) → *suy luận: Hiển giấu hộp để giấu cuốn sổ* → Hồ sơ: Lâm Gia Hiển · chuyển tiền + hóa đơn khống + giấu hộp có sổ · giấu sổ để không lộ khoản chi không có thật.
+
+## Phụ lục B — Thay đổi sau review và chơi thử thật
+
+- Ghép suy luận chỉ khớp khi **mọi** chi tiết đã chọn thuộc suy luận đó (chống tick hết); có chi tiết thừa → "Có chi tiết không liên quan lẫn vô…".
+- Bước gợi ý tính là xong khi đã đạt kết quả ở bước sau (vd. bước "hỏi chị Vân" xong nếu đã có d2 qua bản nháp trong Thùng rác); sau khi phá án/hết lượt, 💡 không tính thêm; khung gợi ý tự cập nhật khi xong bước.
+- Không hiện con số tiến độ (bỏ "bước x/8", bỏ "còn thiếu N suy luận") theo quy tắc không lộ "x/tổng".
+- Anh Hiển chỉ nhận số tài khoản sau khi người chơi đã ghép ra d3.
+- Bớt lộ: tin đầu của chị Vân không nêu tên Hiển. Lời giải không còn khẳng định Hiển lập trang ẩn danh (không có chứng cứ), chỉ nêu câu cửa miệng "cả nhà iu".
+- Thật hơn: tài khoản nhận "HO KINH DOANH MINH PHAT" (tài khoản tiệm của Hiển, khớp tin 13/9); nộp tiền qua máy CDM; lời chị Thư khớp giờ đi gửi tiền.
+- Hồ sơ: các lựa chọn sai dài và hợp lý ngang đáp án; câu 3 không trùng tên suy luận.
+- Quân tự nhắc "hộp vẫn nằm trong kho ngoài… nghe anh Hiển nói sổ mất theo hộp" để người chơi nghĩ tới đối chất lần hai; nhãn thiếu của d4 đổi thành "người tận mắt thấy trong hộp có gì".
+- Khi nhân vật gửi tệp, chat có dòng "📎 Đã gửi tệp: … (xem trong app Tệp)"; app Ảnh ẩn khi vụ không có ảnh; thanh địa chỉ giải mã URL; cửa sổ Nhắn cao hơn; tin của anh Ti theo giờ game và không làm nhảy khung chat.
+- Không đổi: tìm Mặt Sách bằng 2 chữ của tên vẫn ra (siết lại sẽ làm khó tìm "Ba Tèo" ở Chương 1 · Phần 2).

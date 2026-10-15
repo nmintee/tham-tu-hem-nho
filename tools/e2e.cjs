@@ -11,7 +11,7 @@ fs.mkdirSync(OUT, {recursive: true});
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const closeAll = page => page.evaluate(() => {
-  document.querySelectorAll(".coach").forEach(c => c.remove()); // mẹo chương 1 có thể che nút
+  document.querySelectorAll(".coach,.hint-pop").forEach(c => c.remove()); // mẹo / gợi ý có thể che nút
   document.querySelectorAll(".win .x").forEach(b => b.click());
 });
 async function open(page, app){ await closeAll(page); await page.click(`.dock [data-open="${app}"]`); return page.locator(`.win[data-app="${app}"]`); }
@@ -133,7 +133,37 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     w = await open(page, "file");
     await w.locator("#acc-in").fill("Đỗ Minh Tú"); await w.locator("#how-bam").check(); await w.locator("#acc-in").press("Enter");
     await w.locator(".stamp").waitFor();
-    expect((await w.textContent()).includes("Chương mới sắp ra mắt"), "màn thắng chương 2 phần 1");
+    expect((await w.textContent()).includes("Phần 2: Khoản chi không có trong sổ →"), "màn thắng chương 2 phần 1 mời sang phần 2");
+    // ---------- Desktop: Chương 2 · Phần 2 (gợi ý, suy luận, Hồ sơ 3 câu) ----------
+    await page.goto(URL);
+    await startCh(page, 4);
+    await page.click("#mb-hint");
+    expect((await page.textContent(".hint-pop")).includes("bước 1/8"), "gợi ý bắt đầu ở bước 1");
+    await page.click(".hint-pop [data-hmore]");
+    expect(await page.locator(".hint-pop .tip").count() === 2, "mở nấc 2");
+    await page.screenshot({path: path.join(OUT, "ch2p2-hint.png")});
+    w = await open(page, "files");
+    await w.locator('[data-fold="nganhang"]').click();
+    expect((await w.textContent()).includes("72.500.000"), "sao kê hiện số dư");
+    await w.locator('[data-fsel="nganhang|chitiet"]').click();
+    await w.locator('.doc header [data-pin="f:nganhang:chitiet"]').click({force: true});
+    await page.click("#mb-hint");
+    expect((await page.textContent(".hint-pop")).includes("bước 3/8"), "gợi ý theo kịp sau khi đọc sao kê và chi tiết");
+    w = await open(page, "chat");
+    await w.locator('[data-chat="btc"]').click();
+    await w.locator('[data-pin="c:btc:1"]').click({force: true});
+    w = await open(page, "nb");
+    await w.locator('[data-nb="deduce"]').click();
+    await w.locator('[data-dsel="f:nganhang:chitiet"]').check();
+    await w.locator('[data-dsel="c:btc:1"]').check();
+    await w.locator("[data-dgo]").click();
+    expect((await w.locator(".ded").first().textContent()).includes("tài khoản của anh Hiển"), "ghép ra suy luận d3");
+    await page.screenshot({path: path.join(OUT, "ch2p2-deduce.png")});
+    w = await open(page, "file");
+    await w.locator("#acc-in").fill("Lâm Gia Hiển"); await w.locator("#how-ck").check(); await w.locator("#why-so").check();
+    await w.locator("#acc-in").press("Enter");
+    expect((await w.locator(".verdict").textContent()).includes("Suy luận"), "chưa đủ suy luận thì chưa nộp được");
+    expect((await w.textContent()).includes("Còn 3/3"), "không trừ lượt");
     await page.close();
 
     // ---------- Mobile: Chương 1 · Phần 3 ----------

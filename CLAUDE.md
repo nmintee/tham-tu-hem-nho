@@ -11,6 +11,7 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
 - `partLabel(i)` → "Chương 1 · Phần 2"; `nextLabel`, `soonVol()` — nhãn sang phần/chương sau, chương sắp ra mắt.
 - `S` — state của chương đang chơi (`freshState(ci)` khởi tạo lại).
 - `R` — các hàm render từng app: `chat`, `web`, `files`, `photos`, `nb` (Sổ vụ án), `file` (Hồ sơ), `trash` (Thùng rác).
+- `trace(k)` — dấu vết hành động (`file:` `chat:` `url:` `cf:người:ev` `deduce:` `unlock:` `restore:` `pin:`); `hintStep()`, `hintMore()`, `openHints()`, `nudgeCheck()` — gợi ý theo bước; `deduceTry(ids)` — ghép suy luận.
 - `confront(p, id)` — Đối chất: đưa chi tiết đã ghim `id` cho người `p`, ghi tin vào `S.cx[p]`, mở tệp ẩn qua `S.given`. `showsCoach(i)` — mẹo hiện ở phần đầu mỗi chương.
 - `pwNorm`, `tryUnlock`, `tryRestore` — thư mục khóa và Thùng rác; `dockApps()` — app hiện trên Dock; `nextCh()` — chương đầu tiên chưa phá.
 - `bind(k, c)` — gắn sự kiện sau mỗi lần render app `k`.
@@ -32,9 +33,11 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
   photos:{k:{n,svg,ev?}}, files:{k:{n,x,ev?,hidden?}},          // hidden: chỉ hiện khi nghi phạm gửi (confront.give)
   drive?:{n, folders:[{k,n,lock?:{hint,pass:[…]},files:{k:{n,x,m?}}}]},   // ổ đĩa có thư mục khóa (Tệp)
   trash?:[{k,n,by,when,from,kind:"file"|"photo",x?,svg?,info?}],          // app Thùng rác; khôi phục cần mật khẩu thư mục gốc
-  confront?:{người:{ev:{reply:["…"|{x,ev?}],give?:"khóa tệp ẩn"},_:"câu đáp chung"}},  // Đối chất (app Nhắn, nút 📎)
-  suspects:[{id,n,r}], form:{q, how?:{q,label,need,opts:[{v,l}],a}},
-  check(n,how) -> {ok:1} | {m:"phản hồi khi sai"},   // n đã bỏ dấu, chữ thường
+  confront?:{người:{ev:{reply:["…"|{x,ev?}],give?:"tệp"|["tệp"],needs?:[dấu vết],early?:"…"},_:"câu đáp chung"}},  // Đối chất (app Nhắn, nút 📎)
+  deduce?:[{id,title,x,need:[{ev:[…],l:"nhãn loại chứng cứ"}]}],   // Sổ vụ án → 🧩 Suy luận
+  hints?:[{done:[dấu vết | [một trong các]],tips:[nấc1,nấc2,nấc3]}],  // nút 💡 Gợi ý + tự nhắc sau 4 phút
+  suspects:[{id,n,r}], form:{q, how?:{q,label,need,opts:[{v,l}],a}, why?:{…như how}, proof?:[id suy luận bắt buộc]},
+  check(n,how,why) -> {ok:1} | {m:"phản hồi khi sai"},   // n đã bỏ dấu, chữ thường
   culprit, win, solution, coach? }
 ```
 - `ev` là nhãn ẩn cho Đối chất: đi theo khi ghim, không bao giờ hiển thị.
@@ -49,6 +52,8 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
 - Bài đăng mới hơn nằm trên.
 - Hồ sơ: 3 lần gửi; sai mỗi lần có phản hồi riêng (gõ đúng người nhưng thiếu họ tên thì chỉ nhắc, không trừ lượt: `check` trả `{m, free:1}`); hết lượt thì có nút **Xem đáp án**; màn thắng/thua có nút **Màn hình chính**, **Chơi lại**, sang chương sau.
 - Màn hình chính chỉ có **Chọn chương** (nút chính) và **Cách chơi** — không có nút "Bắt đầu chơi/Chơi tiếp", vì tiến độ chỉ lưu trong `localStorage` của từng máy.
+- **Văn nói**: tin nhắn, bài đăng, bình luận, gợi ý viết như người thật nói chuyện (giọng Sài Gòn đời thường, câu ngắn, "nha/nè/hông/ủa"); giấy tờ (sao kê, hóa đơn, nhật ký) giữ văn bản chuẩn.
+- **Gợi ý theo bước** (`hints`) hiện chỉ có ở Chương 2 · Phần 2. Màn thắng ghi "Phá án với N gợi ý." hoặc "Phá án không cần gợi ý luôn ta, gớm dữuuuu".
 - "Mẹo của thám tử" chỉ hiện ở **phần đầu tiên của mỗi chương** (dùng để hướng dẫn cơ chế mới của chương).
 - Giao diện cố định tông sáng; nút/ô nhập phải có màu chữ rõ ràng (đã từng lỗi chữ trắng khi máy bật dark mode).
 - Cửa sổ có 3 nút: đóng / thu nhỏ xuống Dock / phóng to (nhấp đôi thanh tiêu đề cũng phóng to).
@@ -66,6 +71,9 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
 **Chương 2: Thám tử thực thụ** — cơ chế **Đối chất bằng chứng**: nhắn thẳng với nghi phạm, bấm 📎 đưa chi tiết đã ghim; đưa trúng mâu thuẫn thì họ khai lại / gửi thêm tệp.
 - **Phần 1 — Căn phòng khóa trái** (dãy trọ hẻm 51, Bình Thạnh, 14–15/11/2025). Án mạng (không tả máu me). Thủ phạm: **Đỗ Minh Tú**, cách rời phòng: **bấm chốt khóa tay nắm rồi kéo cửa sập lại**.
   Đường suy luận: 2 hộp cơm còn nguyên + lịch còn tờ 14 → mốc 23:12 là giả → đối chất Huy bằng lịch sử đơn (20:31) → Huy gửi ảnh xác nhận có giày bảo hộ cam → camera dư shipper áo xanh vào 20:18 ra 21:07 → Tú có giày cam, nhắn hẹn 8h rồi thu hồi, bị đối chất thì nói về 8g rưỡi (sai camera) → đối chất Trâm: ốp mèo vàng của Phúc nằm trên bàn nhậu của Tú 23:10 → đối chất cô Bảy: khóa bấm tự khóa. Động cơ: Tú ôm 30 triệu COD bằng tài khoản Phúc. Mồi: Trâm, Bảo (nợ, chìa cũ), cô Bảy (chìa dự phòng, về 22:31), Huy (nói dối giờ). Kịch bản đầy đủ: docs/superpowers/specs/2026-10-15-chuong-2-phan-1-design.md.
+
+- **Phần 2 — Khoản chi không có trong sổ** (NVH Khu phố 5, Bình Thạnh, hội chợ CN 23/11/2025). Phi bạo lực. Thủ phạm: **Lâm Gia Hiển**; thủ đoạn: **chuyển 7,5 triệu ra ngoài, làm hóa đơn khống Minh Phát rồi giấu hộp quỹ có cuốn sổ**; lý do giấu hộp: **để cuốn sổ không lộ là chẳng có khoản chi Minh Phát**. Cơ chế mới: 🧩 ghép suy luận (Hồ sơ cần d2, d3, d4), Hồ sơ 3 câu, 💡 gợi ý 8 bước.
+  Đường suy luận: sao kê (20:05 −7,5 triệu) → chi tiết GD (STK 0071 0023 4567) + tin 13/9 Hiển thu tiền áo cùng STK → d3 → đưa hóa đơn cho chị Vân → nhật ký máy in 21:05 + tin Hiển nhờ in → d2 → camera gốc → đối chất Quân → tin Hiển sai bê hộp → đưa báo cáo 7:00 cho Quân → ảnh sổ quỹ giấy (6 khoản, không Minh Phát) → d4. Mồi: chị Thư (nợ anh họ, bài ẩn danh), Quân (bê hộp), chị Vân (in hóa đơn). Sổ tiền: 86 − 6 = 80 gửi; 80 − 7,5 = 72,5. Spec: docs/superpowers/specs/2026-10-16-chuong-2-phan-2-design.md.
 
 ## Ý tưởng tiếp theo đã nêu
 - Gợi ý có giới hạn cho người chơi bị bí.

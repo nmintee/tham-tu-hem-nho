@@ -75,3 +75,28 @@ test("chơi lại xóa lời khai và tệp đã nhận", () => {
   G.setCh(G.CHAPTERS.length - 1);
   assert.deepEqual({...G.S.cx}, {}); assert.equal(G.S.given.size, 0);
 });
+
+test("nút 📎 chỉ có ở người có bảng đối chất; chương 1 không có", () => {
+  const G = withFix2();
+  G.S.chat = "an"; assert.ok(G.R.chat().includes("data-cfopen"));
+  G.S.chat = "ti"; assert.ok(!G.R.chat().includes("data-cfopen"));
+  G.setCh(0); assert.ok(!G.R.chat().includes("data-cfopen"));
+});
+
+test("bảng chọn: trống thì nhắc ghim, có ghim thì liệt kê", () => {
+  const G = withFix2();
+  G.S.chat = "an"; G.S.cfOpen = true;
+  assert.ok(G.R.chat().includes("Chưa có gì để đưa. Ghim một chi tiết (📌) trước đã."));
+  G.R.files(); G.pin("f:note");
+  const html = G.R.chat();
+  assert.ok(html.includes('data-cf="f:note"') && html.includes("Chọn chi tiết đã ghim để đưa cho An"));
+});
+
+test("tin của mình nằm bên phải và ghim được", () => {
+  const G = withFix2();
+  G.R.files(); G.pin("f:note"); G.confront("an", "f:note");
+  G.S.chat = "an";
+  const html = G.R.chat();
+  assert.ok(html.includes('class="msg me"') && html.includes("📎 Hoa_don.txt"));
+  assert.ok(html.includes('data-pin="c:an:1"'));
+});

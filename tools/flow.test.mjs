@@ -36,5 +36,27 @@ test("màn thắng chương cuối báo chương mới sắp ra mắt", () => {
   const G = loadGame();
   G.setCh(G.CHAPTERS.length - 1);
   G.S.solved = true;
-  assert.ok(G.R.file().includes("Chương mới sắp ra mắt"));
+  assert.ok(G.R.file().includes("Chương 2 sắp ra mắt"));
+});
+
+test("ba vụ án là ba phần của Chương 1", () => {
+  const G = loadGame();
+  assert.deepEqual([...G.CHAPTERS.map(c => c.vol)], [1, 1, 1]);
+  assert.equal(G.partLabel(0), "Chương 1 · Phần 1");
+  assert.equal(G.partLabel(2), "Chương 1 · Phần 3");
+});
+
+test("màn chọn chương nhóm theo chương, có Chương 2 sắp ra mắt", () => {
+  const G = loadGame();
+  const html = G.chapterListHTML();
+  assert.ok(html.includes("Chương 1: Thám tử tập sự"));
+  assert.ok(html.includes("<b>Phần 1.</b> Chậu lan biến mất"));
+  assert.ok(html.includes("<b>Phần 3.</b> Ai đứng sau Hẻm Bàn Tán?"));
+  assert.match(html, /Chương 2[\s\S]*Sắp ra mắt/);
+});
+
+test("màn thắng mời sang phần tiếp theo", () => {
+  const G = loadGame();
+  G.setCh(0); G.S.solved = true;
+  assert.ok(G.R.file().includes("Phần 2: Ai ăn bánh trung thu? →"));
 });

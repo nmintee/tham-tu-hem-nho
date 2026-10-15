@@ -68,6 +68,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .chapters{display:flex;flex-direction:column;gap:8px}
 .chapters div{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px}
 .chapters div.lock{opacity:.5}
+.chapters .vol-h{border:0;padding:8px 2px 0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
 @keyframes pop{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
 
 /* ---------- DESKTOP ---------- */
@@ -378,7 +379,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
       <small>Phố Xanh trình chiếu</small>
       <h1>Thám Tử<span>Hẻm Nhỏ</span></h1>
       <div class="menu">
-        <button class="primary" id="b-play"><i>▶</i><span><b>Bắt đầu chơi</b><em>Chương 1 · Chậu lan biến mất</em></span></button>
+        <button class="primary" id="b-play"><i>▶</i><span><b>Bắt đầu chơi</b><em>Chương 1 · Phần 1 · Chậu lan biến mất</em></span></button>
         <button id="b-chap"><i>☰</i><span><b>Chọn chương</b></span></button>
         <button id="b-how"><i>?</i><span><b>Cách chơi</b></span></button>
       </div>
@@ -547,9 +548,11 @@ const SVG = {
 const hero = s=>s.replace("<svg",'<svg preserveAspectRatio="xMidYMid slice"');
 
 /* ================= CHAPTERS ================= */
+/* Chương = nhóm nhiều phần; mỗi phần là một vụ án trong CHAPTERS (trường vol). */
+const VOLS={1:{title:"Thám tử tập sự"},2:{title:"",soon:true}};
 const CHAPTERS = [
-{ /* ---------- CHƯƠNG 1 ---------- */
-  title:"Chậu lan biến mất", place:"Hẻm 42, Quận 3 · 14/9/2025", day:"CN 14/9", start:[6,40], deskLabel:"Vụ chậu lan", art:SVG.alley,
+{ /* ---------- CHƯƠNG 1 · PHẦN 1 ---------- */
+  vol:1, title:"Chậu lan biến mất", place:"Hẻm 42, Quận 3 · 14/9/2025", day:"CN 14/9", start:[6,40], deskLabel:"Vụ chậu lan", art:SVG.alley,
   intro:"Đêm thứ Bảy, chậu lan hồ điệp quý nhất của cô Ba biến mất khỏi bậc thềm. Camera đầu hẻm lại hư đúng đêm đó. Cả hẻm ai cũng có chuyện để nghi.",
   lead:"ti",
   people:{ti:{n:"Anh Ti dân phòng",i:"T",c:"#2d6f73"},ba:{n:"Cô Ba nhà số 7",i:"B",c:"#b5577a"},hem:{n:"Nhóm Hẻm 42",i:"42",c:"#5d6bb0"}},
@@ -639,8 +642,8 @@ const CHAPTERS = [
   solution:"Chị Hà còn thấy chậu lan lúc 23g30, nên chậu mất sau giờ đó. Khoa nói với Tâm lúc 23h là đang ở nhà sắp ngủ, nhưng 01:20 lại khoe vừa “chạy đơn” về. Khoa đang nợ tiền và từng khen chậu lan đáng nửa triệu. Đến 05:12 tài khoản <b>khoa.cayxanh</b> đã rao một chậu lan men lam mẻ miệng bên phải, giống hệt ảnh cô Ba chụp. Chú Tư có ảnh ở Vũng Tàu lúc 23:04 nên ngoại phạm.",
   coach:"Bấm vào link Mặt Sách anh Ti gửi. Trên Mặt Sách, đọc kỹ <b>bình luận</b> và bấm vào <b>Bạn bè</b> để xem trang người khác. Muốn tìm ai thì gõ <b>họ tên đầy đủ</b> hoặc tên tài khoản.",
 },
-{ /* ---------- CHƯƠNG 2 ---------- */
-  title:"Ai ăn bánh trung thu?", place:"Nhà văn hóa Khu phố 3 · 5/10/2025", day:"CN 5/10", start:[7,10], deskLabel:"Vụ bánh trung thu", art:SVG.hall,
+{ /* ---------- CHƯƠNG 1 · PHẦN 2 ---------- */
+  vol:1, title:"Ai ăn bánh trung thu?", place:"Nhà văn hóa Khu phố 3 · 5/10/2025", day:"CN 5/10", start:[7,10], deskLabel:"Vụ bánh trung thu", art:SVG.hall,
   intro:"Tối mai là Trung thu của 120 bé trong khu phố. Sáng nay kho nhà văn hóa thiếu 12 hộp bánh. Ổ khóa còn nguyên, chìa thì chỉ có hai người giữ. Vậy mà ai cũng có vẻ vô can.",
   lead:"ti",
   people:{
@@ -826,8 +829,8 @@ Thứ bảy, 04/10/2025 — Người trực: Sáu
   solution:"Lúc 20g, Đức cầm chìa dự phòng “đi mua dây điện” 20 phút. Đúng 20:40, tiệm khóa Ba Tèo khoe vừa đánh gấp một chìa kho cho cậu áo xanh đeo balo móc cá mập cam, đúng cái móc Đức gọi là bùa hộ mệnh. Đức đang kẹt tiền đóng hụi. 21:40 Đức về sau cùng bằng cổng sau và để chốt mở. 02:14 camera quay người áo xanh đeo balo móc cá mập, và móc cá mập đứt dây rơi lại trong kho. 06:05 “Mẹ Thỏ Bakery” rao 12 hộp xanh thỏ ngọc bị cạo tem, để lại số 0909 888 215. Đó là số mới của Đức. Tuấn ngoại phạm nhờ bài đăng 02:12 ở thư viện.",
   coach:"Đọc kỹ bình luận trên Mặt Sách, nhiều khi chủ bài đăng lỡ lời ở đó. Vụ này nhiều nghi phạm. Mở <b>Tệp</b> đọc sổ trực, rồi dùng <b>Sổ vụ án → Nghi phạm</b> đánh dấu ai ngoại phạm. Để ý số điện thoại xuất hiện ở hơn một chỗ.",
 },
-{ /* ---------- CHƯƠNG 3 ---------- */
-  title:"Ai đứng sau Hẻm Bàn Tán?", place:"Khu phố 3, Quận 3 · 9/11/2025", day:"CN 9/11", start:[7,15], deskLabel:"Vụ Hẻm Bàn Tán", art:SVG.hem7,
+{ /* ---------- CHƯƠNG 1 · PHẦN 3 ---------- */
+  vol:1, title:"Ai đứng sau Hẻm Bàn Tán?", place:"Khu phố 3, Quận 3 · 9/11/2025", day:"CN 9/11", start:[7,15], deskLabel:"Vụ Hẻm Bàn Tán", art:SVG.hem7,
   intro:"Tối qua, trang ẩn danh Hẻm Bàn Tán đăng ảnh khay thịt ôi cạnh túi Bánh Mì Chị Hai. Sáng nay tiệm vắng tanh. Trang ấy vẫn còn đăng nhập trên máy tính chung của nhà văn hóa, nhưng máy đó cả khu phố cùng dùng.",
   lead:"ti",
   people:{
@@ -1226,13 +1229,13 @@ const R={
     const next=CHAPTERS[S.ch+1];
     if(S.solved) return `<div class="file"><div class="sheet">${head}<div class="stamp" style="border-color:var(--ok);color:var(--ok)">ĐÃ PHÁ ÁN</div>
       <p style="font-size:13px;line-height:1.6;margin:0">Thủ phạm: <b>${CH.culprit}</b>. ${CH.solution}</p>
-      <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${next?`<button class="btn go" data-next>Chương ${S.ch+2}: ${next.title} →</button>`:`<span class="tries">Chương mới sắp ra mắt</span>`}</div></div></div>`;
+      <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${next?`<button class="btn go" data-next>${nextLabel(S.ch,S.ch+1)} →</button>`:`<span class="tries">Chương ${soonVol()||"mới"} sắp ra mắt</span>`}</div></div></div>`;
     if(S.tries<=0){const how=CH.form.how?CH.form.how.opts.find(o=>o.v===CH.form.how.a).l:"";
       return `<div class="file"><div class="sheet">${head}<div class="stamp">ANH TI TỰ XỬ</div>
       <p style="font-size:13px;margin:0;line-height:1.6">Hết 3 lần gửi rồi. Anh Ti sẽ kể chuyện này ở tổ dân phố đó.</p>
       ${S.reveal?`<div class="answer"><div class="answer-h">Đáp án</div><p>Thủ phạm: <b>${CH.culprit}</b>${how?`<br>${CH.form.how.label}: <b>${how}</b>`:""}</p><p>${CH.solution}</p></div>`:
         `<p style="font-size:12px;margin:0;color:var(--ink-3)">Muốn tự phá lại thì bấm Chơi lại. Chịu thua thì xem đáp án.</p>`}
-      <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${S.reveal?(next?`<button class="btn go" data-next>Chương ${S.ch+2}: ${next.title} →</button>`:""):`<button class="btn go" data-reveal>Xem đáp án</button>`}</div></div></div>`}
+      <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${S.reveal?(next?`<button class="btn go" data-next>${nextLabel(S.ch,S.ch+1)} →</button>`:""):`<button class="btn go" data-reveal>Xem đáp án</button>`}</div></div></div>`}
     const how=CH.form.how;
     return `<div class="file"><form class="sheet" id="acc">${head}
       <label for="acc-in">${CH.form.q}</label><input id="acc-in" autocomplete="off" placeholder="Ví dụ: Nguyễn Văn A">
@@ -1352,16 +1355,22 @@ function showIntro(ci){
   const c=CHAPTERS[ci];
   document.querySelectorAll(".modal-bg").forEach(m=>m.remove());
   modal(`<div class="modal" role="dialog" aria-label="Giới thiệu vụ án"><div class="hero">${hero(c.art)}
-  <div class="cap"><span class="chip">Chương ${ci+1}</span><h2>${c.title}</h2><p>${c.place}</p></div></div>
+  <div class="cap"><span class="chip">${partLabel(ci)}</span><h2>${c.title}</h2><p>${c.place}</p></div></div>
   <div class="body"><p style="margin:0">${c.intro}</p>
   <strong>${ci===0?"Sẵn sàng phá vụ án đầu tiên chưa?":"Vụ này khó hơn. Sẵn sàng chưa?"}</strong><div class="row"><button class="btn" data-x>Để sau</button><button class="btn go" data-ok>Sẵn sàng!</button></div></div></div>`,
   m=>{$("[data-x]",m).onclick=()=>m.remove();$("[data-ok]",m).onclick=()=>{m.remove();startChapter(ci)}});
 }
+const partNo=i=>CHAPTERS.slice(0,i+1).filter(c=>c.vol===CHAPTERS[i].vol).length;
+const partLabel=i=>`Chương ${CHAPTERS[i].vol} · Phần ${partNo(i)}`;
+const nextLabel=(from,to)=>CHAPTERS[to].vol===CHAPTERS[from].vol?`Phần ${partNo(to)}: ${CHAPTERS[to].title}`:`Chương ${CHAPTERS[to].vol}: ${VOLS[CHAPTERS[to].vol].title||CHAPTERS[to].title}`;
+const soonVol=()=>Object.keys(VOLS).map(Number).find(v=>VOLS[v].soon&&!CHAPTERS.some(c=>c.vol===v));
 function nextCh(){const i=CHAPTERS.findIndex((c,i)=>!done.has(i));return i<0?CHAPTERS.length-1:i}
-function playLabel(){const i=nextCh();$("#b-play").querySelector("em").textContent=`Chương ${i+1} · ${CHAPTERS[i].title}`}
-function chapterListHTML(){const nx=nextCh();
-  return CHAPTERS.map((c,i)=>{const nw=i>0&&i===nx&&!done.has(i);
-    return `<button class="ch" data-ch="${i}"><span><b>${i+1}.</b> ${c.title}<small>${c.place}</small></span><span class="chip ${nw?"new":""}">${done.has(i)?"Đã phá":nw?"Mới":"Mở"}</span></button>`}).join("")}
+function playLabel(){const i=nextCh();$("#b-play").querySelector("em").textContent=`${partLabel(i)} · ${CHAPTERS[i].title}`}
+function chapterListHTML(){const nx=nextCh(),sv=soonVol();
+  return [...new Set(CHAPTERS.map(c=>c.vol))].map(v=>`<div class="vol-h">Chương ${v}: ${VOLS[v].title}</div>`+
+    CHAPTERS.map((c,i)=>[c,i]).filter(([c])=>c.vol===v).map(([c,i])=>{const nw=i>0&&i===nx&&!done.has(i);
+      return `<button class="ch" data-ch="${i}"><span><b>Phần ${partNo(i)}.</b> ${c.title}<small>${c.place}</small></span><span class="chip ${nw?"new":""}">${done.has(i)?"Đã phá":nw?"Mới":"Mở"}</span></button>`}).join("")).join("")+
+    (sv?`<div class="lock"><span><b>Chương ${sv}${VOLS[sv].title?": "+VOLS[sv].title:""}</b></span><span>Sắp ra mắt</span></div>`:"")}
 $("#b-play").onclick=()=>showIntro(nextCh());
 playLabel();
 $("#b-chap").onclick=()=>modal(`<div class="modal"><div class="body"><strong style="font-size:18px">Chọn chương</strong><div class="chapters">

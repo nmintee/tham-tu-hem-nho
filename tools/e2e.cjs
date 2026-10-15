@@ -33,7 +33,7 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     page.on("console", m => { if (m.type() === "error" && !/fonts\.g|Failed to load resource/.test(m.text())) errors.push("desk: " + m.text()); });
     page.on("response", r => { if (r.status() >= 400 && !/favicon\.ico$/.test(r.url())) errors.push(`desk: ${r.status()} ${r.url()}`); });
     await page.goto(URL);
-    expect((await page.textContent("#b-play em")).includes("Chương 1"), "nút Bắt đầu chơi trỏ chương 1");
+    expect((await page.textContent("#b-play em")).includes("Chương 1 · Phần 1"), "nút Bắt đầu chơi trỏ phần 1");
     await page.click("#b-play"); await page.click(".modal [data-ok]");
     let w = await open(page, "files");
     expect((await w.textContent()).includes("chưa có tệp"), "chương 1 Tệp trống");
@@ -47,9 +47,13 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     await w.locator("#acc-in").fill("Phạm Quốc Đức"); await w.locator("#acc-in").press("Enter");
     expect((await w.locator(".verdict").textContent()).includes("vào kho"), "chương 2 câu nhắc chọn cách");
     await page.click("#mb-home"); await page.click(".modal [data-ok]");
-    expect((await page.textContent("#b-play em")).includes("Chương 2"), "Bắt đầu chơi trỏ chương 2 sau khi phá chương 1");
+    expect((await page.textContent("#b-play em")).includes("Chương 1 · Phần 2"), "Bắt đầu chơi trỏ phần 2 sau khi phá phần 1");
 
     // ---------- Desktop: chương 3 ----------
+    await page.click("#b-chap");
+    expect((await page.textContent(".chapters")).includes("Chương 1: Thám tử tập sự"), "màn chọn chương có nhóm Chương 1");
+    await page.screenshot({path: path.join(OUT, "chapters.png")});
+    await page.click(".modal [data-x]");
     await startCh(page, 2);
     await sleep(500);
     await page.screenshot({path: path.join(OUT, "ch3-desk-start.png")});
@@ -104,7 +108,7 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     expect((await w.locator(".verdict").textContent()).includes("trú mưa"), "phản hồi riêng cho cô Hòa");
     await w.locator("#acc-in").fill("Trịnh Văn Lộc"); await w.locator("#how-ghep").check(); await w.locator("#acc-in").press("Enter");
     await w.locator(".stamp").waitFor();
-    expect((await w.textContent()).includes("Chương mới sắp ra mắt"), "màn thắng chương cuối");
+    expect((await w.textContent()).includes("Chương 2 sắp ra mắt"), "màn thắng phần cuối");
     await page.screenshot({path: path.join(OUT, "ch3-desk-win.png")});
     await page.close();
 

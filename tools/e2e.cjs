@@ -107,8 +107,33 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     expect((await w.locator(".verdict").textContent()).includes("trú mưa"), "phản hồi riêng cho cô Hòa");
     await w.locator("#acc-in").fill("Trịnh Văn Lộc"); await w.locator("#how-ghep").check(); await w.locator("#acc-in").press("Enter");
     await w.locator(".stamp").waitFor();
-    expect((await w.textContent()).includes("Chương 2 sắp ra mắt"), "màn thắng phần cuối");
+    expect((await w.textContent()).includes("Chương 2: Thám tử thực thụ"), "màn thắng phần cuối mời sang Chương 2");
     await page.screenshot({path: path.join(OUT, "ch3-desk-win.png")});
+    // ---------- Desktop: chương 2 phần 1 (đối chất) ----------
+    await page.goto(URL);
+    await startCh(page, 3);
+    w = await open(page, "files");
+    await w.locator('[data-fsel="case|don"]').click();
+    await w.locator('.doc header [data-pin="f:don"]').click({force: true});
+    await w.locator('[data-fsel="case|bienban"]').click();
+    await w.locator('.doc header [data-pin="f:bienban"]').click({force: true});
+    expect(!(await w.textContent()).includes("Anh_xac_nhan"), "tệp ảnh xác nhận còn ẩn");
+    w = await open(page, "chat");
+    await w.locator('[data-chat="huy"]').click();
+    await w.locator("[data-cfopen]").click();
+    await w.locator('[data-cf="f:don"]').click();
+    expect((await w.locator(".msgs").textContent()).includes("em nói thiệt"), "Huy khai lại");
+    await w.locator('[data-chat="bay"]').click();
+    await w.locator("[data-cfopen]").click();
+    await w.locator('[data-cf="f:bienban"]').click();
+    expect((await w.locator(".msgs").textContent()).includes("tự khóa"), "cô Bảy nói khóa tự khóa");
+    await page.screenshot({path: path.join(OUT, "ch2p1-confront.png")});
+    w = await open(page, "files");
+    expect((await w.textContent()).includes("Anh_xac_nhan_GN-88213.txt"), "Huy gửi tệp ảnh xác nhận");
+    w = await open(page, "file");
+    await w.locator("#acc-in").fill("Đỗ Minh Tú"); await w.locator("#how-bam").check(); await w.locator("#acc-in").press("Enter");
+    await w.locator(".stamp").waitFor();
+    expect((await w.textContent()).includes("Chương mới sắp ra mắt"), "màn thắng chương 2 phần 1");
     await page.close();
 
     // ---------- Mobile: chương 3 ----------

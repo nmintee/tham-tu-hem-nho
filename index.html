@@ -1049,7 +1049,7 @@ Giá thuê: 45.000.000đ/tháng
 let CH=CHAPTERS[0];
 const S={};
 function freshState(ci){Object.assign(S,{ch:ci,pinned:new Set(),open:{},z:10,chat:CHAPTERS[ci].lead,tries:3,solved:false,url:"",notes:"",nbFilter:"all",
-  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false,unlocked:new Set(),restored:new Set(),pwErr:{},folder:null,rsK:null})}
+  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false,unlocked:new Set(),restored:new Set(),pwErr:{},folder:null,rsK:null,cx:{},cfUsed:new Set(),given:new Set(),cfOpen:false})}
 let done=new Set();
 try{(JSON.parse(localStorage.getItem("tthn-done")||"[]")).forEach(i=>done.add(i))}catch(e){}
 const saveDone=()=>{try{localStorage.setItem("tthn-done",JSON.stringify([...done]))}catch(e){}};
@@ -1068,7 +1068,18 @@ function tryUnlock(k,input){const f=driveF(k);if(!f)return false;if(isOpen(f))re
   S.pwErr["d:"+k]=(input||"").trim()?"Sai mật khẩu.":"Nhập mật khẩu trước đã.";return false}
 const folderFiles=f=>Object.entries(f.files).concat((CH.trash||[]).filter(t=>t.kind==="file"&&t.from===f.k&&S.restored.has(t.k))
   .map(t=>["t."+t.k,{n:t.n,x:t.x,m:t.when,restored:1,info:t.info}]));
-const fileCount=()=>Object.keys(CH.files).length+(CH.drive?CH.drive.folders.length:0);
+const caseFiles=()=>Object.entries(CH.files).filter(([k,f])=>!f.hidden||S.given.has(k));
+const fileCount=()=>caseFiles().length+(CH.drive?CH.drive.folders.length:0);
+const gameTime=()=>{const t=CH.start[0]*60+CH.start[1]+mins;return `${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`};
+function confront(p,id){const rules=CH.confront&&CH.confront[p],d=S.pinned.has(id)&&S.pinData[id];if(!rules||!d)return null;
+  const box=S.cx[p]=S.cx[p]||[],t=gameTime();
+  box.push({me:1,t,x:"📎 "+d.x});
+  const k=d.ev&&rules[d.ev]&&d.ev!=="_"?d.ev:null,used=k&&S.cfUsed.has(p+":"+k);
+  if(!k||used){box.push({t,x:used?"Cái này hỏi rồi mà.":rules._});return{hit:false,gave:null}}
+  S.cfUsed.add(p+":"+k);const r=rules[k];
+  r.reply.forEach(m=>box.push(typeof m==="string"?{t,x:m}:{t,...m}));
+  if(r.give)S.given.add(r.give);
+  return{hit:true,gave:r.give||null}}
 function tryRestore(k,input){const t=(CH.trash||[]).find(x=>x.k===k);if(!t)return false;if(S.restored.has(k))return true;
   const f=driveF(t.from);
   if(f&&!isOpen(f)){if(!passOk(f,input)){S.pwErr["t:"+k]=(input||"").trim()?"Sai mật khẩu.":"Nhập mật khẩu trước đã.";return false}S.unlocked.add(f.k)}
@@ -1080,7 +1091,7 @@ function toast(m){const t=h(`<div class="toast" role="status">${m}</div>`);$("#l
 function nav(u){u=u||"";if(u===S.url)return;S.hist=S.hist.slice(0,S.hi+1);S.hist.push(u);S.hi=S.hist.length-1;S.url=u}
 function histGo(d){const i=S.hi+d;if(i<0||i>=S.hist.length)return;S.hi=i;S.url=S.hist[i]}
 const REG={};
-function pinOf(id,src,who,x){REG[id]={src,x:(who?who+": ":"")+x};return pinBtn(id)}
+function pinOf(id,src,who,x,ev){REG[id]={src,x:(who?who+": ":"")+x,ev};return pinBtn(id)}
 function pinBtn(id){const on=S.pinned.has(id);return `<button class="pin ${on?"done":""}" data-pin="${id}">📌 ${on?"Đã ghim":"Ghim"}</button>`}
 function updateProg(){$("#pc").textContent=S.pinned.size}
 function pin(id){
@@ -1147,14 +1158,15 @@ const R={
   chat(){
     const lead=CH.lead;
     const visible=k=>k===lead?CH.chats[k].filter((m,i)=>m.day||i<=S.leadShown):CH.chats[k];
-    const last=k=>{const m=[...visible(k),...(k===lead?S.extra:[])].filter(m=>m.x);return m[m.length-1]};
+    const all=k=>[...visible(k),...(k===lead?S.extra:[]),...(S.cx[k]||[])];
+    const last=k=>{const m=all(k).filter(m=>m.x);return m[m.length-1]};
     const list=Object.keys(CH.chats).map(k=>{const p=CH.people[k],l=last(k);return `<button class="convo ${S.chat===k?"on":""}" data-chat="${k}">
       ${av(p)}<div class="meta"><b>${p.n}<small>${l?l.t:""}</small></b><p>${l?esc(l.x):"…"}</p></div>${S.unread[k]?'<span class="unread"></span>':""}</button>`}).join("");
     const p=CH.people[S.chat];
-    const msgs=[...visible(S.chat),...(S.chat===lead?S.extra:[])];
+    const msgs=all(S.chat);
     const body=msgs.map((m,mi)=>m.day?`<div class="day">${m.day}</div>`:
       `<div class="msg">${m.who?av({c:"#8a8f99",i:m.who.split(" ").pop()[0]},30):av(p,30)}
-      <div class="bubble">${m.who?`<div class="who">${m.who}</div>`:""}${esc(m.x)}${m.link?` <button class="lnk" data-link="${m.link}">${m.link}</button>`:""}<div class="time">${m.t}</div>${pinOf(`c:${S.chat}:${mi}`,"Tin nhắn",m.who||p.n,m.x)}</div></div>`).join("");
+      <div class="bubble">${m.who?`<div class="who">${m.who}</div>`:""}${esc(m.x)}${m.link?` <button class="lnk" data-link="${m.link}">${m.link}</button>`:""}<div class="time">${m.t}</div>${pinOf(`c:${S.chat}:${mi}`,"Tin nhắn",m.who||p.n,m.x,m.ev)}</div></div>`).join("");
     const typing=S.chat===lead&&S.leadShown<CH.chats[lead].length-1?`<div class="typing">${p.n.replace(" dân phòng","")} đang soạn tin…</div>`:"";
     return `<div class="chat-list"><input id="chat-q" placeholder="Tìm tin nhắn…" aria-label="Tìm tin nhắn">${list}</div>
       <div class="chat-pane"><div class="chat-head">${av(p)}<div><b>${p.n}</b><small>Vừa truy cập</small></div></div>
@@ -1179,7 +1191,7 @@ const R={
     return `<div class="browser">${tabs}<div class="page">${page}</div></div>`;
   },
   files(){
-    const cs=Object.entries(CH.files),D=CH.drive;
+    const cs=caseFiles(),D=CH.drive;
     if(!cs.length&&!D)return `<div class="doc"><div class="empty">Thư mục vụ án này chưa có tệp nào.</div></div>`;
     const ic=`<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="#fff" stroke="#8b919b"/><path d="M14 3v4h4" fill="none" stroke="#8b919b"/><path d="M8.5 12h7M8.5 15h7M8.5 18h5" stroke="#3d8fd1"/></svg>`;
     const fic=`<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#f2c94c"/></svg>`;
@@ -1196,13 +1208,13 @@ const R={
         <form id="pw-f" class="pwf"><input id="pw-in" autocomplete="off" placeholder="Nhập mật khẩu" aria-label="Mật khẩu thư mục ${esc(F.n)}"><button class="btn go">Mở</button></form>${err?`<div class="pw-err" role="alert">${err}</div>`:""}</div></div>`}
     else if(!list.length)main=`<div class="doc"><div class="empty">Thư mục này trống.</div></div>`;
     else{const f=list.find(([k])=>k===sel)[1];const pid=fo==="case"?"f:"+sel:`f:${fo}:${sel}`;
-      main=`<div class="doc"><header><b>${esc(f.n)}${f.restored?'<span class="tag-r">Khôi phục</span>':""}</b>${pinOf(pid,"Tệp","",f.n+" — "+f.x.split("\n").filter(l=>l.trim()).slice(0,1).join(""))}</header>
+      main=`<div class="doc"><header><b>${esc(f.n)}${f.restored?'<span class="tag-r">Khôi phục</span>':""}</b>${pinOf(pid,"Tệp","",f.n+" — "+f.x.split("\n").filter(l=>l.trim()).slice(0,1).join(""),f.ev)}</header>
         ${f.m?`<div class="meta-line">Sửa lần cuối: ${esc(f.m)}${f.info?" · "+esc(f.info):""}</div>`:""}<pre>${esc(f.x)}</pre></div>`}
     return `<div class="files-list">${side}</div>${main}`;
   },
   photos(){
     const ps=allPhotos();
-    if(S.photo){const p=Object.fromEntries(ps)[S.photo];if(p)return `<div class="viewer"><div class="ph">${p.svg}</div><footer><span><button class="btn" data-back>← Tất cả ảnh</button></span><span>${esc(p.n)}${p.info?" · "+esc(p.info):""}</span>${pinOf("ph:"+S.photo,"Ảnh","",p.n+(p.info?" · "+p.info:""))}</footer></div>`}
+    if(S.photo){const p=Object.fromEntries(ps)[S.photo];if(p)return `<div class="viewer"><div class="ph">${p.svg}</div><footer><span><button class="btn" data-back>← Tất cả ảnh</button></span><span>${esc(p.n)}${p.info?" · "+esc(p.info):""}</span>${pinOf("ph:"+S.photo,"Ảnh","",p.n+(p.info?" · "+p.info:""),p.ev)}</footer></div>`}
     return `<div class="photos">${ps.map(([k,p])=>`<button class="photo" data-photo="${k}"><div class="ph">${hero(p.svg)}</div><span>${esc(p.n)}${p.restored?'<span class="tag-r">Khôi phục</span>':""}</span></button>`).join("")}</div>`;
   },
   nb(){
@@ -1280,16 +1292,16 @@ function fbPage(u){
         <div class="fb-wrap">
         <div class="fb-card fb-intro"><h5>Giới thiệu</h5><p>${esc(p.bio)}</p>${p.live?`<span>🏠 Sống tại ${p.live}</span>`:""}${p.from?`<span>📍 Đến từ ${p.from}</span>`:""}</div>
         ${fr.length?`<div class="fb-card"><h5>Bạn bè</h5><div class="fb-friends">${fr.map(f=>`<button data-go="matsach.vn/${f}">${fbAv(f,CH.profiles[f])}<b>${CH.profiles[f].n}</b></button>`).join("")}</div></div>`:""}
-        ${fbSorted(p.posts).map(([po,pi])=>`<article class="fb-card fb-post"><header>${fbAv(hd,p,36)}<div><b>${p.n}</b><small>${po.t}</small></div>${pinOf(`p:${hd}:${pi}`,"Mặt Sách",p.n,po.x+" ("+po.t+")")}</header>
+        ${fbSorted(p.posts).map(([po,pi])=>`<article class="fb-card fb-post"><header>${fbAv(hd,p,36)}<div><b>${p.n}</b><small>${po.t}</small></div>${pinOf(`p:${hd}:${pi}`,"Mặt Sách",p.n,po.x+" ("+po.t+")",po.ev)}</header>
           <p>${esc(po.x)}</p>${po.svg?`<div class="ph">${hero(po.svg)}</div>`:""}
           <div class="fb-stats">👍 ${po.likes} · ${po.cm.length} bình luận</div>
           ${po.cm.map((cm,ci)=>{const w=fbWho(cm);return `<div class="fb-cm">${fbAv(w.hd,w.p,28)}<div style="min-width:0"><div class="bb">${w.hd?`<button class="fb-name" data-go="matsach.vn/${w.hd}">${w.p.n}</button>`:`<b>${esc(w.p.n)}</b>`}${esc(cm.x)}</div>
-            <div class="meta"><span>${cm.t}</span>${pinOf(`p:${hd}:${pi}:${ci}`,"Mặt Sách",w.p.n,cm.x+" ("+cm.t+")")}</div></div></div>`}).join("")}
+            <div class="meta"><span>${cm.t}</span>${pinOf(`p:${hd}:${pi}:${ci}`,"Mặt Sách",w.p.n,cm.x+" ("+cm.t+")",cm.ev)}</div></div></div>`}).join("")}
         </article>`).join("")}</div>`}}
   return `<div class="fb-body">${top}${body}</div>`;
 }
 function shopItems(){const q=norm(S.shopQ||"");const it=CH.shop.filter(i=>!q||norm(i.n).includes(q)||i.k.includes(q)||norm(i.s).includes(q));
-  return it.length?it.map(i=>`<div class="item"><div class="ph">${hero(i.svg)}</div><div class="in"><b>${i.n}</b><span class="price">${i.p}</span>${i.d?`<span class="desc">${esc(i.d)}</span>`:""}<span class="sm">${i.s}</span><span class="sm">${i.t}</span>${pinOf("s:"+i.s+i.p,"Chợ Hẻm",i.s,i.n+" · "+i.p+(i.d?" · "+i.d:"")+" · "+i.t)}</div></div>`).join(""):`<div class="empty">Không có món nào khớp “${esc(S.shopQ)}”.</div>`}
+  return it.length?it.map(i=>`<div class="item"><div class="ph">${hero(i.svg)}</div><div class="in"><b>${i.n}</b><span class="price">${i.p}</span>${i.d?`<span class="desc">${esc(i.d)}</span>`:""}<span class="sm">${i.s}</span><span class="sm">${i.t}</span>${pinOf("s:"+i.s+i.p,"Chợ Hẻm",i.s,i.n+" · "+i.p+(i.d?" · "+i.d:"")+" · "+i.t,i.ev)}</div></div>`).join(""):`<div class="empty">Không có món nào khớp “${esc(S.shopQ)}”.</div>`}
 
 function bind(k,c){
   c.querySelectorAll("[data-pin]").forEach(b=>b.onclick=()=>pin(b.dataset.pin));

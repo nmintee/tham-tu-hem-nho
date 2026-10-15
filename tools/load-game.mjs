@@ -20,7 +20,7 @@ function stub(){
   });
 }
 
-const OPT = ["partLabel","accuse","nextCh","chapterListHTML","dockApps","pwNorm","tryUnlock","tryRestore"];
+const OPT = ["pin","confront","showsCoach","partLabel","accuse","nextCh","chapterListHTML","dockApps","pwNorm","tryUnlock","tryRestore"];
 
 export function loadGame(){
   const html = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");

@@ -1040,7 +1040,7 @@ Giá thuê: 45.000.000đ/tháng
     if(n.includes("hai"))return{m:"Ai lại đi bôi nhọ tiệm của chính mình?"};
     return{m:"Không có ai tên vậy dùng máy nhà văn hóa tối đó. Xem lại manh mối nhé."}},
   culprit:"Trịnh Văn Lộc", win:"Chuẩn luôn! Anh với chị Hai qua gặp chú Lộc rồi, chú nhận hết và gỡ bài. Trang Hẻm Bàn Tán đăng đính chính, khách quay lại tiệm rồi 🥖",
-  solution:"Nhật ký máy cho thấy bài đăng lúc 22:47 từ chính máy nhà văn hóa, bằng tài khoản Khách. Camera tự xuất ghi đúng một người lớn vào lúc 22:06, ra tay không lúc 23:09. Người đó mượn chìa “lấy loa” và để số 0913 418 052, cùng số với tin cho thuê một mặt bằng “trống từ 1/12”. Thư mục của Trịnh Văn Lộc (mật khẩu 07121988: 4 số cuối biển số chiếc Cub + năm mua) có nháp hợp đồng cho Cà phê Mây thuê nhà số 18 hẻm 7, chính là tiệm chị Hai, ghi đúng số điện thoại đó, trong khi hợp đồng của chị Hai còn tới 2027. Hai tệp Khách xóa lúc 23:02 chỉ khôi phục được bằng mật khẩu của Lộc: ảnh thịt tải từ anhmienphi.vn không có túi giấy, và túi giấy đã tách nền, cả hai làm bằng tài khoản Lộc trong buổi học tối thứ Năm, buổi cô Hòa vắng. Tức là ảnh đã được ghép. Cô Hòa có tắt live đi trú mưa, nhưng số điện thoại và tệp ảnh không phải của cô.",
+  solution:"Nhật ký máy cho thấy bài đăng lúc 22:47 từ chính máy nhà văn hóa, bằng tài khoản Khách. Camera tự xuất ghi đúng một người lớn vào lúc 22:06, ra tay không lúc 23:09. Người đó mượn chìa “lấy loa” và để số 0913 418 052. Thư mục của Trịnh Văn Lộc (mật khẩu 07121988: 4 số cuối biển số chiếc Cub trong bài đăng + năm mua 1988 trong bình luận) có nháp hợp đồng cho Cà phê Mây thuê nhà số 18 hẻm 7, chính là tiệm chị Hai, ghi đúng số điện thoại đó và hẹn bàn giao mặt bằng trống từ 1/12, khớp tin rao trên Chợ Hẻm, trong khi hợp đồng của chị Hai còn tới 2027. Hai tệp Khách xóa lúc 23:02 chỉ khôi phục được bằng mật khẩu của Lộc: ảnh thịt tải từ anhmienphi.vn không có túi giấy, và túi giấy đã tách nền, cả hai làm bằng tài khoản Lộc trong buổi học tối thứ Năm, buổi cô Hòa vắng. Tức là ảnh đã được ghép. Cô Hòa có tắt live đi trú mưa, nhưng số điện thoại và tệp ảnh không phải của cô.",
 }];
 
 /* ================= STATE ================= */
@@ -1334,7 +1334,7 @@ function bind(k,c){
 }
 
 function accuse(name,how){
-  const n=norm(name);
+  const n=norm(name).replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim().replace(/^(chu|co|anh|chi|ba|ong|bac|em) /,"");
   if(!n){S.verdict="Hãy ghi họ tên đầy đủ trước khi gửi.";render("file");return}
   if(CH.form.how&&!how){S.verdict=CH.form.how.need;render("file");return}
   const r=CH.check(n,how);

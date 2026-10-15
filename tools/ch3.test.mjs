@@ -98,3 +98,15 @@ test("học viên khác về trước giờ tạo ảnh; ảnh hẻm không ghi 
   assert.match(C.drive.folders.find(f => f.k === "chung").files.lop.x, /về lúc 19:00/);
   assert.ok(!/sáng/.test(C.photos.hem.n));
 });
+
+test("lời giải không nói số điện thoại trùng tin Chợ Hẻm (tin đó không có số)", () => {
+  assert.ok(!/cùng số với tin/.test(ch3().CH.solution));
+});
+
+test("họ tên đầy đủ kèm danh xưng hoặc dấu câu vẫn được nhận", () => {
+  for (const [ci, name, how] of [[2, "chú Trịnh Văn Lộc.", "ghep"], [1, "anh Phạm Quốc Đức!", "copy"], [0, "Lê Minh Khoa.", ""]]) {
+    const G = loadGame(); G.setCh(ci);
+    G.accuse(name, how);
+    assert.equal(G.S.solved, true, `chương ${ci + 1}: "${name}" → ${G.S.verdict}`);
+  }
+});

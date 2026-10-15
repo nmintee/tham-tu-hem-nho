@@ -9,7 +9,8 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
 - `SVG` — toàn bộ hình minh họa vẽ bằng SVG inline (không dùng file ảnh).
 - `CHAPTERS` — mảng dữ liệu các chương. Thêm chương mới = thêm một object vào mảng, không cần sửa code giao diện.
 - `S` — state của chương đang chơi (`freshState(ci)` khởi tạo lại).
-- `R` — các hàm render từng app: `chat`, `web`, `files`, `photos`, `nb` (Sổ vụ án), `file` (Hồ sơ).
+- `R` — các hàm render từng app: `chat`, `web`, `files`, `photos`, `nb` (Sổ vụ án), `file` (Hồ sơ), `trash` (Thùng rác).
+- `pwNorm`, `tryUnlock`, `tryRestore` — thư mục khóa và Thùng rác; `dockApps()` — app hiện trên Dock; `nextCh()` — chương đầu tiên chưa phá.
 - `bind(k, c)` — gắn sự kiện sau mỗi lần render app `k`.
 - `fbPage(u)` / `fbFind(q)` — trang Mặt Sách (Facebook giả).
 - `openApp`, `focus`, `drag` — quản lý cửa sổ (đóng / thu nhỏ / phóng to / kéo thả).
@@ -27,7 +28,9 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
             posts:[{t,x,svg?,likes,cm:[{h:handle | n:tên, t, x}]}]}},
   shop:[{n,p,s,t,d?,svg,k}], shopHint, news:[{h,t,svg?,x}],
   photos:{k:{n,svg}}, files:{k:{n,x}},
-  suspects:[{id,n,r}], form:{q, how?:{q,opts:[{v,l}],a}},
+  drive?:{n, folders:[{k,n,lock?:{hint,pass:[…]},files:{k:{n,x,m?}}}]},   // ổ đĩa có thư mục khóa (Tệp)
+  trash?:[{k,n,by,when,from,kind:"file"|"photo",x?,svg?,info?}],          // app Thùng rác; khôi phục cần mật khẩu thư mục gốc
+  suspects:[{id,n,r}], form:{q, how?:{q,label,need,opts:[{v,l}],a}},
   check(n,how) -> {ok:1} | {m:"phản hồi khi sai"},   // n đã bỏ dấu, chữ thường
   culprit, win, solution, coach? }
 ```
@@ -50,9 +53,14 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
   Đường suy luận: chị Hà thấy chậu còn lúc 23g30 → Khoa nói với Tâm 23h đang ở nhà nhưng 01:20 khoe "chạy đơn" về → Khoa nợ tiền, từng khen chậu đáng nửa triệu → 05:12 `khoa.cayxanh` rao chậu men lam mẻ miệng trên Chợ Hẻm. Chú Tư ngoại phạm (ở Vũng Tàu).
 - **Chương 2 — Ai ăn bánh trung thu?** (Nhà văn hóa KP3, 5/10/2025). Thủ phạm: **Phạm Quốc Đức**, cách vào kho: **dùng chìa đánh thêm từ chìa dự phòng**.
   Đường suy luận: Đức cầm chìa dự phòng 20 phút → tiệm khóa Ba Tèo 20:40 đánh chìa kho cho người đeo balo móc cá mập cam → Đức gọi móc cá mập là "bùa hộ mệnh", đang nợ hụi → về sau cùng bằng cổng sau → camera 02:14 + móc cá mập rơi trong kho → tin rao bánh có số 0909 888 215 của Đức. Tuấn ngoại phạm (thư viện 02:12), Vy ngoại phạm (ca trà sữa).
-- **Chương 3 — Bóng đèn lồng tầng thượng**: mới có tên, đang khóa, chưa viết.
+- **Chương 3 — Ai đứng sau Hẻm Bàn Tán?** (KP3, 9/11/2025). Thủ phạm: **Trịnh Văn Lộc**, cách: **ghép túi giấy của tiệm vào ảnh thịt ôi tải trên mạng**.
+  Cơ chế mới: thư mục khóa mật khẩu trên "Máy chung NVH" + app Thùng rác. Mật khẩu: Hòa bong2019/bebong2019, Ngân pate, Bin muop, Lộc 07121988.
+  Đường suy luận: nhật ký máy 22:47 Khách đăng bài → camera chỉ 1 người lớn 22:06–23:09, sổ chìa SĐT 0913 418 052 → trùng tin Chợ Hẻm "trống từ 1/12" → mở thư mục Lộc (biển Cub 0712 + năm 1988): hợp đồng Cà phê Mây nhà 18 hẻm 7 cùng SĐT → Thùng rác khôi phục bằng mật khẩu Lộc: ảnh thịt anhmienphi.vn + túi giấy tách nền, tạo trong buổi học T5 cô Hòa vắng. Mồi: cô Hòa tắt live 22:00–23:20; Ngân có bản nháp bóc phốt (xóa từ thứ Năm). Kịch bản đầy đủ: docs/superpowers/specs/2026-10-14-chuong-3-design.md.
 
 ## Ý tưởng tiếp theo đã nêu
-- Viết chương 3.
 - Gợi ý có giới hạn cho người chơi bị bí.
-- App Thùng rác (file đã xóa chứa manh mối).
+
+## Kiểm thử
+- Unit test: `node --test tools/*.test.mjs` (nạp `<script>` của index.html trong `node:vm` với DOM giả).
+- Chơi tự động: `PW=<thư mục playwright-core> node tools/e2e.cjs` (Chrome headless, ảnh chụp ở `tools/.shots/`).
+- Agent `playtester` (`.claude/agents/playtester.md`): chơi thử mỗi chương mới, trên giấy hoặc trên trình duyệt.

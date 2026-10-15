@@ -52,11 +52,11 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     expect(/Phần 1\.[^]*?Đã phá/.test(await page.textContent(".chapters")), "phần 1 hiện Đã phá");
     await page.click(".modal [data-x]");
 
-    // ---------- Desktop: chương 3 ----------
+    // ---------- Desktop: Chương 1 · Phần 3 ----------
     await startCh(page, 2);
     await sleep(500);
-    await page.screenshot({path: path.join(OUT, "ch3-desk-start.png")});
-    expect(await page.locator('.dock [data-open="trash"]').count() === 1, "chương 3 có Thùng rác");
+    await page.screenshot({path: path.join(OUT, "ch1p3-desk-start.png")});
+    expect(await page.locator('.dock [data-open="trash"]').count() === 1, "phần 3 có Thùng rác");
 
     // Thùng rác: khôi phục IMG_0847 cần mật khẩu Lộc
     w = await open(page, "trash");
@@ -70,7 +70,7 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     await w.locator('[data-rs="img48"]').click(); // thư mục Lộc đã mở → khôi phục ngay
     expect((await w.locator(".tr.done").count()) === 2, "IMG_0848 khôi phục không cần mật khẩu");
     await w.locator('[data-pin="t:img47"]').click({force: true});
-    await page.screenshot({path: path.join(OUT, "ch3-desk-trash.png")});
+    await page.screenshot({path: path.join(OUT, "ch1p3-desk-trash.png")});
 
     // Ảnh: xem ảnh gốc
     w = await open(page, "photos");
@@ -90,7 +90,7 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     expect((await w.textContent()).includes("Ke_hoach_ban_cho_dem_T7.txt"), "mở thư mục Hòa");
     const over = await w.locator(".files-list").evaluate(el => el.scrollWidth - el.clientWidth);
     expect(over <= 0, `cột thư mục tràn ngang ${over}px`);
-    await page.screenshot({path: path.join(OUT, "ch3-desk-files.png")});
+    await page.screenshot({path: path.join(OUT, "ch1p3-desk-files.png")});
 
     // Sổ vụ án có mục Thùng rác đã ghim
     w = await open(page, "nb");
@@ -108,8 +108,8 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     await w.locator("#acc-in").fill("Trịnh Văn Lộc"); await w.locator("#how-ghep").check(); await w.locator("#acc-in").press("Enter");
     await w.locator(".stamp").waitFor();
     expect((await w.textContent()).includes("Chương 2: Thám tử thực thụ"), "màn thắng phần cuối mời sang Chương 2");
-    await page.screenshot({path: path.join(OUT, "ch3-desk-win.png")});
-    // ---------- Desktop: chương 2 phần 1 (đối chất) ----------
+    await page.screenshot({path: path.join(OUT, "ch1p3-desk-win.png")});
+    // ---------- Desktop: Chương 2 · Phần 1 (đối chất) ----------
     await page.goto(URL);
     await startCh(page, 3);
     w = await open(page, "files");
@@ -136,16 +136,16 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
     expect((await w.textContent()).includes("Chương mới sắp ra mắt"), "màn thắng chương 2 phần 1");
     await page.close();
 
-    // ---------- Mobile: chương 3 ----------
+    // ---------- Mobile: Chương 1 · Phần 3 ----------
     page = await browser.newPage({viewport: {width: 390, height: 844}});
     page.on("pageerror", e => errors.push("mobile: " + e.message));
     await page.goto(URL);
     await startCh(page, 2);
     w = await open(page, "files");
     await w.locator('[data-fold="ngan"]').click();
-    await page.screenshot({path: path.join(OUT, "ch3-mobile-lock.png")});
+    await page.screenshot({path: path.join(OUT, "ch1p3-mobile-lock.png")});
     w = await open(page, "trash");
-    await page.screenshot({path: path.join(OUT, "ch3-mobile-trash.png")});
+    await page.screenshot({path: path.join(OUT, "ch1p3-mobile-trash.png")});
     const sw = await page.evaluate(() => document.documentElement.scrollWidth);
     expect(sw <= 390, "mobile không cuộn ngang");
     await page.close();

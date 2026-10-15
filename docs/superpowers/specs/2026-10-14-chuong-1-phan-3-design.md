@@ -1,4 +1,6 @@
-# Chương 3 "Ai đứng sau Hẻm Bàn Tán?" + cơ chế Thư mục khóa / Thùng rác — Thiết kế
+# Chương 1 · Phần 3 "Ai đứng sau Hẻm Bàn Tán?" + cơ chế Thư mục khóa / Thùng rác — Thiết kế
+
+> **Ghi chú đặt tên:** tài liệu này viết khi vụ án còn gọi là "chương 3". Từ ngày 15/10/2025 game gom 3 vụ đầu thành **Chương 1: Thám tử tập sự**, nên vụ này là **Chương 1 · Phần 3**; "chương 1/2" trong tài liệu tương ứng Phần 1/2.
 
 Ngày: 2026-10-14 · Trạng thái: đã duyệt; Phụ lục A cập nhật sau buổi chơi thử thật (bỏ SĐT ở Chợ Hẻm, tách năm mua xe, đổi phương án (d), học viên khác về 19:00; gõ thiếu họ tên không trừ lượt)
 

@@ -5,7 +5,7 @@ import {loadGame} from "./load-game.mjs";
 const G = loadGame();
 
 G.CHAPTERS.forEach((C, ci) => {
-  const tag = `chương ${ci + 1}`;
+  const tag = G.partLabel(ci);
 
   test(`${tag}: handle Mặt Sách đều tồn tại`, () => {
     const P = C.profiles;

@@ -286,6 +286,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .pw-err{color:var(--bad);font-size:12px}
 .meta-line{font-size:11px;color:var(--ink-3)}
 .tag-r{font-size:10px;font-weight:700;background:#e6f3ec;color:var(--ok);border-radius:4px;padding:1px 6px;margin-left:6px}
+.trash{flex:1;overflow:auto;background:#fff;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.trash-h{font-size:11px;color:var(--ink-3);letter-spacing:.04em}
+.tr{border:1px solid var(--line);border-radius:8px;padding:9px 11px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tr.done{background:#f3faf6}
+.tr .tn{flex:1;min-width:180px;display:flex;flex-direction:column;gap:2px}
+.tr .tn b{font-size:13px}
+.tr .tn small{font-size:11px;color:var(--ink-2)}
+.tr .ta{display:flex;gap:6px;align-items:center}
+.tr .ta .pin{margin:0}
+.tr:hover .pin{opacity:.75}
+.tr .pwf,.tr .pw-err{flex-basis:100%}
 
 /* Mặt Sách */
 .fb-top{display:flex;align-items:center;gap:10px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
@@ -772,6 +783,12 @@ function tryUnlock(k,input){const f=driveF(k);if(!f)return false;if(isOpen(f))re
 const folderFiles=f=>Object.entries(f.files).concat((CH.trash||[]).filter(t=>t.kind==="file"&&t.from===f.k&&S.restored.has(t.k))
   .map(t=>["t."+t.k,{n:t.n,x:t.x,m:t.when,restored:1,info:t.info}]));
 const fileCount=()=>Object.keys(CH.files).length+(CH.drive?CH.drive.folders.length:0);
+function tryRestore(k,input){const t=(CH.trash||[]).find(x=>x.k===k);if(!t)return false;if(S.restored.has(k))return true;
+  const f=driveF(t.from);
+  if(f&&!isOpen(f)){if(!passOk(f,input)){S.pwErr["t:"+k]=(input||"").trim()?"Sai mật khẩu.":"Nhập mật khẩu trước đã.";return false}S.unlocked.add(f.k)}
+  S.restored.add(k);delete S.pwErr["t:"+k];return true}
+const allPhotos=()=>Object.entries(CH.photos).concat((CH.trash||[]).filter(t=>t.kind==="photo"&&S.restored.has(t.k))
+  .map(t=>["t."+t.k,{n:t.n,svg:t.svg,info:t.info,restored:1}]));
 
 function toast(m){const t=h(`<div class="toast" role="status">${m}</div>`);$("#layer").append(t);setTimeout(()=>t.remove(),1900)}
 function nav(u){u=u||"";if(u===S.url)return;S.hist=S.hist.slice(0,S.hi+1);S.hist.push(u);S.hi=S.hist.length-1;S.url=u}
@@ -793,12 +810,14 @@ const ICONS={
   photos:{n:"Ảnh",bg:"#e8545a",svg:`<rect x="4" y="6" width="16" height="12" rx="2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="#fff"/>`},
   nb:{n:"Sổ vụ án",bg:"#c98a2f",svg:`<rect x="6" y="4" width="12" height="16" rx="1" fill="#fff"/><path d="M9 9h6M9 12h6M9 15h4" stroke="#c98a2f" stroke-width="1.6"/>`},
   file:{n:"Hồ sơ",bg:"#3c4a63",svg:`<rect x="6" y="3" width="12" height="18" rx="1" fill="#fff"/><path d="M9 8h6M9 11h6" stroke="#3c4a63" stroke-width="1.6"/><circle cx="12" cy="16" r="2" fill="#e2683c"/>`},
+  trash:{n:"Thùng rác",bg:"#6b7380",svg:`<path d="M8 8h8l-.8 11H8.8z" fill="#fff"/><path d="M6 8h12M10 5h4v3h-4z" stroke="#fff" stroke-width="1.6" fill="none"/>`},
 };
-const GEOM={chat:[40,60,580,420],web:[300,80,580,460],files:[120,100,560,380],photos:[160,140,460,380],nb:[220,70,560,420],file:[380,100,460,470]};
+const GEOM={chat:[40,60,580,420],web:[300,80,580,460],files:[120,100,600,400],photos:[160,140,460,380],nb:[220,70,560,420],file:[380,100,460,470],trash:[260,120,560,380]};
+const dockApps=()=>Object.keys(ICONS).filter(k=>k!=="trash"||(CH.trash&&CH.trash.length));
 
 function renderDock(){
   const d=$("#dock");d.innerHTML="";
-  for(const [k,a] of Object.entries(ICONS)){
+  for(const k of dockApps()){const a=ICONS[k];
     const b=h(`<button data-open="${k}" aria-label="${a.n}" class="${S.open[k]?"open":""}"><div class="ico" style="background:${a.bg}"><svg viewBox="0 0 24 24">${a.svg}</svg></div><span class="tip">${a.n}</span></button>`);
     if(k==="chat"){const u=Object.values(S.unread).filter(Boolean).length;if(u)b.append(h(`<span class="badge">${u}</span>`))}
     if(k==="nb"&&S.pinned.size)b.append(h(`<span class="badge" style="background:#c98a2f">${S.pinned.size}</span>`));
@@ -832,7 +851,7 @@ function drag(win){
   bar.addEventListener("pointermove",e=>{if(!on)return;win.style.left=(ox+e.clientX-sx)+"px";win.style.top=Math.max(26,oy+e.clientY-sy)+"px"});
   bar.addEventListener("pointerup",()=>on=false);
 }
-const SCROLLERS=".msgs,.page,.nb-main,.photos,.doc,.file";
+const SCROLLERS=".msgs,.page,.nb-main,.photos,.doc,.file,.trash";
 function render(k,keep){const w=S.open[k];if(!w)return;const c=$(".content",w);const st=c.querySelector(SCROLLERS);const sc=st?st.scrollTop:0;
   c.innerHTML=R[k]();const st2=c.querySelector(SCROLLERS);if(st2)st2.scrollTop=(k==="chat"&&!keep)?st2.scrollHeight:sc;bind(k,c)}
 function refreshAll(){Object.keys(S.open).forEach(k=>render(k,true));renderDock()}
@@ -896,8 +915,9 @@ const R={
     return `<div class="files-list">${side}</div>${main}`;
   },
   photos(){
-    if(S.photo){const p=CH.photos[S.photo];return `<div class="viewer"><div class="ph">${p.svg}</div><footer><span><button class="btn" data-back>← Tất cả ảnh</button></span><span>${p.n}</span>${pinOf("ph:"+S.photo,"Ảnh","",p.n)}</footer></div>`}
-    return `<div class="photos">${Object.entries(CH.photos).map(([k,p])=>`<button class="photo" data-photo="${k}"><div class="ph">${hero(p.svg)}</div><span>${p.n}</span></button>`).join("")}</div>`;
+    const ps=allPhotos();
+    if(S.photo){const p=Object.fromEntries(ps)[S.photo];if(p)return `<div class="viewer"><div class="ph">${p.svg}</div><footer><span><button class="btn" data-back>← Tất cả ảnh</button></span><span>${esc(p.n)}${p.info?" · "+esc(p.info):""}</span>${pinOf("ph:"+S.photo,"Ảnh","",p.n+(p.info?" · "+p.info:""))}</footer></div>`}
+    return `<div class="photos">${ps.map(([k,p])=>`<button class="photo" data-photo="${k}"><div class="ph">${hero(p.svg)}</div><span>${esc(p.n)}${p.restored?'<span class="tag-r">Khôi phục</span>':""}</span></button>`).join("")}</div>`;
   },
   nb(){
     const groups={};for(const id of S.pinned){const s=S.pinData[id].src;(groups[s]=groups[s]||[]).push(id)}
@@ -935,6 +955,16 @@ const R={
       ${how?`<label>${how.q}</label><div class="choices">${how.opts.map(o=>`<label><input type="radio" name="how" id="how-${o.v}" value="${o.v}" ${S.how===o.v?"checked":""}>${o.l}</label>`).join("")}</div>`:""}
       ${S.verdict?`<div class="verdict no">${S.verdict}</div>`:""}
       <div class="act"><span class="tries">${dots} Còn ${S.tries}/3 lần gửi</span><button class="btn go">Gửi anh Ti</button></div></form></div>`;
+  },
+  trash(){
+    const T=CH.trash||[];
+    if(!T.length)return `<div class="trash"><div class="empty">Thùng rác trống.</div></div>`;
+    return `<div class="trash"><div class="trash-h">Tệp đã xóa trên ${esc(CH.drive?CH.drive.n:"máy")}</div>${T.map(t=>{
+      const f=driveF(t.from),r=S.restored.has(t.k),err=S.pwErr["t:"+t.k];
+      const loc=r?`Đã khôi phục về <b>${esc(f?f.n:"Ảnh")}</b>${t.kind==="photo"?" · xem trong app Ảnh":" · xem trong app Tệp"}`:(f&&f.lock?"🔒 Thư mục riêng":esc(f?f.n:""));
+      return `<div class="tr ${r?"done":""}"><div class="tn"><b>${esc(t.n)}</b><small>Xóa bởi ${esc(t.by)} · ${esc(t.when)}</small><small>Vị trí gốc: ${loc}</small></div>
+        <div class="ta">${r?"":`<button class="btn" data-rs="${t.k}">Khôi phục</button>`}${pinOf("t:"+t.k,"Thùng rác","",`${t.n} · xóa bởi ${t.by} · ${t.when}`)}</div>
+        ${S.rsK===t.k&&!r?`<form class="pwf" data-rsf="${t.k}"><input autocomplete="off" placeholder="Mật khẩu của thư mục gốc" aria-label="Mật khẩu thư mục gốc của ${esc(t.n)}"><button class="btn go">Khôi phục</button></form>${err?`<div class="pw-err" role="alert">${err}</div>`:""}`:""}</div>`}).join("")}</div>`;
   }
 };
 /* ---------- Mặt Sách ---------- */
@@ -999,6 +1029,16 @@ function bind(k,c){
     c.querySelectorAll("[data-nb]").forEach(b=>b.onclick=()=>{S.nbFilter=b.dataset.nb;render("nb")});
     c.querySelectorAll("[data-mark]").forEach(b=>b.onclick=()=>{const [id,m]=b.dataset.mark.split(":");S.marks[id]=m;render("nb",true)});
     const t=$("#notes",c);if(t)t.oninput=()=>S.notes=t.value}
+  if(k==="trash"){
+    const restoredMsg=t=>{S.rsK=null;toast(t.kind==="photo"?"Đã khôi phục. Mở app Ảnh để xem.":"Đã khôi phục. Mở app Tệp để xem.")};
+    const focusIn=k2=>{const i=S.open.trash&&$(`[data-rsf="${k2}"] input`,S.open.trash);if(i)i.focus()};
+    c.querySelectorAll("[data-rs]").forEach(b=>b.onclick=()=>{const t=CH.trash.find(x=>x.k===b.dataset.rs),f=driveF(t.from);
+      if(!f||isOpen(f)){tryRestore(t.k,"");restoredMsg(t)}else S.rsK=t.k;
+      refreshAll();focusIn(t.k)});
+    c.querySelectorAll("[data-rsf]").forEach(fm=>fm.onsubmit=e=>{e.preventDefault();const k2=fm.dataset.rsf;
+      const ok=tryRestore(k2,fm.querySelector("input").value);if(ok)restoredMsg(CH.trash.find(x=>x.k===k2));
+      refreshAll();if(!ok)focusIn(k2)});
+  }
   if(k==="file"){
     const f=$("#acc",c);if(f){f.onsubmit=e=>{e.preventDefault();const r=f.querySelector("input[name=how]:checked");accuse($("#acc-in",c).value,r?r.value:"")};
       f.querySelectorAll("input[name=how]").forEach(r=>r.onchange=()=>S.how=r.value)}

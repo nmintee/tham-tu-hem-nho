@@ -712,7 +712,7 @@ Thứ bảy, 04/10/2025 — Người trực: Sáu
     {id:"sau",n:"Chú Sáu",r:"Bảo vệ, giữ chìa chính"},{id:"lan",n:"Chị Lan",r:"Giữ chìa dự phòng"},
     {id:"tuan",n:"Tuấn",r:"Mượn chìa lấy loa"},{id:"duc",n:"Đức",r:"Treo đèn lồng"},
     {id:"vy",n:"Vy",r:"Phụ gói quà"},{id:"nam",n:"Bà Năm",r:"Bán bánh trung thu"}],
-  form:{q:"Họ và tên người lấy 12 hộp bánh (ghi đầy đủ):",how:{q:"Người đó vào kho bằng cách nào?",opts:[
+  form:{q:"Họ và tên người lấy 12 hộp bánh (ghi đầy đủ):",how:{q:"Người đó vào kho bằng cách nào?",label:"Cách vào kho",need:"Chọn luôn cách người đó vào kho rồi mới gửi nha.",opts:[
     {v:"pha",l:"Cạy ổ khóa kho"},{v:"sau",l:"Lấy chìa của chú Sáu lúc chú ngủ"},
     {v:"spare",l:"Mượn lại chìa dự phòng của chị Lan"},{v:"copy",l:"Dùng chìa đánh thêm từ chìa dự phòng"}],a:"copy"}},
   check(n,how){
@@ -886,11 +886,11 @@ const R={
     const next=CHAPTERS[S.ch+1];
     if(S.solved) return `<div class="file"><div class="sheet">${head}<div class="stamp" style="border-color:var(--ok);color:var(--ok)">ĐÃ PHÁ ÁN</div>
       <p style="font-size:13px;line-height:1.6;margin:0">Thủ phạm: <b>${CH.culprit}</b>. ${CH.solution}</p>
-      <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${next?`<button class="btn go" data-next>Chương ${S.ch+2}: ${next.title} →</button>`:`<span class="tries">Chương 3 sắp ra mắt</span>`}</div></div></div>`;
+      <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${next?`<button class="btn go" data-next>Chương ${S.ch+2}: ${next.title} →</button>`:`<span class="tries">Chương mới sắp ra mắt</span>`}</div></div></div>`;
     if(S.tries<=0){const how=CH.form.how?CH.form.how.opts.find(o=>o.v===CH.form.how.a).l:"";
       return `<div class="file"><div class="sheet">${head}<div class="stamp">ANH TI TỰ XỬ</div>
       <p style="font-size:13px;margin:0;line-height:1.6">Hết 3 lần gửi rồi. Anh Ti sẽ kể chuyện này ở tổ dân phố đó.</p>
-      ${S.reveal?`<div class="answer"><div class="answer-h">Đáp án</div><p>Thủ phạm: <b>${CH.culprit}</b>${how?`<br>Cách vào kho: <b>${how}</b>`:""}</p><p>${CH.solution}</p></div>`:
+      ${S.reveal?`<div class="answer"><div class="answer-h">Đáp án</div><p>Thủ phạm: <b>${CH.culprit}</b>${how?`<br>${CH.form.how.label}: <b>${how}</b>`:""}</p><p>${CH.solution}</p></div>`:
         `<p style="font-size:12px;margin:0;color:var(--ink-3)">Muốn tự phá lại thì bấm Chơi lại. Chịu thua thì xem đáp án.</p>`}
       <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${S.reveal?(next?`<button class="btn go" data-next>Chương ${S.ch+2}: ${next.title} →</button>`:""):`<button class="btn go" data-reveal>Xem đáp án</button>`}</div></div></div>`}
     const how=CH.form.how;
@@ -972,7 +972,7 @@ function bind(k,c){
 function accuse(name,how){
   const n=norm(name);
   if(!n){S.verdict="Hãy ghi họ tên đầy đủ trước khi gửi.";render("file");return}
-  if(CH.form.how&&!how){S.verdict="Chọn luôn cách người đó vào kho rồi mới gửi nha.";render("file");return}
+  if(CH.form.how&&!how){S.verdict=CH.form.how.need;render("file");return}
   const r=CH.check(n,how);
   if(r.ok){S.solved=true;S.verdict="";done.add(S.ch);saveDone();render("file");say(CH.win);return}
   S.tries--;S.verdict=r.m;render("file");
@@ -992,10 +992,15 @@ function showIntro(ci){
   <strong>${ci===0?"Sẵn sàng phá vụ án đầu tiên chưa?":"Vụ này khó hơn. Sẵn sàng chưa?"}</strong><div class="row"><button class="btn" data-x>Để sau</button><button class="btn go" data-ok>Sẵn sàng!</button></div></div></div>`,
   m=>{$("[data-x]",m).onclick=()=>m.remove();$("[data-ok]",m).onclick=()=>{m.remove();startChapter(ci)}});
 }
-$("#b-play").onclick=()=>showIntro(done.has(0)&&!done.has(1)?1:0);
+function nextCh(){const i=CHAPTERS.findIndex((c,i)=>!done.has(i));return i<0?CHAPTERS.length-1:i}
+function playLabel(){const i=nextCh();$("#b-play").querySelector("em").textContent=`Chương ${i+1} · ${CHAPTERS[i].title}`}
+function chapterListHTML(){const nx=nextCh();
+  return CHAPTERS.map((c,i)=>{const nw=i>0&&i===nx&&!done.has(i);
+    return `<button class="ch" data-ch="${i}"><span><b>${i+1}.</b> ${c.title}<small>${c.place}</small></span><span class="chip ${nw?"new":""}">${done.has(i)?"Đã phá":nw?"Mới":"Mở"}</span></button>`}).join("")}
+$("#b-play").onclick=()=>showIntro(nextCh());
+playLabel();
 $("#b-chap").onclick=()=>modal(`<div class="modal"><div class="body"><strong style="font-size:18px">Chọn chương</strong><div class="chapters">
-  ${CHAPTERS.map((c,i)=>`<button class="ch" data-ch="${i}"><span><b>${i+1}.</b> ${c.title}<small>${c.place}</small></span><span class="chip ${i===1&&!done.has(1)?"new":""}">${done.has(i)?"Đã phá":i===1?"Mới":"Mở"}</span></button>`).join("")}
-  <div class="lock"><span><b>3.</b> Bóng đèn lồng tầng thượng</span><span>Khóa</span></div></div>
+  ${chapterListHTML()}</div>
   <div class="row"><button class="btn" data-x>Đóng</button></div></div></div>`,m=>{$("[data-x]",m).onclick=()=>m.remove();
   m.querySelectorAll("[data-ch]").forEach(b=>b.onclick=()=>showIntro(+b.dataset.ch))});
 $("#b-how").onclick=()=>modal(`<div class="modal"><div class="body"><strong style="font-size:18px">Cách chơi</strong>
@@ -1006,7 +1011,7 @@ $("#b-how").onclick=()=>modal(`<div class="modal"><div class="body"><strong styl
 
 function goHome(){document.querySelectorAll(".win,.coach,.modal-bg").forEach(w=>w.remove());clearTimeout(stepTimer);clearTimeout(tick.t);
   $("#desk").hidden=true;$("#start").hidden=false;
-  $("#b-play").querySelector("em").textContent=(done.has(0)&&!done.has(1))?"Chương 2 · "+CHAPTERS[1].title:"Chương 1 · "+CHAPTERS[0].title}
+  playLabel()}
 $("#mb-home").onclick=()=>{if(S.solved||S.tries<=0){goHome();return}
   modal(`<div class="modal" role="dialog" aria-label="Về màn hình chính"><div class="body"><strong style="font-size:17px">Về màn hình chính?</strong>
   <p style="margin:0">Vụ án đang điều tra dở. Nếu thoát bây giờ, các manh mối đã ghim và ghi chú của vụ này sẽ mất.</p>

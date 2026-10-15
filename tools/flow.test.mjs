@@ -41,7 +41,7 @@ test("màn thắng chương cuối báo chương mới sắp ra mắt", () => {
 
 test("ba vụ án là ba phần của Chương 1", () => {
   const G = loadGame();
-  assert.deepEqual([...G.CHAPTERS.map(c => c.vol)], [1, 1, 1, 2]);
+  assert.deepEqual([...G.CHAPTERS.map(c => c.vol)], [1, 1, 1, 2, 2]);
   assert.equal(G.partLabel(0), "Chương 1 · Phần 1");
   assert.equal(G.partLabel(2), "Chương 1 · Phần 3");
 });

@@ -26,18 +26,18 @@ G.CHAPTERS.forEach((C, ci) => {
   });
 
   test(`${tag}: đáp án đúng được nhận, đáp án sai có phản hồi riêng`, () => {
-    const how = C.form.how;
+    const how = C.form.how, wy = C.form.why ? C.form.why.a : "";
     const culprit = G.norm(C.culprit);
-    assert.deepEqual({...C.check(culprit, how ? how.a : "")}, {ok: 1});
+    assert.deepEqual({...C.check(culprit, how ? how.a : "", wy)}, {ok: 1});
     if (how) for (const o of how.opts) if (o.v !== how.a) {
-      const r = C.check(culprit, o.v);
+      const r = C.check(culprit, o.v, wy);
       assert.ok(!r.ok && r.m && r.m.length > 10, `cách sai "${o.v}" thiếu phản hồi`);
     }
     const last = culprit.split(" ").pop();
-    const generic = C.check("xyz khong co ten", how ? how.a : "").m;
+    const generic = C.check("xyz khong co ten", how ? how.a : "", wy).m;
     for (const s of C.suspects) {
       if (G.norm(s.n).split(" ").pop() === last) continue;
-      const r = C.check(G.norm(s.n), how ? how.a : "");
+      const r = C.check(G.norm(s.n), how ? how.a : "", wy);
       assert.ok(!r.ok && r.m && r.m !== generic, `nghi phạm ${s.n} thiếu phản hồi riêng`);
     }
   });

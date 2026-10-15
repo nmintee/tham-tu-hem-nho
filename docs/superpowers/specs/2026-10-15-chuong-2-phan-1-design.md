@@ -125,7 +125,7 @@ Không tả máu me: nạn nhân "ngã, chấn thương vùng đầu".
 
 ### Chợ Hẻm / Tin Phố
 - Tin Phố: "Shipper và chuyện tiền thu hộ: nhiều tài xế bị dùng chung tài khoản" (12/11).
-- Chợ Hẻm: vài món không liên quan (mũ bảo hiểm, thùng giao hàng…).
+- Chợ Hẻm: không có tin rao (game báo "Chợ Hẻm chưa có tin rao nào"), vì chương 2 không dùng hình minh họa.
 
 ### App Tệp (anh Ti chép lại)
 1. **Bien_ban_hien_truong.txt**
@@ -176,14 +176,16 @@ Mỗi người có một câu đáp chung khi bằng chứng không liên quan. 
 - ← **Ảnh xác nhận** (giày cam): "Giày bảo hộ cam shipper nào chẳng mang. Ông nghi tui hả?"
 - ← **Nháp email COD**: "Tài khoản ai nấy chạy. Phúc nghi bậy đó."
 - ← **Lời Trâm về ốp mèo vàng**: "…Tui không nói chuyện nữa. Có gì gặp công an."
+- ← **Camera**: "Camera đâu thấy mặt ai mà ông nói. Shipper áo xanh đầy hẻm."
 
 **Trâm** (chung: "Em không biết gì thêm hết.")
-- ← **Biên bản** (không thấy điện thoại) hoặc **bài nhậu của Tú** (ốp mèo vàng): "Điện thoại anh Phúc có cái ốp dán sticker mèo vàng, em tặng hồi sinh nhật, tự tay em dán." / (nếu là bài nhậu) "Khoan… cái ốp mèo vàng đó là của anh Phúc. Sao nó nằm trên bàn nhậu lúc 11g đêm?" → tin nhắn này ghim được (bằng chứng để đưa cho Tú).
+- ← **Biên bản** (không thấy điện thoại) hoặc **bài nhậu của Tú / bình luận về ốp mèo vàng**: "Điện thoại anh Phúc có cái ốp dán sticker mèo vàng, em tặng hồi sinh nhật, tự tay em dán." / (nếu là bài nhậu) "Khoan… cái ốp mèo vàng đó là của anh Phúc. Sao nó nằm trên bàn nhậu lúc 11g đêm?" → tin nhắn này ghim được (bằng chứng để đưa cho Tú).
 - ← **Camera**: "Cô gái 21:58 là em đó. Em gõ cửa không ai mở, đèn vẫn sáng, em về liền."
 
 **Cô Bảy** (chung: "Tui già rồi, mấy cái này tui không rành.")
 - ← **Biên bản** (ổ khóa không bị phá): "Ổ khóa thay hồi tháng 10 là loại tay nắm bấm. Bấm cái nút bên trong rồi kéo cửa là nó tự khóa, khỏi cần chìa. Mấy đứa trọ bị nhốt ngoài hoài."
 - ← **Camera**: "Tui về 22:31 đó, camera có quay. Tui đi thẳng vô nhà ngủ, không ghé phòng 4."
+- ← **Tin nhóm trọ "thay ổ khóa"**: cô giải thích khóa tay nắm bấm, đóng cửa là tự khóa (như với Biên bản).
 
 **Bảo** (chung: "Em ở xưởng cả đêm, anh hỏi tổ trưởng em.")
 - ← **Bài "nợ 8 triệu"**: "Em trả 2 triệu rồi, còn 6. Phúc biết mà, ảnh đăng cho em quê thôi."

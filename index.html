@@ -1124,8 +1124,8 @@ Giá thuê: 45.000.000đ/tháng
       {t:"20 tháng 9 lúc 21:30",x:"Chạy 42 đơn hôm nay, mệt mà vui.",likes:17,cm:[]}]},
     "dominhtu":{n:"Đỗ Minh Tú",i:"T",c:"#2f8f5b",bio:"Giao Nhanh · đội Bình Thạnh 3",live:"Bình Thạnh",friends:["lamvanphuc"],posts:[
       {t:"Hôm qua lúc 23:10 · tại Quán Ba Khía",x:"Nhậu với anh em đội 3 🍻",likes:21,ev:"nhau",cm:[
-        {n:"Anh em đội 3",t:"Hôm qua lúc 23:20",x:"Ủa sao ông để hai cái điện thoại trên bàn vậy? Cái ốp dán sticker mèo vàng của ai đó?"},
-        {h:"dominhtu",t:"Hôm qua lúc 23:22",x:"Máy phụ, chạy hai app."}]},
+        {n:"Anh em đội 3",t:"Hôm qua lúc 23:20",x:"Ủa sao ông để hai cái điện thoại trên bàn vậy? Cái ốp dán sticker mèo vàng của ai đó?",ev:"nhau"},
+        {h:"dominhtu",t:"Hôm qua lúc 23:22",x:"Máy phụ, chạy hai app.",ev:"nhau"}]},
       {t:"10 tháng 11 lúc 18:00",x:"Đôi giày bảo hộ mới, cam chói luôn.",likes:12,ev:"giaycam",cm:[]}]},
     "vongoctram":{n:"Võ Ngọc Trâm",i:"T",c:"#c95c8a",bio:"Nhân viên spa · Phú Nhuận",live:"Phú Nhuận",friends:["lamvanphuc"],posts:[
       {t:"Hôm qua lúc 22:10",x:"Có những người mình cứ chờ hoài…",likes:6,cm:[]}]},
@@ -1210,14 +1210,16 @@ Cạnh cửa có đôi dép tổ ong và một đôi giày bảo hộ màu cam.`
       thuhoi:{reply:["…Ừ thì tui có nhắn.","Tui có ghé chút, nói chuyện tiền nong thôi. Tầm 8g rưỡi tui về, Phúc còn khỏe re."]},
       giaycam:{reply:["Giày bảo hộ cam shipper nào chẳng mang. Ông nghi tui hả?"]},
       cod:{reply:["Tài khoản ai nấy chạy. Phúc nghi bậy đó."]},
-      meovang:{reply:["…","Tui không nói chuyện nữa. Có gì gặp công an."]}},
+      meovang:{reply:["…","Tui không nói chuyện nữa. Có gì gặp công an."]},
+      camera:{reply:["Camera đâu thấy mặt ai mà ông nói. Shipper áo xanh đầy hẻm."]}},
     tram:{_:"Em không biết gì thêm hết.",
       bienban:{reply:[{x:"Điện thoại anh Phúc có cái ốp dán sticker mèo vàng, em tặng hồi sinh nhật, tự tay em dán. Ai lấy nó vậy anh?",ev:"meovang"}]},
       nhau:{reply:[{x:"Khoan… cái ốp mèo vàng đó là của anh Phúc, em tặng ảnh hồi sinh nhật. Sao nó nằm trên bàn nhậu lúc 11g đêm?",ev:"meovang"}]},
       camera:{reply:["Cô gái 21:58 là em đó. Em gõ cửa không ai mở, đèn vẫn sáng, em về liền."]}},
     bay:{_:"Tui già rồi, mấy cái này tui không rành.",
       bienban:{reply:["Ổ khóa thay hồi tháng 10 là loại tay nắm bấm. Bấm cái nút bên trong rồi kéo cửa là nó tự khóa, khỏi cần chìa. Mấy đứa trọ bị nhốt ngoài hoài."]},
-      camera:{reply:["Tui về 22:31 đó, camera có quay. Tui đi thẳng vô nhà ngủ, không ghé phòng 4."]}},
+      camera:{reply:["Tui về 22:31 đó, camera có quay. Tui đi thẳng vô nhà ngủ, không ghé phòng 4."]},
+      khoa:{reply:["Ừ, tui thay ổ mới cho phòng 4 đó. Loại tay nắm bấm, bấm cái nút bên trong rồi kéo cửa là tự khóa, khỏi cần chìa. Mấy đứa trọ bị nhốt ngoài hoài."]}},
     bao:{_:"Em ở xưởng cả đêm, anh hỏi tổ trưởng em.",
       no:{reply:["Em trả 2 triệu rồi, còn 6. Phúc biết mà, ảnh đăng cho em quê thôi."]},
       bienban:{reply:["Ổ khóa đổi rồi mà, chìa cũ em còn giữ chứ mở không được. Anh hỏi cô Bảy coi."]},
@@ -1507,7 +1509,7 @@ function fbPage(u){
         </article>`).join("")}</div>`}}
   return `<div class="fb-body">${top}${body}</div>`;
 }
-function shopItems(){const q=norm(S.shopQ||"");const it=CH.shop.filter(i=>!q||norm(i.n).includes(q)||i.k.includes(q)||norm(i.s).includes(q));
+function shopItems(){if(!CH.shop.length)return `<div class="empty">Chợ Hẻm chưa có tin rao nào.</div>`;const q=norm(S.shopQ||"");const it=CH.shop.filter(i=>!q||norm(i.n).includes(q)||i.k.includes(q)||norm(i.s).includes(q));
   return it.length?it.map(i=>`<div class="item"><div class="ph">${hero(i.svg)}</div><div class="in"><b>${i.n}</b><span class="price">${i.p}</span>${i.d?`<span class="desc">${esc(i.d)}</span>`:""}<span class="sm">${i.s}</span><span class="sm">${i.t}</span>${pinOf("s:"+i.s+i.p,"Chợ Hẻm",i.s,i.n+" · "+i.p+(i.d?" · "+i.d:"")+" · "+i.t,i.ev)}</div></div>`).join(""):`<div class="empty">Không có món nào khớp “${esc(S.shopQ)}”.</div>`}
 
 function bind(k,c){

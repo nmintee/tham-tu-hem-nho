@@ -55,3 +55,24 @@ test("Hồ sơ: đúng người đúng cách; thiếu họ tên không trừ lư
   G.accuse("Tú", "bam"); assert.equal(G.S.tries, 3);
   G.accuse("anh Đỗ Minh Tú", "bam"); assert.equal(G.S.solved, true);
 });
+
+test("bình luận nêu ốp mèo vàng đưa cho Trâm cũng trúng", () => {
+  const G = ch();
+  G.fbPage("matsach.vn/dominhtu"); G.pin("p:dominhtu:0:0");
+  assert.equal(G.confront("tram", "p:dominhtu:0:0").hit, true);
+});
+
+test("cô Bảy giải thích khóa khi được đưa tin thay ổ khóa; Tú phản ứng với camera", () => {
+  const G = ch();
+  G.S.chat = "tro"; G.R.chat(); G.pin("c:tro:1");
+  assert.equal(G.confront("bay", "c:tro:1").hit, true);
+  assert.ok(G.S.cx.bay.some(m => /tự khóa/.test(m.x)));
+  G.S.folder = "case"; G.S.fileSel = "camera"; G.R.files(); G.pin("f:camera");
+  assert.equal(G.confront("tu", "f:camera").hit, true);
+});
+
+test("Chợ Hẻm không có món thì báo rõ, không hiện ô khớp rỗng", () => {
+  const G = ch();
+  const html = G.shopItems();
+  assert.ok(html.includes("Chợ Hẻm chưa có tin rao nào") && !html.includes("“”"));
+});

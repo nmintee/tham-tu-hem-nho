@@ -379,8 +379,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
       <small>Phố Xanh trình chiếu</small>
       <h1>Thám Tử<span>Hẻm Nhỏ</span></h1>
       <div class="menu">
-        <button class="primary" id="b-play"><i>▶</i><span><b>Bắt đầu chơi</b><em>Chương 1 · Phần 1 · Chậu lan biến mất</em></span></button>
-        <button id="b-chap"><i>☰</i><span><b>Chọn chương</b></span></button>
+        <button class="primary" id="b-chap"><i>▶</i><span><b>Chọn chương</b><em>Chương 1: Thám tử tập sự</em></span></button>
         <button id="b-how"><i>?</i><span><b>Cách chơi</b></span></button>
       </div>
     </div>
@@ -1365,14 +1364,13 @@ const partLabel=i=>`Chương ${CHAPTERS[i].vol} · Phần ${partNo(i)}`;
 const nextLabel=(from,to)=>CHAPTERS[to].vol===CHAPTERS[from].vol?`Phần ${partNo(to)}: ${CHAPTERS[to].title}`:`Chương ${CHAPTERS[to].vol}: ${VOLS[CHAPTERS[to].vol].title||CHAPTERS[to].title}`;
 const soonVol=()=>Object.keys(VOLS).map(Number).find(v=>VOLS[v].soon&&!CHAPTERS.some(c=>c.vol===v));
 function nextCh(){const i=CHAPTERS.findIndex((c,i)=>!done.has(i));return i<0?CHAPTERS.length-1:i}
-function playLabel(){const i=nextCh();$("#b-play").querySelector("em").textContent=`${partLabel(i)} · ${CHAPTERS[i].title}`}
+function menuLabel(){$("#b-chap").querySelector("em").textContent=[...new Set(CHAPTERS.map(c=>c.vol))].map(v=>`Chương ${v}: ${VOLS[v].title}`).join(" · ")}
 function chapterListHTML(){const nx=nextCh(),sv=soonVol();
   return [...new Set(CHAPTERS.map(c=>c.vol))].map(v=>`<div class="vol-h">Chương ${v}: ${VOLS[v].title}</div>`+
     CHAPTERS.map((c,i)=>[c,i]).filter(([c])=>c.vol===v).map(([c,i])=>{const nw=i>0&&i===nx&&!done.has(i);
       return `<button class="ch" data-ch="${i}"><span><b>Phần ${partNo(i)}.</b> ${c.title}<small>${c.place}</small></span><span class="chip ${nw?"new":""}">${done.has(i)?"Đã phá":nw?"Mới":"Mở"}</span></button>`}).join("")).join("")+
     (sv?`<div class="lock"><span><b>Chương ${sv}${VOLS[sv].title?": "+VOLS[sv].title:""}</b></span><span>Sắp ra mắt</span></div>`:"")}
-$("#b-play").onclick=()=>showIntro(nextCh());
-playLabel();
+menuLabel();
 $("#b-chap").onclick=()=>modal(`<div class="modal"><div class="body"><strong style="font-size:18px">Chọn chương</strong><div class="chapters">
   ${chapterListHTML()}</div>
   <div class="row"><button class="btn" data-x>Đóng</button></div></div></div>`,m=>{$("[data-x]",m).onclick=()=>m.remove();
@@ -1385,7 +1383,7 @@ $("#b-how").onclick=()=>modal(`<div class="modal"><div class="body"><strong styl
 
 function goHome(){document.querySelectorAll(".win,.coach,.modal-bg").forEach(w=>w.remove());clearTimeout(stepTimer);clearTimeout(tick.t);
   $("#desk").hidden=true;$("#start").hidden=false;
-  playLabel()}
+  menuLabel()}
 $("#mb-home").onclick=()=>{if(S.solved||S.tries<=0){goHome();return}
   modal(`<div class="modal" role="dialog" aria-label="Về màn hình chính"><div class="body"><strong style="font-size:17px">Về màn hình chính?</strong>
   <p style="margin:0">Vụ án đang điều tra dở. Nếu thoát bây giờ, các manh mối đã ghim và ghi chú của vụ này sẽ mất.</p>

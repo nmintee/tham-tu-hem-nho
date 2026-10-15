@@ -60,3 +60,11 @@ test("màn thắng mời sang phần tiếp theo", () => {
   G.setCh(0); G.S.solved = true;
   assert.ok(G.R.file().includes("Phần 2: Ai ăn bánh trung thu? →"));
 });
+
+test("màn hình chính không còn nút Bắt đầu chơi; Chọn chương là nút chính", async () => {
+  const fs = await import("node:fs");
+  const html = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  assert.ok(!html.includes('id="b-play"'));
+  assert.ok(!html.includes("Bắt đầu chơi"));
+  assert.match(html, /<button class="primary" id="b-chap">/);
+});

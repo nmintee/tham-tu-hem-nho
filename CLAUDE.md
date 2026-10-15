@@ -45,6 +45,7 @@ Toàn bộ game nằm trong **một file `index.html`** (HTML + CSS + JS thuần
 - Mặt Sách: tìm kiếm phải gõ **họ tên đầy đủ** (không dấu cũng được) hoặc tên tài khoản; gõ một chữ thì "Không tìm thấy". Có trang cá nhân, Bạn bè bấm được, bình luận có tên tách dòng riêng.
 - Bài đăng mới hơn nằm trên.
 - Hồ sơ: 3 lần gửi; sai mỗi lần có phản hồi riêng (gõ đúng người nhưng thiếu họ tên thì chỉ nhắc, không trừ lượt: `check` trả `{m, free:1}`); hết lượt thì có nút **Xem đáp án**; màn thắng/thua có nút **Màn hình chính**, **Chơi lại**, sang chương sau.
+- Màn hình chính chỉ có **Chọn chương** (nút chính) và **Cách chơi** — không có nút "Bắt đầu chơi/Chơi tiếp", vì tiến độ chỉ lưu trong `localStorage` của từng máy.
 - "Mẹo của thám tử" chỉ hiện ở **phần 1 của chương 1**.
 - Giao diện cố định tông sáng; nút/ô nhập phải có màu chữ rõ ràng (đã từng lỗi chữ trắng khi máy bật dark mode).
 - Cửa sổ có 3 nút: đóng / thu nhỏ xuống Dock / phóng to (nhấp đôi thanh tiêu đề cũng phóng to).

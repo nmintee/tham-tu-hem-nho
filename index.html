@@ -1227,6 +1227,7 @@ const R={
   },
   photos(){
     const ps=allPhotos();
+    if(!ps.length&&!S.photo)return `<div class="photos"><div class="empty">Chưa có ảnh nào trong vụ này.</div></div>`;
     if(S.photo){const p=Object.fromEntries(ps)[S.photo];if(p)return `<div class="viewer"><div class="ph">${p.svg}</div><footer><span><button class="btn" data-back>← Tất cả ảnh</button></span><span>${esc(p.n)}${p.info?" · "+esc(p.info):""}</span>${pinOf("ph:"+S.photo,"Ảnh","",p.n+(p.info?" · "+p.info:""),p.ev)}</footer></div>`}
     return `<div class="photos">${ps.map(([k,p])=>`<button class="photo" data-photo="${k}"><div class="ph">${hero(p.svg)}</div><span>${esc(p.n)}${p.restored?'<span class="tag-r">Khôi phục</span>':""}</span></button>`).join("")}</div>`;
   },
@@ -1393,6 +1394,7 @@ const partNo=i=>CHAPTERS.slice(0,i+1).filter(c=>c.vol===CHAPTERS[i].vol).length;
 const partLabel=i=>`Chương ${CHAPTERS[i].vol} · Phần ${partNo(i)}`;
 const nextLabel=(from,to)=>CHAPTERS[to].vol===CHAPTERS[from].vol?`Phần ${partNo(to)}: ${CHAPTERS[to].title}`:`Chương ${CHAPTERS[to].vol}: ${VOLS[CHAPTERS[to].vol].title||CHAPTERS[to].title}`;
 const soonVol=()=>Object.keys(VOLS).map(Number).find(v=>VOLS[v].soon&&!CHAPTERS.some(c=>c.vol===v));
+const showsCoach=i=>partNo(i)===1&&!!CHAPTERS[i].coach;
 function nextCh(){const i=CHAPTERS.findIndex((c,i)=>!done.has(i));return i<0?CHAPTERS.length-1:i}
 function menuLabel(){$("#b-chap").querySelector("em").textContent=[...new Set(CHAPTERS.map(c=>c.vol))].map(v=>`Chương ${v}: ${VOLS[v].title}`).join(" · ")}
 function chapterListHTML(){const nx=nextCh(),sv=soonVol();
@@ -1408,6 +1410,7 @@ $("#b-chap").onclick=()=>modal(`<div class="modal"><div class="body"><strong sty
 $("#b-how").onclick=()=>modal(`<div class="modal"><div class="body"><strong style="font-size:18px">Cách chơi</strong>
   <p style="margin:0">Bạn ngồi trước một chiếc máy tính. Mở các ứng dụng dưới thanh Dock: đọc tin nhắn trong <b>Nhắn</b>, gõ địa chỉ web trong <b>Lướt</b>, mở tài liệu trong <b>Tệp</b>, xem <b>Ảnh</b>.</p>
   <p style="margin:0">Thấy chi tiết đáng ngờ thì bấm <b>📌 Ghim</b> để lưu vào <b>Sổ vụ án</b>. Ở đó còn có bảng <b>Nghi phạm</b> để đánh dấu ai bị nghi, ai ngoại phạm.</p>
+  <p style="margin:0">Có chương cho bạn nhắn thẳng với nghi phạm: bấm <b>📎 Đưa bằng chứng</b> trong khung chat để đối chất bằng một chi tiết đã ghim. Đưa trúng chỗ mâu thuẫn thì họ phải khai lại.</p>
   <p style="margin:0">Khi chắc chắn, điền vào <b>Hồ sơ</b> và gửi. Bạn chỉ có 3 lần gửi.</p>
   <div class="row"><button class="btn go" data-x>Hiểu rồi</button></div></div></div>`,m=>$("[data-x]",m).onclick=()=>m.remove());
 
@@ -1429,7 +1432,7 @@ function startChapter(ci){
   stepTimer=setTimeout(step,700);
   mins=0;tick();
 }
-function coach(){if(S.ch>0||!CH.coach||$(".coach"))return;const c=h(`<div class="coach"><b>Mẹo của thám tử</b>${CH.coach}<br><button class="btn" data-x>Đã hiểu</button></div>`);$("#desk").append(c);$("[data-x]",c).onclick=()=>c.remove()}
+function coach(){if(!showsCoach(S.ch)||$(".coach"))return;const c=h(`<div class="coach"><b>Mẹo của thám tử</b>${CH.coach}<br><button class="btn" data-x>Đã hiểu</button></div>`);$("#desk").append(c);$("[data-x]",c).onclick=()=>c.remove()}
 let mins=0;function tick(){const t=CH.start[0]*60+CH.start[1]+mins;$("#clock").textContent=`${CH.day} · ${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`;
   clearTimeout(tick.t);tick.t=setTimeout(()=>{mins=Math.min(19,mins+1);tick()},30000)}
 

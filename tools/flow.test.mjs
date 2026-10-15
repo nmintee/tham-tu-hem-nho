@@ -68,3 +68,23 @@ test("màn hình chính không còn nút Bắt đầu chơi; Chọn chương là
   assert.ok(!html.includes("Bắt đầu chơi"));
   assert.match(html, /<button class="primary" id="b-chap">/);
 });
+
+test("mẹo hiện ở phần đầu tiên của mỗi chương có coach", () => {
+  const G = loadGame();
+  assert.equal(G.showsCoach(0), true);
+  assert.equal(G.showsCoach(1), false); // phần 2 có coach nhưng không phải phần đầu
+  G.CHAPTERS.push({vol: 9, coach: "x"}, {vol: 9, coach: "y"});
+  const n = G.CHAPTERS.length;
+  assert.equal(G.showsCoach(n - 2), true);
+  assert.equal(G.showsCoach(n - 1), false);
+});
+
+test("Cách chơi nhắc tới Đưa bằng chứng; app Ảnh trống có câu báo", async () => {
+  const fs = await import("node:fs");
+  const html = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8");
+  assert.match(html, /Cách chơi<\/strong>[\s\S]*📎 Đưa bằng chứng/);
+  const G = loadGame();
+  G.CHAPTERS.push({...G.CHAPTERS[0], vol: 9, photos: {}});
+  G.setCh(G.CHAPTERS.length - 1);
+  assert.ok(G.R.photos().includes("Chưa có ảnh nào trong vụ này."));
+});

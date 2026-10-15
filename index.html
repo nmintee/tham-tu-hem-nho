@@ -80,6 +80,20 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .menubar b{font-weight:700}
 .mb-home{border:0;background:#ffffff80;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;color:#14262a}
 .mb-home:hover{background:#fff}
+.mb-hint{background:#fff3d6}
+.hint-pop{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:min(440px,calc(100% - 24px));background:#fff;color:var(--ink);border-radius:12px;box-shadow:0 18px 50px #0b2a2e55,0 0 0 1px #00000014;z-index:9500;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:13px;line-height:1.5}
+.hint-pop .tip{margin:0;padding:8px 10px;border-radius:8px;background:#fff8e7;border:1px solid var(--paper-line)}
+.hint-pop .tip.t3{background:#fdeee7;border-color:#f3c3ad}
+.hint-pop .row{display:flex;justify-content:flex-end;gap:8px}
+.hint-score{margin:0;font-size:13px;font-weight:600;color:var(--ok)}
+.ded{background:#fff;border:1px solid #cfe5d8;border-left:4px solid var(--ok);border-radius:8px;padding:8px 10px;margin-bottom:8px;font-family:var(--f-ui)}
+.ded b{font-size:13px}.ded p{margin:4px 0 0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.nb-main h4.dh{margin-top:14px}
+.dpick{display:flex;gap:8px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-bottom:6px;font-size:12.5px;color:var(--ink);cursor:pointer}
+.dpick:has(input:checked){border-color:var(--accent);background:#fdeee7}
+.dpick em{font-style:normal;font-size:10px;font-weight:700;color:var(--accent);flex:none;margin-top:2px}
+.dgo-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.dmsg{font-size:12.5px;color:var(--ink-2)}
 .menubar .sp{flex:1}
 .menubar .tab{font-variant-numeric:tabular-nums}
 .desk-icons{position:absolute;top:44px;right:16px;display:flex;flex-direction:column;gap:14px;z-index:1}
@@ -400,7 +414,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
   <!-- DESKTOP -->
   <section id="desk" hidden>
     <div class="menubar">
-      <button class="mb-home" id="mb-home" title="Về màn hình chính">⌂ Màn hình chính</button><b id="mb-app">Phố Xanh</b><span>Tệp</span><span>Sửa</span><span>Xem</span><span>Cửa sổ</span>
+      <button class="mb-home" id="mb-home" title="Về màn hình chính">⌂ Màn hình chính</button><button class="mb-home mb-hint" id="mb-hint" hidden title="Gợi ý của anh Ti">💡 Gợi ý</button><b id="mb-app">Phố Xanh</b><span>Tệp</span><span>Sửa</span><span>Xem</span><span>Cửa sổ</span>
       <span class="sp"></span><span class="tab" id="clock"></span>
     </div>
     <div class="prog"><span>Đã ghim: <b id="pc">0</b> chi tiết</span></div>
@@ -1255,7 +1269,7 @@ Cạnh cửa có đôi dép tổ ong và một đôi giày bảo hộ màu cam.`
 let CH=CHAPTERS[0];
 const S={};
 function freshState(ci){Object.assign(S,{ch:ci,pinned:new Set(),open:{},z:10,chat:CHAPTERS[ci].lead,tries:3,solved:false,url:"",notes:"",nbFilter:"all",
-  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false,unlocked:new Set(),restored:new Set(),pwErr:{},folder:null,rsK:null,cx:{},cfUsed:new Set(),given:new Set(),cfOpen:false})}
+  unread:Object.fromEntries(Object.keys(CHAPTERS[ci].chats).filter(k=>k!==CHAPTERS[ci].lead).map(k=>[k,true])),leadShown:0,photo:null,fileSel:null,verdict:"",extra:[],shopQ:"",marks:{},how:"",seenFiles:false,pinData:{},hist:[""],hi:0,reveal:false,unlocked:new Set(),restored:new Set(),pwErr:{},folder:null,rsK:null,cx:{},cfUsed:new Set(),given:new Set(),cfOpen:false,traces:new Set(),lastProg:Date.now(),hintLv:{},hintsUsed:0,nudged:new Set(),dSel:new Set(),dFound:[],dMsg:"",why:""})}
 let done=new Set();
 try{(JSON.parse(localStorage.getItem("tthn-done")||"[]")).forEach(i=>done.add(i))}catch(e){}
 const saveDone=()=>{try{localStorage.setItem("tthn-done",JSON.stringify([...done]))}catch(e){}};
@@ -1270,10 +1284,10 @@ const driveF=k=>(CH.drive?CH.drive.folders:[]).find(f=>f.k===k);
 const isOpen=f=>!f.lock||S.unlocked.has(f.k);
 const passOk=(f,input)=>f.lock.pass.some(p=>pwNorm(p)===pwNorm(input||""));
 function tryUnlock(k,input){const f=driveF(k);if(!f)return false;if(isOpen(f))return true;
-  if(passOk(f,input)){S.unlocked.add(k);delete S.pwErr["d:"+k];return true}
+  if(passOk(f,input)){S.unlocked.add(k);delete S.pwErr["d:"+k];trace("unlock:"+k);return true}
   S.pwErr["d:"+k]=(input||"").trim()?"Sai mật khẩu.":"Nhập mật khẩu trước đã.";return false}
 const folderFiles=f=>Object.entries(f.files).concat((CH.trash||[]).filter(t=>t.kind==="file"&&t.from===f.k&&S.restored.has(t.k))
-  .map(t=>["t."+t.k,{n:t.n,x:t.x,m:t.when,restored:1,info:t.info}]));
+  .map(t=>["t."+t.k,{n:t.n,x:t.x,m:t.when,restored:1,info:t.info,ev:t.ev}]));
 const caseFiles=()=>Object.entries(CH.files).filter(([k,f])=>!f.hidden||S.given.has(k));
 const fileCount=()=>caseFiles().length+(CH.drive?CH.drive.folders.length:0);
 const gameTime=()=>{const t=CH.start[0]*60+CH.start[1]+mins;return `${String(Math.floor(t/60)).padStart(2,"0")}:${String(t%60).padStart(2,"0")}`};
@@ -1282,14 +1296,39 @@ function confront(p,id){const rules=CH.confront&&CH.confront[p],d=S.pinned.has(i
   box.push({me:1,t,x:"📎 "+d.x});
   const k=d.ev&&rules[d.ev]&&d.ev!=="_"?d.ev:null,used=k&&S.cfUsed.has(p+":"+k);
   if(!k||used){box.push({t,x:used?"Cái này hỏi rồi mà.":rules._});return{hit:false,gave:null}}
-  S.cfUsed.add(p+":"+k);const r=rules[k];
+  const r=rules[k];
+  if(r.needs&&!r.needs.every(x=>S.traces.has(x))){box.push({t,x:r.early||rules._});return{hit:false,gave:null}}
+  S.cfUsed.add(p+":"+k);trace(`cf:${p}:${k}`);
   r.reply.forEach(m=>box.push(typeof m==="string"?{t,x:m}:{t,...m}));
-  if(r.give)S.given.add(r.give);
+  if(r.give)[].concat(r.give).forEach(g=>S.given.add(g));
   return{hit:true,gave:r.give||null}}
+/* ---------- Dấu vết, gợi ý theo bước, ghép suy luận ---------- */
+function trace(k){if(!S.traces.has(k)){S.traces.add(k);S.lastProg=Date.now()}}
+const stepDone=st=>st.done.every(c=>Array.isArray(c)?c.some(x=>S.traces.has(x)):S.traces.has(c));
+const hintStep=()=>CH.hints?CH.hints.findIndex(st=>!stepDone(st)):-1;
+function hintMore(){const i=hintStep();if(i<0)return -1;const lv=S.hintLv[i]||0;if(lv<CH.hints[i].tips.length){S.hintLv[i]=lv+1;S.hintsUsed++}return i}
+function hintHTML(){const i=hintStep();
+  if(i<0)return `<b>💡 Anh Ti gợi ý</b><p class="tip">Đủ chứng cứ rồi đó em, mở Hồ sơ nộp đi. Nhớ trả lời đủ cả ba câu nha.</p><div class="row"><button class="btn" data-hx>Đóng</button></div>`;
+  const st=CH.hints[i],lv=S.hintLv[i]||0;
+  return `<b>💡 Anh Ti gợi ý · bước ${i+1}/${CH.hints.length}</b>${st.tips.slice(0,lv).map((t,j)=>`<p class="tip t${j+1}">${t}</p>`).join("")}
+    <div class="row"><button class="btn" data-hx>Đóng</button>${lv<st.tips.length?`<button class="btn go" data-hmore>${lv?"Gợi ý rõ hơn":"Xem gợi ý"}</button>`:""}</div>`}
+function openHints(){const i=hintStep();if(i>=0&&!S.hintLv[i])hintMore();
+  let p=$(".hint-pop");if(!p){p=h(`<div class="hint-pop" role="dialog" aria-label="Gợi ý của anh Ti"></div>`);$("#desk").append(p)}
+  p.innerHTML=hintHTML();$("[data-hx]",p).onclick=()=>p.remove();const m=$("[data-hmore]",p);if(m)m.onclick=()=>{hintMore();openHints()}}
+function nudgeCheck(now){if(!CH.hints||S.solved||S.tries<=0)return false;const i=hintStep();
+  if(i<0||S.nudged.has(i)||now-S.lastProg<240000)return false;
+  S.nudged.add(i);say("Bí hả em? Bấm 💡 Gợi ý trên thanh menu, anh chỉ cho nè.");return true}
+function deduceTry(ids){const evs=new Set(ids.map(id=>S.pinData[id]&&S.pinData[id].ev).filter(Boolean)),D=CH.deduce||[];
+  const cov=d=>d.need.filter(g=>g.ev.some(e=>evs.has(e))).length;
+  const hit=D.find(d=>!S.dFound.includes(d.id)&&cov(d)===d.need.length);
+  if(hit){S.dFound.push(hit.id);trace("deduce:"+hit.id);return{found:hit}}
+  if(D.some(d=>S.dFound.includes(d.id)&&cov(d)===d.need.length))return{again:true};
+  let best=null,bc=0;D.filter(d=>!S.dFound.includes(d.id)).forEach(d=>{const c=cov(d);if(c>bc){bc=c;best=d}});
+  return best?{missing:best.need.filter(g=>!g.ev.some(e=>evs.has(e))).map(g=>g.l)}:{none:true}}
 function tryRestore(k,input){const t=(CH.trash||[]).find(x=>x.k===k);if(!t)return false;if(S.restored.has(k))return true;
   const f=driveF(t.from);
   if(f&&!isOpen(f)){if(!passOk(f,input)){S.pwErr["t:"+k]=(input||"").trim()?"Sai mật khẩu.":"Nhập mật khẩu trước đã.";return false}S.unlocked.add(f.k)}
-  S.restored.add(k);delete S.pwErr["t:"+k];return true}
+  S.restored.add(k);delete S.pwErr["t:"+k];trace("restore:"+k);return true}
 const allPhotos=()=>Object.entries(CH.photos).concat((CH.trash||[]).filter(t=>t.kind==="photo"&&S.restored.has(t.k))
   .map(t=>["t."+t.k,{n:t.n,svg:t.svg,info:t.info,restored:1}]));
 
@@ -1301,7 +1340,7 @@ function pinOf(id,src,who,x,ev){REG[id]={src,x:(who?who+": ":"")+x,ev};return pi
 function pinBtn(id){const on=S.pinned.has(id);return `<button class="pin ${on?"done":""}" data-pin="${id}">📌 ${on?"Đã ghim":"Ghim"}</button>`}
 function updateProg(){$("#pc").textContent=S.pinned.size}
 function pin(id){
-  if(S.pinned.has(id)){S.pinned.delete(id);toast("Đã bỏ ghim")}else{S.pinned.add(id);S.pinData[id]=REG[id];toast("Đã ghim vào Sổ vụ án")}
+  if(S.pinned.has(id)){S.pinned.delete(id);toast("Đã bỏ ghim")}else{S.pinned.add(id);S.pinData[id]=REG[id];if(REG[id]&&REG[id].ev)trace("pin:"+REG[id].ev);toast("Đã ghim vào Sổ vụ án")}
   updateProg();refreshAll();
 }
 
@@ -1374,6 +1413,7 @@ const R={
       `<div class="msg">${m.who?av({c:"#8a8f99",i:m.who.split(" ").pop()[0]},30):av(p,30)}
       <div class="bubble">${m.who?`<div class="who">${m.who}</div>`:""}${esc(m.x)}${m.link?` <button class="lnk" data-link="${m.link}">${m.link}</button>`:""}<div class="time">${m.t}</div>${pinOf(`c:${S.chat}:${mi}`,"Tin nhắn",m.who||p.n,m.x,m.ev)}</div></div>`).join("");
     const typing=S.chat===lead&&S.leadShown<CH.chats[lead].length-1?`<div class="typing">${p.n.replace(" dân phòng","")} đang soạn tin…</div>`:"";
+    trace("chat:"+S.chat);
     const rules=CH.confront&&CH.confront[S.chat],nm=p.n.split(" · ")[0];
     const cfPanel=rules&&S.cfOpen?`<div class="cf-panel"><div class="cf-h">Chọn chi tiết đã ghim để đưa cho ${esc(nm)}</div>${S.pinned.size?[...S.pinned].map(id=>`<button class="cf-item" data-cf="${id}"><em>${S.pinData[id].src}</em><span>${esc(S.pinData[id].x)}</span></button>`).join(""):`<p class="cf-empty">Chưa có gì để đưa. Ghim một chi tiết (📌) trước đã.</p>`}</div>`:"";
     return `<div class="chat-list"><input id="chat-q" placeholder="Tìm tin nhắn…" aria-label="Tìm tin nhắn">${list}</div>
@@ -1415,7 +1455,7 @@ const R={
       main=`<div class="doc lockbox"><div class="lk-card"><div class="lk-ico">🔒</div><b>${esc(F.n)}</b><p>Thư mục riêng, cần mật khẩu.</p><p class="hint">Gợi ý mật khẩu: ${esc(F.lock.hint)}</p>
         <form id="pw-f" class="pwf"><input id="pw-in" autocomplete="off" placeholder="Nhập mật khẩu" aria-label="Mật khẩu thư mục ${esc(F.n)}"><button class="btn go">Mở</button></form>${err?`<div class="pw-err" role="alert">${err}</div>`:""}</div></div>`}
     else if(!list.length)main=`<div class="doc"><div class="empty">Thư mục này trống.</div></div>`;
-    else{const f=list.find(([k])=>k===sel)[1];const pid=fo==="case"?"f:"+sel:`f:${fo}:${sel}`;
+    else{const f=list.find(([k])=>k===sel)[1];trace("file:"+sel);const pid=fo==="case"?"f:"+sel:`f:${fo}:${sel}`;
       main=`<div class="doc"><header><b>${esc(f.n)}${f.restored?'<span class="tag-r">Khôi phục</span>':""}</b>${pinOf(pid,"Tệp","",f.n+" — "+f.x.split("\n").filter(l=>l.trim()).slice(0,1).join(""),f.ev)}</header>
         ${f.m?`<div class="meta-line">Sửa lần cuối: ${esc(f.m)}${f.info?" · "+esc(f.info):""}</div>`:""}<pre>${esc(f.x)}</pre></div>`}
     return `<div class="files-list">${side}</div>${main}`;
@@ -1430,7 +1470,7 @@ const R={
     const groups={};for(const id of S.pinned){const s=S.pinData[id].src;(groups[s]=groups[s]||[]).push(id)}
     const srcs=["Tin nhắn","Mặt Sách","Chợ Hẻm","Ảnh"].concat(fileCount()?["Tệp"]:[]).concat(CH.trash&&CH.trash.length?["Thùng rác"]:[]);
     const side=`<button data-nb="notes" class="${S.nbFilter==="notes"?"on":""}">✎ Ghi chú của tôi</button>
-      <button data-nb="sus" class="${S.nbFilter==="sus"?"on":""}">◎ Nghi phạm <span>${CH.suspects.length}</span></button><small>Manh mối đã ghim</small>
+      <button data-nb="sus" class="${S.nbFilter==="sus"?"on":""}">◎ Nghi phạm <span>${CH.suspects.length}</span></button>${CH.deduce?`<button data-nb="deduce" class="${S.nbFilter==="deduce"?"on":""}">🧩 Suy luận <span>${S.dFound.length}</span></button>`:""}<small>Manh mối đã ghim</small>
       <button data-nb="all" class="${S.nbFilter==="all"?"on":""}">Tất cả <span>${S.pinned.size}</span></button>
       ${srcs.map(s=>`<button data-nb="${s}" class="${S.nbFilter===s?"on":""}">${s} <span>${(groups[s]||[]).length}</span></button>`).join("")}`;
     let main;
@@ -1438,6 +1478,10 @@ const R={
     else if(S.nbFilter==="sus") main=`<h4>Bảng nghi phạm</h4><div class="sus">${CH.suspects.map(p=>{const m=S.marks[p.id]||"u";
       return `<div class="sus-card ${m}"><b>${p.n}</b><span>${p.r}</span><div class="tg">
         <button class="u ${m==="u"?"on":""}" data-mark="${p.id}:u">Chưa rõ</button><button class="s ${m==="s"?"on":""}" data-mark="${p.id}:s">Nghi</button><button class="c ${m==="c"?"on":""}" data-mark="${p.id}:c">Ngoại phạm</button></div></div>`}).join("")}</div>`;
+    else if(S.nbFilter==="deduce"&&CH.deduce){const ids=[...S.pinned];
+      main=`<h4>🧩 Suy luận</h4>${S.dFound.map(id=>{const d=CH.deduce.find(x=>x.id===id);return `<div class="ded"><b>${d.title}</b><p>${d.x}</p></div>`}).join("")||`<div class="nb-empty">Chưa có suy luận nào. Chọn vài chi tiết đã ghim bên dưới rồi bấm Ghép.</div>`}
+        <h4 class="dh">Ghép chứng cứ</h4>${ids.length?ids.map(id=>`<label class="dpick"><input type="checkbox" data-dsel="${id}" ${S.dSel.has(id)?"checked":""}><em>${S.pinData[id].src}</em><span>${esc(S.pinData[id].x)}</span></label>`).join(""):`<div class="nb-empty">Chưa ghim chi tiết nào.</div>`}
+        <div class="dgo-row"><button class="btn go" data-dgo>Ghép</button>${S.dMsg?`<span class="dmsg" role="status">${S.dMsg}</span>`:""}</div>`}
     else{const ids=[...S.pinned].filter(id=>S.nbFilter==="all"||S.pinData[id].src===S.nbFilter);
       main=`<h4>${S.nbFilter==="all"?"Tất cả manh mối":S.nbFilter}</h4>`+(ids.length?ids.map(id=>`<div class="clue"><em>${S.pinData[id].src}</em><span>${esc(S.pinData[id].x)}</span><button data-pin="${id}" aria-label="Bỏ ghim">×</button></div>`).join(""):
       `<div class="nb-empty">Chưa có manh mối nào. Bấm 📌 Ghim trên tin nhắn, bài đăng, ảnh hay tệp để lưu vào đây.</div>`)}
@@ -1448,18 +1492,19 @@ const R={
     const head=`<div class="org">Ban bảo vệ dân phố · Phường 5</div><h3>PHIẾU KẾT LUẬN VỤ VIỆC</h3><div class="sub">${CH.title} · ${CH.place.split("·").pop().trim()}</div>`;
     const next=CHAPTERS[S.ch+1];
     if(S.solved) return `<div class="file"><div class="sheet">${head}<div class="stamp" style="border-color:var(--ok);color:var(--ok)">ĐÃ PHÁ ÁN</div>
-      <p style="font-size:13px;line-height:1.6;margin:0">Thủ phạm: <b>${CH.culprit}</b>. ${CH.solution}</p>
+      <p style="font-size:13px;line-height:1.6;margin:0">Thủ phạm: <b>${CH.culprit}</b>. ${CH.solution}</p>${CH.hints?`<p class="hint-score">${S.hintsUsed?`Phá án với ${S.hintsUsed} gợi ý.`:"Phá án không cần gợi ý luôn ta, gớm dữuuuu"}</p>`:""}
       <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${next?`<button class="btn go" data-next>${nextLabel(S.ch,S.ch+1)} →</button>`:`<span class="tries">Chương ${soonVol()||"mới"} sắp ra mắt</span>`}</div></div></div>`;
-    if(S.tries<=0){const how=CH.form.how?CH.form.how.opts.find(o=>o.v===CH.form.how.a).l:"";
+    if(S.tries<=0){const how=CH.form.how?CH.form.how.opts.find(o=>o.v===CH.form.how.a).l:"",wy=CH.form.why?CH.form.why.opts.find(o=>o.v===CH.form.why.a).l:"";
       return `<div class="file"><div class="sheet">${head}<div class="stamp">ANH TI TỰ XỬ</div>
       <p style="font-size:13px;margin:0;line-height:1.6">Hết 3 lần gửi rồi. Anh Ti sẽ kể chuyện này ở tổ dân phố đó.</p>
-      ${S.reveal?`<div class="answer"><div class="answer-h">Đáp án</div><p>Thủ phạm: <b>${CH.culprit}</b>${how?`<br>${CH.form.how.label}: <b>${how}</b>`:""}</p><p>${CH.solution}</p></div>`:
+      ${S.reveal?`<div class="answer"><div class="answer-h">Đáp án</div><p>Thủ phạm: <b>${CH.culprit}</b>${how?`<br>${CH.form.how.label}: <b>${how}</b>`:""}${wy?`<br>${CH.form.why.label}: <b>${wy}</b>`:""}</p><p>${CH.solution}</p></div>`:
         `<p style="font-size:12px;margin:0;color:var(--ink-3)">Muốn tự phá lại thì bấm Chơi lại. Chịu thua thì xem đáp án.</p>`}
       <div class="act"><span style="display:flex;gap:8px"><button class="btn" data-home>⌂ Màn hình chính</button><button class="btn" data-restart>Chơi lại</button></span>${S.reveal?(next?`<button class="btn go" data-next>${nextLabel(S.ch,S.ch+1)} →</button>`:""):`<button class="btn go" data-reveal>Xem đáp án</button>`}</div></div></div>`}
-    const how=CH.form.how;
+    const how=CH.form.how,why=CH.form.why;
     return `<div class="file"><form class="sheet" id="acc">${head}
       <label for="acc-in">${CH.form.q}</label><input id="acc-in" autocomplete="off" placeholder="Ví dụ: Nguyễn Văn A">
       ${how?`<label>${how.q}</label><div class="choices">${how.opts.map(o=>`<label><input type="radio" name="how" id="how-${o.v}" value="${o.v}" ${S.how===o.v?"checked":""}>${o.l}</label>`).join("")}</div>`:""}
+      ${why?`<label>${why.q}</label><div class="choices">${why.opts.map(o=>`<label><input type="radio" name="why" id="why-${o.v}" value="${o.v}" ${S.why===o.v?"checked":""}>${o.l}</label>`).join("")}</div>`:""}
       ${S.verdict?`<div class="verdict no">${S.verdict}</div>`:""}
       <div class="act"><span class="tries">${dots} Còn ${S.tries}/3 lần gửi</span><button class="btn go">Gửi anh Ti</button></div></form></div>`;
   },
@@ -1494,7 +1539,7 @@ function fbPage(u){
       `<p class="fb-hint">Không tìm thấy kết quả cho “${esc(q)}”. Thử gõ đủ họ và tên, hoặc đúng tên tài khoản.</p>`}</div></div>`}
   else{const p=CH.profiles[path]||Object.values(CH.profiles).find(x=>(x.alias||[]).includes(path));
     if(!p) body=`<div class="fb-wrap"><div class="fb-card"><h5>Trang này không tồn tại</h5><p class="fb-hint">Liên kết có thể bị sai hoặc tài khoản đã bị xóa.</p></div></div>`;
-    else{const hd=CH.profiles[path]?path:Object.keys(CH.profiles).find(k=>CH.profiles[k]===p);
+    else{const hd=CH.profiles[path]?path:Object.keys(CH.profiles).find(k=>CH.profiles[k]===p);trace("url:"+hd);
       const fr=p.friends.filter(f=>CH.profiles[f]);
       body=`<div class="fb-wrap" style="gap:0;padding-top:0"><div class="fb-cover" style="background:linear-gradient(120deg,${p.c},#2b3356)"></div>
         <div class="fb-id">${fbAv(hd,p)}<div><b>${p.n}</b><small><span class="hd">matsach.vn/${hd}</span> · ${p.page?"Trang":`${p.friends.length} bạn bè`}</small></div></div></div>
@@ -1540,7 +1585,13 @@ function bind(k,c){
   if(k==="nb"){
     c.querySelectorAll("[data-nb]").forEach(b=>b.onclick=()=>{S.nbFilter=b.dataset.nb;render("nb")});
     c.querySelectorAll("[data-mark]").forEach(b=>b.onclick=()=>{const [id,m]=b.dataset.mark.split(":");S.marks[id]=m;render("nb",true)});
-    const t=$("#notes",c);if(t)t.oninput=()=>S.notes=t.value}
+    const t=$("#notes",c);if(t)t.oninput=()=>S.notes=t.value;
+    c.querySelectorAll("[data-dsel]").forEach(b=>b.onchange=()=>{const id=b.dataset.dsel;if(b.checked)S.dSel.add(id);else S.dSel.delete(id)});
+    const dg=$("[data-dgo]",c);if(dg)dg.onclick=()=>{const ids=[...S.dSel].filter(id=>S.pinned.has(id));
+      if(ids.length<2){S.dMsg="Chọn ít nhất hai chi tiết đã ghim để ghép.";render("nb",true);return}
+      const r=deduceTry(ids);
+      S.dMsg=r.found?`Ghép được: ${r.found.title}`:r.again?"Cái này em ghép ra rồi.":r.missing?`Hướng này có lý, nhưng còn thiếu chứng cứ về: ${r.missing.join(", ")}.`:"Mấy chi tiết này chưa nối được với nhau.";
+      if(r.found){S.dSel.clear();toast(S.dMsg)}render("nb",true)}}
   if(k==="trash"){
     const restoredMsg=t=>{S.rsK=null;toast(t.kind==="photo"?"Đã khôi phục. Mở app Ảnh để xem.":"Đã khôi phục. Mở app Tệp để xem.")};
     const focusIn=k2=>{const i=S.open.trash&&$(`[data-rsf="${k2}"] input`,S.open.trash);if(i)i.focus()};
@@ -1552,7 +1603,8 @@ function bind(k,c){
       refreshAll();if(!ok)focusIn(k2)});
   }
   if(k==="file"){
-    const f=$("#acc",c);if(f){f.onsubmit=e=>{e.preventDefault();const r=f.querySelector("input[name=how]:checked");accuse($("#acc-in",c).value,r?r.value:"")};
+    const f=$("#acc",c);if(f){f.onsubmit=e=>{e.preventDefault();const r=f.querySelector("input[name=how]:checked"),w=f.querySelector("input[name=why]:checked");accuse($("#acc-in",c).value,r?r.value:"",w?w.value:"")};
+      f.querySelectorAll("input[name=why]").forEach(r=>r.onchange=()=>S.why=r.value);
       f.querySelectorAll("input[name=how]").forEach(r=>r.onchange=()=>S.how=r.value)}
     const hm=$("[data-home]",c);if(hm)hm.onclick=goHome;
     const rv=$("[data-reveal]",c);if(rv)rv.onclick=()=>{S.reveal=true;render("file")};
@@ -1561,11 +1613,14 @@ function bind(k,c){
   }
 }
 
-function accuse(name,how){
+function accuse(name,how,why){
   const n=norm(name).replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim().replace(/^(chu|co|anh|chi|ba|ong|bac|em) /,"");
   if(!n){S.verdict="Hãy ghi họ tên đầy đủ trước khi gửi.";render("file");return}
   if(CH.form.how&&!how){S.verdict=CH.form.how.need;render("file");return}
-  const r=CH.check(n,how);
+  if(CH.form.why&&!why){S.verdict=CH.form.why.need;render("file");return}
+  const miss=(CH.form.proof||[]).filter(id=>!S.dFound.includes(id)).length;
+  if(miss){S.verdict=`Linh cảm của em có thể đúng, nhưng chưa chứng minh được. Vô Sổ vụ án → 🧩 Suy luận ghép chứng cứ trước đã (còn thiếu ${miss} suy luận quan trọng).`;render("file");return}
+  const r=CH.check(n,how,why);
   if(r.free){S.verdict=r.m;render("file");return}
   if(r.ok){S.solved=true;S.verdict="";done.add(S.ch);saveDone();render("file");say(CH.win);return}
   S.tries--;S.verdict=r.m;render("file");
@@ -1609,7 +1664,7 @@ $("#b-how").onclick=()=>modal(`<div class="modal"><div class="body"><strong styl
   <p style="margin:0">Khi chắc chắn, điền vào <b>Hồ sơ</b> và gửi. Bạn chỉ có 3 lần gửi.</p>
   <div class="row"><button class="btn go" data-x>Hiểu rồi</button></div></div></div>`,m=>$("[data-x]",m).onclick=()=>m.remove());
 
-function goHome(){document.querySelectorAll(".win,.coach,.modal-bg").forEach(w=>w.remove());clearTimeout(stepTimer);clearTimeout(tick.t);
+function goHome(){document.querySelectorAll(".win,.coach,.modal-bg,.hint-pop").forEach(w=>w.remove());clearTimeout(stepTimer);clearInterval(nudgeT);clearTimeout(tick.t);
   $("#desk").hidden=true;$("#start").hidden=false;
   menuLabel()}
 $("#mb-home").onclick=()=>{if(S.solved||S.tries<=0){goHome();return}
@@ -1617,10 +1672,12 @@ $("#mb-home").onclick=()=>{if(S.solved||S.tries<=0){goHome();return}
   <p style="margin:0">Vụ án đang điều tra dở. Nếu thoát bây giờ, các manh mối đã ghim và ghi chú của vụ này sẽ mất.</p>
   <div class="row"><button class="btn" data-x>Ở lại điều tra</button><button class="btn go" data-ok>Về màn hình chính</button></div></div></div>`,
   m=>{$("[data-x]",m).onclick=()=>m.remove();$("[data-ok]",m).onclick=goHome})};
-let stepTimer;
+let stepTimer,nudgeT;
+$("#mb-hint").onclick=openHints;
 function startChapter(ci){
-  document.querySelectorAll(".win,.coach").forEach(w=>w.remove());clearTimeout(stepTimer);
+  document.querySelectorAll(".win,.coach,.hint-pop").forEach(w=>w.remove());clearTimeout(stepTimer);clearInterval(nudgeT);
   CH=CHAPTERS[ci];freshState(ci);
+  $("#mb-hint").hidden=!CH.hints;if(CH.hints)nudgeT=setInterval(()=>nudgeCheck(Date.now()),15000);
   $("#start").hidden=true;$("#desk").hidden=false;$("#desk-label").textContent=CH.deskLabel;
   updateProg();renderDock();openApp("chat");
   const step=()=>{if(S.leadShown<CH.chats[CH.lead].length-1){S.leadShown++;if(S.open.chat&&S.chat===CH.lead)render("chat");stepTimer=setTimeout(step,1300)}else coach()};

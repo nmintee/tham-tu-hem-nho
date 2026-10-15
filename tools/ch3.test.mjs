@@ -61,3 +61,40 @@ test("trang Hẻm Bàn Tán và Bánh Mì Chị Hai tìm được bằng tên tr
     assert.ok(hit, name);
   }
 });
+
+test("gõ thiếu họ tên không bị trừ lượt gửi", () => {
+  for (const [ci, name, how] of [[2, "chú Lộc", "ghep"], [1, "Đức", "copy"], [0, "Khoa", ""]]) {
+    const G = loadGame(); G.setCh(ci);
+    G.accuse(name, how);
+    assert.equal(G.S.tries, 3, `chương ${ci + 1}: "${name}"`);
+    assert.match(G.S.verdict, /họ tên/);
+  }
+  const G = ch3(); G.accuse("Nguyễn Thị Hòa", "ghep");
+  assert.equal(G.S.tries, 2, "nghi phạm sai vẫn bị trừ lượt");
+});
+
+test("số điện thoại người mượn chìa chỉ nối được qua thư mục Lộc", () => {
+  const C = ch3().CH;
+  const pub = JSON.stringify([C.shop, C.news, C.profiles, C.chats]);
+  assert.ok(!pub.includes("0913 418 052"), "SĐT không được nằm ở chỗ công khai");
+  assert.ok(C.drive.folders.find(f => f.k === "loc").files.hd.x.includes("0913 418 052"));
+});
+
+test("mật khẩu Lộc phải ghép hai chỗ: biển số và năm mua không chung một câu", () => {
+  const C = ch3().CH;
+  const texts = Object.values(C.profiles).flatMap(p => p.posts.flatMap(po => [po.x, ...po.cm.map(c => c.x)]));
+  assert.ok(texts.some(x => x.includes("0712")) && texts.some(x => x.includes("1988")));
+  assert.ok(!texts.some(x => x.includes("0712") && x.includes("1988")));
+});
+
+test("đáp án cách dựng ảnh không phải phương án duy nhất nói tới ảnh trên mạng", () => {
+  const how = ch3().CH.form.how;
+  const wrong = how.opts.filter(o => o.v !== how.a);
+  assert.ok(wrong.some(o => /mạng/.test(o.l)));
+});
+
+test("học viên khác về trước giờ tạo ảnh; ảnh hẻm không ghi buổi sáng", () => {
+  const C = ch3().CH;
+  assert.match(C.drive.folders.find(f => f.k === "chung").files.lop.x, /về lúc 19:00/);
+  assert.ok(!/sáng/.test(C.photos.hem.n));
+});

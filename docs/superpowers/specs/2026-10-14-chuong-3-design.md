@@ -1,6 +1,6 @@
 # Chương 3 "Ai đứng sau Hẻm Bàn Tán?" + cơ chế Thư mục khóa / Thùng rác — Thiết kế
 
-Ngày: 2026-10-14 · Trạng thái: chờ duyệt
+Ngày: 2026-10-14 · Trạng thái: đã duyệt; Phụ lục A cập nhật sau buổi chơi thử thật (bỏ SĐT ở Chợ Hẻm, tách năm mua xe, đổi phương án (d), học viên khác về 19:00; gõ thiếu họ tên không trừ lượt)
 
 ## 1. Mục tiêu
 
@@ -145,13 +145,13 @@ Cơ chế mới của chương:
 - **Bánh Mì Chị Hai** (trang, tìm được bằng tên trang): bio "Bánh mì thịt nướng · 18 hẻm 7, KP3". Bài cũ (6 tháng 10): "Cảm ơn chủ nhà đã cho tiệm thêm mái hiên trước mùa mưa" (không nêu tên, chủ nhà không bình luận).
 - **Nguyễn Thị Hòa** (cô Hòa): bài 4 tháng 11 khen cháu nội "Bé Bông nhà bà, sinh năm 2019, giờ đã biết đọc". Bài **Hôm qua lúc 21:25** (video live): "Live bán đêm ở chợ đêm Hồ Thị Kỷ nè bà con" + bình luận 21:40 "Xe cô đông khách ghê". Bài **Hôm qua lúc 22:00**: "Mưa to quá, cô tắt live dẹp hàng đi trú mưa, lát tạnh bán tiếp." Bài **Hôm qua lúc 23:20** (video live): "Tạnh rồi, bán tiếp tới 0g nha" + bình luận 23:35 "Cô ơi chừa con 2 ổ". Bài cũ (tháng 8): cãi nhau với chị Hai chuyện giành chỗ đậu xe trước tiệm.
 - **Đặng Kim Ngân**: thứ Sáu 7/11: "Có những chỗ làm bóc lột người ta mà ngoài mặt thì hiền lắm." Bài cũ: "Ghét nhất đời là pate, làm tiệm bánh mì mà ghét pate mới ghê." Bài **Hôm qua lúc 21:30**: ảnh vé xe khách Sài Gòn → Bến Tre 21:45; bình luận 22:50 của Ngân: "Tới Trung Lương rồi nè"; bình luận 23:55 của Đặng Thị Thu (má Ngân): "Má đón con ở bến Mỏ Cày nè".
-- **Trịnh Văn Lộc**: bio "Hưu trí · Học tin học ở NVH KP3". Bài 2 tháng 11: ảnh chiếc Cub cũ: "Chiếc Cub 52-S1 0712, mua năm 1988, chiếc xe đầu tiên đời tôi." Bài 5 tháng 11: "Tuổi già học gõ văn bản, làm bảng tính cũng vui." Không có bài nào tối thứ Bảy.
+- **Trịnh Văn Lộc**: bio "Hưu trí · Học tin học ở NVH KP3". Bài 2 tháng 11: ảnh chiếc Cub cũ: "Chiếc Cub 52-S1 0712, chiếc xe đầu tiên đời tôi." — bình luận của Bạn già: "Nhớ hồi anh mua nó năm 1988, cả xóm ra coi." Bài 5 tháng 11: "Tuổi già học gõ văn bản, làm bảng tính cũng vui." Không có bài nào tối thứ Bảy.
 - **Lý Gia Bin**: Bạn bè có Trần Thị Mai (mẹ). Bài "con mèo Mướp nhà em". Bài **Hôm qua lúc 20:00** (mẹ đăng, gắn thẻ Bin nên hiện trên trang Bin): "Tối nay cho Bin ngủ bên ngoại ở Thủ Đức, mai mới về" + ảnh hai bà cháu.
 - **Võ Minh Khang**: bài **Hôm qua lúc 22:30** "Livestream rank tối nay tới 1h, có bật cam nha anh em" + bình luận 22:45 "Thấy Khang gào trên cam kìa 🤣", 23:40 "Khang gánh team ghê".
 - Tìm kiếm phải gõ họ tên đầy đủ hoặc tên tài khoản.
 
 ### Chợ Hẻm
-- "Cho thuê mặt bằng KP3, mặt tiền 5m, **trống từ 1/12**, giá thương lượng. LH 0913 418 052." (đăng 3 tháng 11)
+- "Cho thuê mặt bằng KP3, mặt tiền 5m, **trống từ 1/12**, giá thương lượng. Liên hệ chủ nhà qua tin nhắn Chợ Hẻm." (đăng 3 tháng 11, không ghi số điện thoại)
 - Vài món không liên quan (nồi chiên, xe đạp…).
 
 ### Tin Phố
@@ -169,7 +169,7 @@ Cơ chế mới của chương:
     - T7 8/11 · 22:05 · (chữ ký đọc không ra) · mượn lấy loa · 0913 418 052 · trả 23:10.
   - "Camera cửa NVH T7 8/11" (tự xuất 06:00 CN): 19:31 một người lớn vào · 20:58 người đó đẩy xe bánh mì ra · 22:00 Khang khóa cửa ra về · 22:06 một người lớn vào (áo mưa trùm kín, đội nón) · 23:09 người đó ra tay không, khóa cửa · không ai khác ra vào tới 06:00.
   - "Nhật ký máy NVH T7 8/11": 19:40 Hòa đăng nhập · 20:50 Hòa đăng xuất · 22:07 Khách đăng nhập · 22:12 Khách mở một thư mục riêng (nhập đúng mật khẩu) · 22:41 Khách mở matsach.vn/hembantan · 22:47 Khách đăng bài lên Hẻm Bàn Tán · 23:02 Khách xóa 2 tệp · 23:05 Khách khóa màn hình (không đăng xuất).
-  - "Lịch lớp tin học": lớp người cao tuổi T3, T5 18g–20g. Điểm danh T5 6/11: có mặt Trịnh Văn Lộc; vắng Nguyễn Thị Hòa (đi bán).
+  - "Lịch lớp tin học": lớp người cao tuổi T3, T5 18g–20g. Điểm danh T5 6/11: 3 học viên khác có mặt, về lúc 19:00; Trịnh Văn Lộc có mặt, ở lại tập thêm tới 19:40; vắng Nguyễn Thị Hòa (đi bán).
 - **Hòa — Nguyễn Thị Hòa** 🔒 gợi ý: "tên cháu nội + năm sinh" (bong2019 hoặc bebong2019) → "Thực đơn xe bánh mì" (sửa T3 4/11), "Kế hoạch bán chợ đêm T7" (sửa **T7 8/11 20:15**).
 - **Ngân — Đặng Kim Ngân** 🔒 gợi ý: "món tui ghét nhất" (pate) → "CV xin việc quán cơm Tấm Mơ", "Thư xin việc gửi 7/11" (sửa T6 7/11 10:20).
 - **Bin — Lý Gia Bin** 🔒 gợi ý: "tên con mèo" (muop) → thư mục ảnh chế (sửa T3 4/11).
@@ -197,7 +197,7 @@ Khôi phục (nhập mật khẩu thư mục gốc) thì thấy:
   a. Ghép túi giấy của tiệm vào ảnh thịt ôi tải trên mạng
   b. Lẻn vào bếp tiệm, chụp thịt thật
   c. Mua khay thịt hư ngoài chợ, đặt cạnh túi giấy thật của tiệm rồi chụp
-  d. Nhờ nhân viên cũ chụp hộ trong bếp
+  d. Mở ảnh thịt hư trên mạng, chụp lại màn hình cạnh túi giấy thật của tiệm
 - Nghi phạm trong Sổ vụ án: Cô Hòa, Ngân, Khang, Bin, Chú Lộc.
 
 =====================================================================
@@ -209,7 +209,7 @@ Thủ phạm: **Trịnh Văn Lộc**, cách: **(a) ghép túi giấy vào ảnh 
 1. Nhật ký máy: bài đăng 22:47 từ chính máy NVH, tài khoản Khách; 22:12 Khách mở một thư mục riêng bằng đúng mật khẩu; 23:02 xóa 2 tệp.
 2. Camera (tự xuất, không sửa được) + sổ chìa: sau 22:00 chỉ đúng một người lớn vào 22:06, ra 23:09, có mã hộp chìa (lớp tin học / ban điều hành), để SĐT thật 0913 418 052.
 3. Loại trừ bằng ngoại phạm công khai: Ngân (trên xe, má đón 23:55), Bin (ngủ bên ngoại, không có mã), Khang (về Bình Thạnh 22:00, live có cam 22:45). **Còn lại hai người không có ngoại phạm 22:00–23:20: cô Hòa (tắt live đi trú mưa, có mã, có động cơ, khớp câu "người bán bánh mì lâu năm") và chú Lộc (có mã, không đăng gì tối đó).**
-4. SĐT trùng tin Chợ Hẻm "mặt bằng KP3 trống từ 1/12" — nhưng chưa biết của ai.
+4. Tin Chợ Hẻm "mặt bằng KP3 trống từ 1/12" không ghi số điện thoại — chỉ là manh mối động cơ, chưa biết của ai.
 5. Mở khóa thư mục: Hòa (bong2019) chỉ có thực đơn, kế hoạch bán. Lộc (07121988 từ bài xe Cub: 4 số cuối + năm mua): hợp đồng "Bên cho thuê Trịnh Văn Lộc · SĐT 0913 418 052 · nhà số 18 hẻm 7" → SĐT trong sổ là của Lộc; trang tiệm "18 hẻm 7" → Lộc là chủ nhà tiệm chị Hai, muốn mặt bằng trống từ 1/12 dù hợp đồng chị còn tới 2027 → động cơ. Ghi chú "tách nền, ghép hai ảnh". 
 6. Thùng rác: IMG_0847/0848 (Khách xóa 23:02) chỉ khôi phục được bằng 07121988 → hai tệp nằm trong thư mục Lộc: ảnh thịt gốc không có túi giấy, có "anhmienphi.vn"; túi giấy tách nền → cách (a), loại (b), (c), (d). Thông tin tệp: tải/tạo bằng tài khoản Lộc trong buổi học T5 6/11 19:18–19:20, buổi cô Hòa vắng → chặn giả thuyết cô Hòa gài bẫy Lộc (cô không thể ngồi tài khoản Lộc trong buổi học mình vắng). Camera "ra tay không" → lý do "mượn lấy loa" là bịa.
 
@@ -219,4 +219,4 @@ Phản hồi khi gửi sai (dự kiến):
 - Khang: "Camera ghi Khang khóa cửa về lúc 22:00, 22:45 người xem live còn thấy mặt Khang trên cam ở phòng trọ."
 - Bin: "Tối đó Bin ngủ bên ngoại ở Thủ Đức, mà Bin cũng đâu biết mã hộp chìa."
 - Chị Hai: "Ai lại đi bôi nhọ tiệm của chính mình?"
-- Đúng Lộc, sai cách: (b)/(d) "Ảnh thịt gốc trong thùng rác là ảnh tải trên mạng, đâu phải chụp trong bếp." (c) "Ảnh thịt gốc không hề có túi giấy. Túi giấy là ảnh tách nền ghép vào."
+- Đúng Lộc, sai cách: (b) "Ảnh thịt gốc trong thùng rác là ảnh tải trên mạng, đâu phải chụp trong bếp." (d) "Túi giấy trong thùng rác là một ảnh đã tách nền, đâu phải túi thật đặt cạnh màn hình." (c) "Ảnh thịt gốc không hề có túi giấy. Túi giấy là ảnh tách nền ghép vào."

@@ -95,6 +95,11 @@ function expect(cond, msg){ if (!cond) throw new Error("FAIL: " + msg); }
 
     // Hồ sơ: sai rồi đúng
     w = await open(page, "file");
+    const cut = await page.evaluate(() => { const win = document.querySelector('.win[data-app="file"]'), b = win.querySelector(".act .btn.go");
+      return b.getBoundingClientRect().bottom - win.getBoundingClientRect().bottom; });
+    expect(cut <= 0, `nút Gửi bị cắt ${cut}px`);
+    await w.locator("#acc-in").fill("Trịnh Lộc"); await w.locator("#how-ghep").check(); await w.locator("#acc-in").press("Enter");
+    expect((await w.textContent()).includes("Còn 3/3"), "gõ thiếu họ tên không trừ lượt");
     await w.locator("#acc-in").fill("Nguyễn Thị Hòa"); await w.locator("#how-ghep").check(); await w.locator("#acc-in").press("Enter");
     expect((await w.locator(".verdict").textContent()).includes("trú mưa"), "phản hồi riêng cho cô Hòa");
     await w.locator("#acc-in").fill("Trịnh Văn Lộc"); await w.locator("#how-ghep").check(); await w.locator("#acc-in").press("Enter");

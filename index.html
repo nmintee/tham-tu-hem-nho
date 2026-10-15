@@ -286,7 +286,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .pwf input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-size:13px}
 .pw-err{color:var(--bad);font-size:12px}
 .meta-line{font-size:11px;color:var(--ink-3)}
-.tag-r{font-size:10px;font-weight:700;background:#e6f3ec;color:var(--ok);border-radius:4px;padding:1px 6px;margin-left:6px}
+.tag-r{white-space:nowrap;font-size:10px;font-weight:700;background:#e6f3ec;color:var(--ok);border-radius:4px;padding:1px 6px;margin-left:6px}
 .trash{flex:1;overflow:auto;background:#fff;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
 .trash-h{font-size:11px;color:var(--ink-3);letter-spacing:.04em}
 .tr{border:1px solid var(--line);border-radius:8px;padding:9px 11px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -629,7 +629,7 @@ const CHAPTERS = [
   form:{q:"Họ và tên người lấy chậu lan (ghi đầy đủ):"},
   check(n){
     if(n==="le minh khoa")return{ok:1};
-    if(n.includes("khoa"))return{m:"Đúng người nhưng anh cần họ tên đầy đủ để ghi biên bản. Tìm trên Mặt Sách xem."};
+    if(n.includes("khoa"))return{m:"Đúng người nhưng anh cần họ tên đầy đủ để ghi biên bản. Tìm trên Mặt Sách xem.",free:1};
     if(n.includes("tu")||n.includes("hoa"))return{m:"Chú Tư có ảnh ở Vũng Tàu lúc 23:04. Ông ấy không thể ở hẻm 42 khuya đó."};
     if(n.includes("tam"))return{m:"Tâm ở Quận 10, chính Tâm là người vạch ra lời nói dối của Khoa đó."};
     if(n.includes("ha")&&!n.includes("hoa"))return{m:"Chị Hà là nhân chứng thấy chậu lan còn lúc 23g30, đâu phải thủ phạm."};
@@ -814,7 +814,7 @@ Thứ bảy, 04/10/2025 — Người trực: Sáu
       if(how==="sau")return{m:"Đúng người rồi! Nhưng chú Sáu đeo chìa ở thắt lưng cả lúc ngủ. Xem kỹ chuyện chìa dự phòng rời tay ai, bao lâu."};
       if(how==="spare")return{m:"Đúng người rồi! Nhưng chìa dự phòng đã về túi chị Lan từ 21g. Vậy cái chìa mở kho lúc 2g sáng ở đâu ra?"};
       return{m:"Đúng người rồi! Giờ chọn luôn cách vào kho nha."}}
-    if(n.includes("duc"))return{m:"Có vẻ đúng hướng, nhưng anh cần đủ họ tên để lập biên bản. Thử mở app Tệp."};
+    if(n.includes("duc"))return{m:"Có vẻ đúng hướng, nhưng anh cần đủ họ tên để lập biên bản. Thử mở app Tệp.",free:1};
     if(n.includes("tuan"))return{m:"Tuấn đăng bài từ thư viện lúc 02:12, ảnh còn có đồng hồ màn hình. Camera ở nhà văn hóa quay lúc 02:14. Hai phút không thể đi kịp."};
     if(n.includes("sau"))return{m:"Chú Sáu chỉ ăn thử một cái chị Lan cho. Người trong camera đeo balo móc cá mập, còn chú đâu có đeo balo."};
     if(n.includes("lan"))return{m:"Chị Lan là người phát hiện và báo mất. Chìa dự phòng cũng nằm trong túi chị cả đêm."};
@@ -895,8 +895,8 @@ Thứ bảy, 04/10/2025 — Người trực: Sáu
     "trinhvanloc":{n:"Trịnh Văn Lộc",i:"L",c:"#5d6bb0",bio:"Hưu trí · Học tin học ở NVH KP3",live:"Khu phố 3, Quận 3",friends:[],posts:[
       {t:"5 tháng 11 lúc 20:10",x:"Tuổi già học gõ văn bản, làm bảng tính cũng vui. Cảm ơn lớp tin học nhà văn hóa.",likes:11,cm:[
         {n:"Bạn cùng lớp",t:"5 tháng 11 lúc 20:30",x:"Chú học nhanh nhất lớp đó."}]},
-      {t:"2 tháng 11 lúc 09:15",x:"Chiếc Cub 52-S1 0712, mua năm 1988, chiếc xe đầu tiên đời tôi. Giờ vẫn chạy ngon.",svg:SVG.cub,likes:27,cm:[
-        {n:"Bạn già",t:"2 tháng 11 lúc 10:00",x:"Xe này giờ hiếm lắm anh ơi."}]}]},
+      {t:"2 tháng 11 lúc 09:15",x:"Chiếc Cub 52-S1 0712, chiếc xe đầu tiên đời tôi. Giờ vẫn chạy ngon.",svg:SVG.cub,likes:27,cm:[
+        {n:"Bạn già",t:"2 tháng 11 lúc 10:00",x:"Nhớ hồi anh mua nó năm 1988, cả xóm ra coi. Giờ hiếm lắm rồi."}]}]},
     "lygiabin":{n:"Lý Gia Bin",i:"B",c:"#2f8f5b",bio:"Lớp 9A · team mèo",live:"Khu phố 3, Quận 3",friends:["tranthimai"],posts:[
       {t:"1 tháng 11 lúc 17:00",x:"Con mèo Mướp nhà em, trùm ngủ ngày 😼",svg:SVG.muop,likes:19,cm:[
         {h:"tranthimai",t:"1 tháng 11 lúc 17:20",x:"Mướp mập quá rồi con."}]}]},
@@ -908,7 +908,7 @@ Thứ bảy, 04/10/2025 — Người trực: Sáu
         {n:"Gamer Tí",t:"Hôm qua lúc 22:45",x:"Thấy Khang gào trên cam kìa 🤣"},
         {n:"Gamer Tí",t:"Hôm qua lúc 23:40",x:"Khang gánh team ghê."}]}]}},
   shop:[
-    {n:"Cho thuê mặt bằng Khu phố 3, mặt tiền 5m",p:"Thương lượng",s:"Chủ nhà · KP3",t:"Đăng 3/11",d:"Trống từ 1/12. Liên hệ 0913 418 052.",svg:SVG.shopSpace,k:"cho thue mat bang kp3"},
+    {n:"Cho thuê mặt bằng Khu phố 3, mặt tiền 5m",p:"Thương lượng",s:"Chủ nhà · KP3",t:"Đăng 3/11",d:"Trống từ 1/12. Liên hệ chủ nhà qua tin nhắn Chợ Hẻm.",svg:SVG.shopSpace,k:"cho thue mat bang kp3"},
     {n:"Nồi chiên không dầu 5L, còn bảo hành",p:"650.000đ",s:"dogiadungq3",t:"Đăng 2 ngày trước",svg:SVG.noichien,k:"noi chien khong dau"},
     {n:"Xe đạp mini cho học sinh",p:"900.000đ",s:"xedaphem",t:"Đăng 1 tuần trước",svg:SVG.xedap,k:"xe dap"}],
   shopHint:"vd: nồi chiên",
@@ -917,7 +917,7 @@ Thứ bảy, 04/10/2025 — Người trực: Sáu
     {h:"Tin giả trên mạng xã hội: trước khi chia sẻ, hãy hỏi nguồn",t:"28/10/2025",x:"Nhiều trang ẩn danh đăng ảnh gây sốc để kéo tương tác. Trước khi chia sẻ, hãy hỏi ảnh chụp ở đâu, khi nào, ai chụp."}],
   photos:{
     post:{n:"Ảnh bài Hẻm Bàn Tán (anh Ti chụp lại)",svg:SVG.fakePost},
-    hem:{n:"Hẻm 7 sáng Chủ nhật",svg:SVG.hem7}},
+    hem:{n:"Hẻm 7 tối thứ Bảy",svg:SVG.hem7}},
   files:{
     ti:{n:"Ghi_chu_anh_Ti.txt",x:
 `GHI CHÚ — VỤ HẺM BÀN TÁN
@@ -961,9 +961,9 @@ Xuất tự động 06:00 CN 9/11/2025 · không chỉnh sửa được
 Thứ Ba, thứ Năm · 18:00–20:00
 
 Điểm danh T5 6/11/2025
-- Trịnh Văn Lộc ........ có mặt
-- Nguyễn Thị Hòa ....... vắng (đi bán)
-- 3 học viên khác ...... có mặt`}}},
+- 3 học viên khác ...... có mặt, về lúc 19:00
+- Trịnh Văn Lộc ........ có mặt, ở lại tập thêm tới 19:40
+- Nguyễn Thị Hòa ....... vắng (đi bán)`}}},
     {k:"hoa",n:"Hòa — Nguyễn Thị Hòa",lock:{hint:"tên cháu nội + năm sinh",pass:["bong2019","bebong2019"]},files:{
       menu:{n:"Thuc_don_xe_banh_mi.txt",m:"T3 4/11 18:20",x:
 `XE BÁNH MÌ CÔ HÒA
@@ -1023,15 +1023,16 @@ Giá thuê: 45.000.000đ/tháng
     {id:"loc",n:"Chú Lộc",r:"Học viên lớp tin học"}],
   form:{q:"Họ và tên người đứng sau trang Hẻm Bàn Tán (ghi đầy đủ):",how:{q:"Ảnh trong bài được dựng bằng cách nào?",label:"Cách dựng ảnh",need:"Chọn luôn cách ảnh được dựng rồi mới gửi nha.",opts:[
     {v:"ghep",l:"Ghép túi giấy của tiệm vào ảnh thịt ôi tải trên mạng"},{v:"len",l:"Lẻn vào bếp tiệm, chụp thịt thật"},
-    {v:"mua",l:"Mua khay thịt hư ngoài chợ, đặt cạnh túi giấy thật của tiệm rồi chụp"},{v:"nho",l:"Nhờ nhân viên cũ chụp hộ trong bếp"}],a:"ghep"}},
+    {v:"mua",l:"Mua khay thịt hư ngoài chợ, đặt cạnh túi giấy thật của tiệm rồi chụp"},{v:"chup",l:"Mở ảnh thịt hư trên mạng, chụp lại màn hình cạnh túi giấy thật của tiệm"}],a:"ghep"}},
   check(n,how){
     const nameOk=n==="trinh van loc";
     if(nameOk&&how==="ghep")return{ok:1};
     if(nameOk){
       if(how==="mua")return{m:"Đúng người rồi! Nhưng ảnh thịt gốc không hề có túi giấy. Túi giấy là một ảnh tách nền riêng, ghép vào."};
-      if(how==="len"||how==="nho")return{m:"Đúng người rồi! Nhưng ảnh thịt gốc là ảnh tải trên mạng, đâu phải chụp trong bếp tiệm."};
+      if(how==="len")return{m:"Đúng người rồi! Nhưng ảnh thịt gốc là ảnh tải trên mạng, đâu phải chụp trong bếp tiệm."};
+      if(how==="chup")return{m:"Đúng người rồi! Nhưng túi giấy trong thùng rác là một ảnh đã tách nền, đâu phải túi thật đặt cạnh màn hình."};
       return{m:"Đúng người rồi! Giờ chọn luôn cách ảnh được dựng nha."}}
-    if(n.includes("loc"))return{m:"Có vẻ đúng hướng, nhưng ghi đủ họ tên giùm anh để lập biên bản."};
+    if(n.includes("loc"))return{m:"Có vẻ đúng hướng, nhưng ghi đủ họ tên giùm anh để lập biên bản.",free:1};
     if(n.includes("hoa"))return{m:"Cô Hòa có tắt live đi trú mưa thật. Nhưng số điện thoại trong sổ chìa đâu phải của cô, còn hai tấm ảnh được làm từ buổi học tối thứ Năm, buổi đó cô vắng."};
     if(n.includes("ngan"))return{m:"Bản nháp đó Ngân xóa từ chiều thứ Năm, mà đâu có nói gì thịt ôi. Tối thứ Bảy Ngân đang trên xe về Bến Tre."};
     if(n.includes("khang"))return{m:"Camera ghi Khang khóa cửa về lúc 22:00, 22:45 người xem live còn thấy mặt Khang trên cam ở phòng trọ."};
@@ -1095,7 +1096,7 @@ const ICONS={
   file:{n:"Hồ sơ",bg:"#3c4a63",svg:`<rect x="6" y="3" width="12" height="18" rx="1" fill="#fff"/><path d="M9 8h6M9 11h6" stroke="#3c4a63" stroke-width="1.6"/><circle cx="12" cy="16" r="2" fill="#e2683c"/>`},
   trash:{n:"Thùng rác",bg:"#6b7380",svg:`<path d="M8 8h8l-.8 11H8.8z" fill="#fff"/><path d="M6 8h12M10 5h4v3h-4z" stroke="#fff" stroke-width="1.6" fill="none"/>`},
 };
-const GEOM={chat:[40,60,580,420],web:[300,80,580,460],files:[120,100,600,400],photos:[160,140,460,380],nb:[220,70,560,420],file:[380,100,460,470],trash:[260,120,560,380]};
+const GEOM={chat:[40,60,580,420],web:[300,80,580,460],files:[120,100,600,400],photos:[160,140,460,380],nb:[220,70,560,420],file:[380,80,460,580],trash:[260,120,560,380]};
 const dockApps=()=>Object.keys(ICONS).filter(k=>k!=="trash"||(CH.trash&&CH.trash.length));
 
 function renderDock(){
@@ -1210,7 +1211,7 @@ const R={
       <button data-nb="all" class="${S.nbFilter==="all"?"on":""}">Tất cả <span>${S.pinned.size}</span></button>
       ${srcs.map(s=>`<button data-nb="${s}" class="${S.nbFilter===s?"on":""}">${s} <span>${(groups[s]||[]).length}</span></button>`).join("")}`;
     let main;
-    if(S.nbFilter==="notes") main=`<h4>Ghi chú của tôi</h4><textarea id="notes" aria-label="Ghi chú" placeholder="Ai có chìa? Ai ở đâu lúc 2 giờ sáng?">${esc(S.notes)}</textarea>`;
+    if(S.nbFilter==="notes") main=`<h4>Ghi chú của tôi</h4><textarea id="notes" aria-label="Ghi chú" placeholder="Ai ở đâu, lúc mấy giờ? Số điện thoại, mật khẩu nào khớp với ai?">${esc(S.notes)}</textarea>`;
     else if(S.nbFilter==="sus") main=`<h4>Bảng nghi phạm</h4><div class="sus">${CH.suspects.map(p=>{const m=S.marks[p.id]||"u";
       return `<div class="sus-card ${m}"><b>${p.n}</b><span>${p.r}</span><div class="tg">
         <button class="u ${m==="u"?"on":""}" data-mark="${p.id}:u">Chưa rõ</button><button class="s ${m==="s"?"on":""}" data-mark="${p.id}:s">Nghi</button><button class="c ${m==="c"?"on":""}" data-mark="${p.id}:c">Ngoại phạm</button></div></div>`}).join("")}</div>`;
@@ -1337,6 +1338,7 @@ function accuse(name,how){
   if(!n){S.verdict="Hãy ghi họ tên đầy đủ trước khi gửi.";render("file");return}
   if(CH.form.how&&!how){S.verdict=CH.form.how.need;render("file");return}
   const r=CH.check(n,how);
+  if(r.free){S.verdict=r.m;render("file");return}
   if(r.ok){S.solved=true;S.verdict="";done.add(S.ch);saveDone();render("file");say(CH.win);return}
   S.tries--;S.verdict=r.m;render("file");
   say(S.tries>0?`Sai rồi em. Còn ${S.tries} lần thôi đó 😏`:"Hết lượt rồi. Thôi để anh tự làm vậy.");
